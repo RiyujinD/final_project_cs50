@@ -1,0 +1,76 @@
+:root {
+    font-size: 15px;
+    font-family: 'Montserrat';
+    --text-primary: #b6b6b6;
+    --text-secondary: #ececec;
+    --bg-primary: #23232e;
+    --bg-secondary:  #141418;
+}
+
+body {
+    color: white;
+    background-color: black;
+    margin: 0;
+    padding: 0;
+}
+
+body::-webkit-scrollbar {
+    width: 0.5rem;
+}
+
+body::-webkit-scrollbar-track {
+    background: #1e1e24;
+}
+
+body::-webkit-scrollbar-thumb {
+    background: #6549b9;
+}
+
+main {
+    margin-top: 5rem;
+}
+
+.navbar {
+    height: 5rem;
+    width: 100vw;
+    position: fixed;
+    top: 0;
+    background-color: var(--bg-primary);
+}
+
+.nav-link {
+    text-decoration: none;
+    display: flex;
+    flex-direction: row;
+    width: 5rem;
+    color: var(--text-primary);
+}
+
+.link-text {
+    display: none;
+    margin-left: 1rem;
+}
+
+.navbar-nav {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: flex-start;
+}
+
+.nav-item {
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.nav-item:last-child {
+    margin-right: auto;
+}
+
+.icon {
+    font-size: 2rem;
+}
+
