@@ -35,7 +35,7 @@
             height: 4rem;
             width: 100vw;
             top: 0;
-            background-color: transparent;
+
         }
 
         .nav-link {
@@ -81,6 +81,10 @@
 
         .navbar:hover {
             height: 6rem;
+        }
+
+        .navbar:hover #link-text-padding {
+            padding-right: 0.5rem;
         }
 
         .navbar:hover .link-text {
