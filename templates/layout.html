@@ -17,6 +17,7 @@
     <!-- If user is login or !login display different options-->
     <nav class="navbar">
         <ul class="navbar-nav">
+            {% if session["user_id"] %}
             <li class="nav-item"> 
                 <a href="#" class="nav-link">
                     <div class="icon"><i class="fa-solid fa-user-ninja"></i></div>
@@ -27,7 +28,7 @@
             <li class="nav-item"> 
                 <a href="#" class="nav-link">
                     <div class="icon"><i class="fa-solid fa-user-plus"></i></div>
-                    <span class="link-text"> Register </span> 
+                    <span id="link-text-padding" class="link-text"> Register </span> 
                 </a>
             </li>
 
@@ -36,6 +37,21 @@
                     <div class="icon"><i class="fa-regular fa-sun"></i></div>
                 </a>
             </li>
+
+            {% else %}
+            <li class="nav-item"> 
+                <a href="#" class="nav-link">
+                    <div class="icon"><i class="fa-solid fa-user-ninja"></i></div>
+                    <span class="link-text"> Login </span> 
+                </a>
+            </li>
+
+            <li class="nav-item"> 
+                <a href="#" class="nav-link">
+                    <div class="icon"><i class="fa-regular fa-sun"></i></div>
+                </a>
+            </li>
+            {% endif %}
 
         </ul>
     </nav>  
