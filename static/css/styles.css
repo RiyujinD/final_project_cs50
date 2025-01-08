@@ -1,99 +1,145 @@
+        /* Set some variable and preset to use around the all app */
         :root {
             font-size: 15px;
             font-family: 'Montserrat';
-            --text-primary: rgba(204, 184, 184, 0.763);
-            --text-secondary: #ececec;
+            --text-primary: rgba(204, 184, 184, 0.6);
+            --text-secondary: #335545;
             --bg-primary: rgba(2, 2, 2, 0.645);
-            --bg-secondary:  #141418;
+            --bg-secondary:  rgb(30, 31, 31);
         }
 
+        /* Set background color and remove default padding/nargin */
+        
         body {
-            color: #335545;
-            background-color: black;
+            height: 100vh;
+            color: var(--text-secondary);
+            background-color: var(--bg-secondary);  /* change to a nice animated background subtil ? */
             margin: 0;
             padding: 0;
+            position: relative;
         }
 
+        /* Change width of the default scrollbar */
         body::-webkit-scrollbar {
             width: 1rem;
         }
-
+         /* Change the color of the track */
         body::-webkit-scrollbar-track {
             background: #1e1e24;
         }
-
+         /* Change the thumb (scrollable part */
         body::-webkit-scrollbar-thumb {
             background: rgba(116, 105, 105, 0.3);
             border-radius: 10px;
         }
 
+         /* Set a fix navbar with bottom border  */
         .navbar {
-            height: 5rem;
+            height: 4rem;
             width: 100vw;
             top: 0;
-            display: flex;  
-            background-color: var(--bg-primary);
-            position: relative; /* Make this the reference for absolute positioning */
+            position: fixed;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+            box-sizing: border-box; /* Ensures the border is included in the total size */
+            display: flex; /* Use flexbox for centering */
+            align-items: flex-start; /* Vertically center items */
+            padding-top: 0.5rem;
+            transition: height 0.4s ease-in, border-bottom 0.4s ease-in; /* Adds smooth transition */
+            overflow: hidden;
         }
 
+         /* remove decoration set the item to be square size 4rem navbar is 4rem*/
         .nav-link {
             text-decoration: none;
-            width: 5rem;
+            width: 4rem;
             color: var(--text-primary);
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding-top: 1rem;
         }
 
-        .navbar-nav {
-            width: 100%;
-            list-style: none;
-            padding: 3px 1rem;
-            margin: 0;
-            display: flex;
-            flex-direction: row-reverse;
-            transition: height 0.3s ease; /* Smoothly transitions height */
+        .nav-item:nth-child(1), .nav-item:nth-child(2) {
+            margin: 0 3rem;
         }
 
-        .nav-item {
-            width: 5rem;
-        }
-
-        .nav-item:last-child {
-            margin-right: auto; /* Ensure other items are unaffected */
-            position: absolute; /* Fix position within the navbar-nav */
-            top: 2;             /* Align to the top */
-            left: 0;            /* Align to the left */
-        }   
 
         .nav-item {
             height: 100%;
         }
+        
+        .icon {
+            font-size: 2rem;
+            min-height: 2rem;
+            color: var(--text-secondary);
+        }
 
+        .navbar-nav {
+            list-style: none;
+            width: 100%;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: row-reverse;  /* Reverse direction of the row  */
+        }
+
+        /* Push last item to the opposite side by settings his margin to the max */
+        .nav-item:last-child {
+            margin-right: auto;
+        }
+
+        /* Display thhe text only after hover */
         .link-text {
-            padding-top: 0.5rem;
             display: none;
         }
 
-        .icon {
-            font-size: 2rem;
-            color: var(--text-primary)
-        }
-
+        /* When hover the height of navbar change and the text is display below the icon*/
         .navbar:hover {
-            height: 8rem;
+            height: 6rem;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+            position: relative; /* Required for pseudo-elements */
         }
 
-        .navbar:hover #link-text-padding {
-            padding-right: 0.5rem;
-        }
 
         .navbar:hover .link-text {
+            margin-top: 0.5rem;
             display: block;
         }
-
-        h1 {
-            text-align: center;
+        
+        /* Contain the glass item*/
+        .container_main {
+            position: absolute;
+            top: 80%; 
+            left: 50%;
+            transform: translate(-50%, -50%); 
+            width: 30%;
+            max-width: 600px;
+            height: auto;   
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: margin 0.3s ease-in;
         }
 
+        /* Make the box 'glass' alike trnasparant*/
+        .glass {
+            width: 100%; 
+            background: linear-gradient(135deg, rgba(2, 2, 2, 0.2), rgba(30, 31, 31, 0.1));
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 0 4px 15px rgba(255, 255, 255, 0.3), 
+                        inset 0 1px 3px rgba(255, 255, 255, 0.2);
+            background-blend-mode: overlay;
+        }
+
+
+        .contain-text {
+            font-size: 13pt; /* Adjust the size as needed */
+            font-weight: bold; 
+            text-align: center; 
+            align-items: center;
+            margin: 0; 
+            margin: 0.9rem;
+            line-height: 1.5;
+        }
