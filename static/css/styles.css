@@ -39,7 +39,8 @@
             width: 100vw;
             top: 0;
             position: fixed;
-            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+            background-color: var(--bg-secondary);
+            border-bottom: 0.1rem solid rgba(255, 255, 255, 0.1);
             box-sizing: border-box; /* Ensures the border is included in the total size */
             display: flex; /* Use flexbox for centering */
             align-items: flex-start; /* Vertically center items */
@@ -59,7 +60,7 @@
         }
 
         .nav-item:nth-child(1), .nav-item:nth-child(2) {
-            margin: 0 3rem;
+            margin: 0 1.7rem;
         }
 
 
@@ -95,8 +96,8 @@
         /* When hover the height of navbar change and the text is display below the icon*/
         .navbar:hover {
             height: 6rem;
-            border-bottom: 2px solid rgba(255, 255, 255, 0.2);
-            position: relative; /* Required for pseudo-elements */
+            border-bottom: 0.1rem solid rgba(255, 255, 255, 0.33);
+            position: fixed; 
         }
 
 
@@ -143,3 +144,30 @@
             margin: 0.9rem;
             line-height: 1.5;
         }
+
+        main {
+            margin-top: 4rem;
+        }
+
+
+        /* Carousel style */
+        .carrousel {
+            width: 100vw; /* Full viewport width */
+            height: 35vh; /* 25% of the viewport height */
+            left: 0;
+            display: absolute; /* Center images */
+        }
+
+        .slider-wrapper {
+            position: relative;
+            width: 100%;
+            height: auto;
+        }
+
+        .slider {
+            width: 100%; 
+            height: auto;
+            aspect-ratio: 16 / 9;
+            display: flex;
+        }
+
