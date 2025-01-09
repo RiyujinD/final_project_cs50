@@ -2,8 +2,8 @@
         :root {
             font-size: 15px;
             font-family: 'Montserrat';
-            --text-primary: rgba(204, 184, 184, 0.6);
-            --text-secondary: #335545;
+            --text-primary: rgba(204, 184, 184, 0.7);
+            --text-secondary: #5d9f80d3;
             --bg-primary: rgba(2, 2, 2, 0.645);
             --bg-secondary:  rgb(30, 31, 31);
         }
@@ -118,7 +118,10 @@
             height: 50vh; /* 25% of the viewport height */ 
             overflow: hidden;
             z-index: 1;
-            border-bottom: 0.1rem solid rgba(142, 142, 142, 0.33);
+            /* border-bottom: 0.1rem solid rgba(142, 142, 142, 0.33); */
+            border: 1px solid rgba(0, 0, 0, 0.4);
+            box-shadow: 0 3px 15px rgba(0, 0, 0, 0.3), 
+                        inset 0 1px 3px rgba(255, 255, 255, 1);
         }
 
         .slider-wrapper {
@@ -173,19 +176,20 @@
         }
 
         h1, h2 {
-            color: var(--text-primary);
+            color: rgba(245, 245, 245, 0.981);
             text-align: center;
         }
 
         /* Contain the glass item*/
-        .container_main {
+        .container_glass_box {
+            top: 62%; 
+            left: 50%;
+            transform: translate(-50%, -62%);
             position: absolute;
-            top: 45%; 
-            left: 77%;
-            transform: translate(-77%, -45%);
             width: auto; 
-            height: auto;
+            height: 13rem;
             max-width: 400rem;
+            max-height: 40rem;
             z-index: 100; 
             display: flex;
             align-items: center;
@@ -194,24 +198,34 @@
 
         /* Make the box 'glass' alike trnasparant*/
         .glass {
+            height: auto;
+            width: auto;
             background: linear-gradient(135deg, rgba(2, 2, 2, 0.2), rgba(30, 31, 31, 0.1));
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
             border-radius: 20px;
             border: 1px solid rgba(0, 0, 0, 0.4);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3), 
-                        inset 0 1px 3px rgba(255, 255, 255, 0.9);   
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5), 
+                        inset 0 1px 3px rgba(255, 255, 255, 1);
         }
 
 
-        .contain-text {
+        .text_glass {
             text-align: center;
-            font-size: 13pt; /* Adjust the size as needed */
+            font-size: 15pt; /* Adjust the size as needed */
             font-weight: bold; 
-            line-height: 1.5;
-            color: #fff;
+            line-height: 4rem;
+            margin: 2rem;
         }
 
-        .connect_text {
-            padding-top: 10rem;
+        #text_main_manual {
+            margin-top: 12rem;
+        }
+        
+        #text_main_manual > h2 {
+            margin-top: 2rem;
+        }
+        
+        #text_main_manual > h1, #text_main_manual > h2 {
+            font-weight: bold;
         }
