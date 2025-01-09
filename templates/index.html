@@ -1,9 +1,11 @@
 {% extends "layout.html" %}
 
-{% block title %}{% endblock %}
+{% block title %}Spotify{% endblock %}
 
-{% block main %}    
-
+{% block head %}
+    <script src="{url_for('static', filename='js/carrousel.js')}"></script>
+{% endblock %} 
+{% block main %}
         <div class="carrousel">
             <div class="slider-wrap">
                 <div class="slider">
@@ -23,28 +25,25 @@
 
         <div class="container_glass_box glass">
             <div class="text_glass">
-                <h1 id="title"> DO YOU KNOW YOUR <span style="color: #1DB954;"> SPOTIFY </span> PLAYLIST ? </h1>
+                <h1 id="title"> DO YOU KNOW YOUR <span style="color: #1DB954;"> SPOTIFY </span> PLAYLISTS ? </h1>
             </div>
         </div>
         <div id="text_main_manual">
             <h1 style="font-size: 50pt;"> FIND THE MISSING LYRICS </h1> 
 
-            <hr style="width: 75%; border: 0; border-top: 2px solid rgba(115, 115, 115, 0.259); margin-top: 3rem;">
+            <hr style="width: 75%; border: 0; border-top: 2px solid rgba(115, 115, 115, 0.259); margin-top: 7rem;">
+            <div id="container_usage">
+                <div"> Connect with spotify to access your library </div>
 
-            <div> Connect with spotify to access your library </div>
+                        
+                <div> A random song will start from you library and cut at some point</div>
 
-                    
-            <div> A random song will start from you library and cut at some point</div>
-
-            
-            <div> Can you sing the part that was cut out</div>
+                
+                <div> Can you sing the part that was cut out ? have fun!</div>
+            </div>
             
 
 
         </div>
-
-        
-
-
 {% endblock %}
 
