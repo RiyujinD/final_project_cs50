@@ -7,11 +7,11 @@
         <div class="carrousel">
             <div class="slider-wrap">
                 <div class="slider">
-                    <img id="slide1" src="{{ url_for('static', filename='images/spotify_list.jpg') }}" alt="Playlist Spotify">
+                    <img id="slide1" src="{{ url_for('static', filename='images/spotify_lyrics.jpg') }}" alt="Lyrics Spotify">
 
-                    <img id="slide2" src="{{ url_for('static', filename='images/spotify_liked.jpg') }}" alt="Like playlist Spotify">
+                    <img id="slide2" src="{{ url_for('static', filename='images/spotify_list.jpg') }}" alt="Playlist Spotify">
 
-                    <img id="slide3" src="{{ url_for('static', filename='images/spotify_lyrics.jpg') }}" alt="Lyrics Spotify">
+                    <img id="slide3" src="{{ url_for('static', filename='images/spotify_liked.jpg') }}" alt="Like playlist Spotify">
                 </div>
                 <div class="slider-nav">
                     <a href="#slide1"></a>
@@ -21,16 +21,15 @@
             </div>
         </div>
 
-        <div class="container_main glass">
-            <div class="contain-text">
-                <h1 id="title"> Do you really know your <span style="color: #1DB954;"> Spotify </span><span style="color: #38526b;"> Playlist </span> </h1>
-            </div>f
+        <div class="container_glass_box glass">
+            <div class="text_glass">
+                <h1 id="title"> DO YOU KNOW YOUR <span style="color: #1DB954;"> SPOTIFY </span> PLAYLIST ? </h1>
+            </div>
         </div>
+        <div id="text_main_manual">
+            <h1 style="font-size: 50pt;"> FIND THE MISSING LYRICS </h1> 
 
-        <div class="connect_text">
-            <h1> Connect you spotify and battle your friends </h1>
-
-            <h2>Find the missing lyrics !</h2>
+            <hr style="width: 75%; border: 0; border-top: 2px solid rgba(115, 115, 115, 0.259); margin-top: 3rem;">
         </div>
 {% endblock %}
 
