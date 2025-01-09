@@ -3,7 +3,7 @@
 {% block title %}Spotify{% endblock %}
 
 {% block head %}
-    <script src="{url_for('static', filename='js/carrousel.js')}"></script>
+    <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
 {% endblock %} 
 {% block main %}
         <div class="carrousel">
@@ -29,17 +29,12 @@
             </div>
         </div>
         <div id="text_main_manual">
-            <h1 style="font-size: 50pt;"> FIND THE MISSING LYRICS </h1> 
+            <h1 style="font-size: 50pt;"> FIND THE <span id="blur-text">MISSING LYRICS</span> </h1> 
 
             <hr style="width: 75%; border: 0; border-top: 2px solid rgba(115, 115, 115, 0.259); margin-top: 7rem;">
             <div id="container_usage">
-                <div"> Connect with spotify to access your library </div>
+                <div"> Connect with spotify to play</div>
 
-                        
-                <div> A random song will start from you library and cut at some point</div>
-
-                
-                <div> Can you sing the part that was cut out ? have fun!</div>
             </div>
             
 

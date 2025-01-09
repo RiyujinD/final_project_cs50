@@ -137,7 +137,10 @@
         .slider {
             display: flex;
             aspect-ratio: 16 / 9;
+            height: auto;
+            overscroll-behavior-x: contain;
             overflow-x: auto;
+            overflow-y: hidden;
             scroll-snap-type: x mandatory;
             scroll-behavior: smooth;
             box-shadow: 1.5rem 0 5rem -0.75rem hsla(0%, 0%, 0%, 0.25);
@@ -147,13 +150,7 @@
             flex: 1 0 100%;
             object-fit: cover;
             opacity: 0.6;
-            scroll-snap-align: start; 
             transition: opacity ease 250ms;
-        }
-
-
-        .slider img {
-            transform: none !important; /* Reset unwanted transforms */
         }
 
         .slider img:hover {
@@ -181,7 +178,12 @@
         }
 
         .slider-nav a:hover {
-            opacity: 1;
+            opacity: 0.9;
+        }
+
+        .slider-nav a.active {
+            background-color: #000; /* Highlight active dot */
+            opacity: 1; /* Make it fully opaque */
         }
 
         h1, h2 {
@@ -244,4 +246,10 @@
 
         #container_usage{
             margin-top: 7rem;
+        }
+
+        #blur-text {
+            filter: blur(10px);
+            cursor: pointer;
+            transition: filter 0.3s ease;
         }
