@@ -8,8 +8,13 @@
             --bg-secondary:  #0D1117;
         }
 
+
+        /* prevent unexpected behaviour with the carrousel main page*/ 
+        html {
+            scroll-behavior: smooth;
+        }
+
         /* Set background color and remove default padding/nargin */
-        
         body {
             height: 100vh;
             color: var(--text-secondary);
@@ -126,25 +131,29 @@
 
         .slider-wrapper {
             position: relative;
-            width: 100%;
+            max-width: 48rem;
         }
-
+  
         .slider {
             display: flex;
             aspect-ratio: 16 / 9;
             overflow-x: auto;
             scroll-snap-type: x mandatory;
             scroll-behavior: smooth;
-            box-shadow: 0 1.5rem 3rem -0.75rem hsla(0%, 0%, 0%, 0.25);
+            box-shadow: 1.5rem 0 5rem -0.75rem hsla(0%, 0%, 0%, 0.25);
         }
 
         .slider img {
-            height: 100%;
-            width: auto;
-            scroll-snap-align: start;
+            flex: 1 0 100%;
             object-fit: cover;
             opacity: 0.6;
+            scroll-snap-align: start; 
             transition: opacity ease 250ms;
+        }
+
+
+        .slider img {
+            transform: none !important; /* Reset unwanted transforms */
         }
 
         .slider img:hover {
@@ -156,10 +165,10 @@
             display: flex;
             column-gap: 1rem;
             position: absolute;
-            bottom: 1.25rem;
+            top: 4rem;
             left: 50%;
             transform: translateX(-50%);
-            z-index: 1; 
+            z-index: 10; 
         }
 
         .slider-nav a {
@@ -182,14 +191,14 @@
 
         /* Contain the glass item*/
         .container_glass_box {
-            top: 62%; 
+            top: 69%; 
             left: 50%;
-            transform: translate(-50%, -62%);
+            transform: translate(-50%, -69%);
             position: absolute;
             width: auto; 
             height: 13rem;
-            max-width: 400rem;
-            max-height: 40rem;
+            max-width: auto;
+            max-height: 30rem;
             z-index: 100; 
             display: flex;
             align-items: center;
@@ -199,7 +208,8 @@
         /* Make the box 'glass' alike trnasparant*/
         .glass {
             height: auto;
-            width: auto;
+            width: 500px;
+            max-width: auto;
             background: linear-gradient(135deg, rgba(2, 2, 2, 0.2), rgba(30, 31, 31, 0.1));
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
@@ -212,14 +222,14 @@
 
         .text_glass {
             text-align: center;
-            font-size: 15pt; /* Adjust the size as needed */
+            font-size: 1rem; /* Adjust the size as needed */
             font-weight: bold; 
             line-height: 4rem;
             margin: 2rem;
         }
 
         #text_main_manual {
-            margin-top: 12rem;
+            margin-top: 17rem;
             text-align: center;
         }
         
@@ -231,6 +241,7 @@
             font-weight: bold;
         }
 
-        #text_main_manual > div {
-            margin-top: 2rem;
+
+        #container_usage{
+            margin-top: 7rem;
         }
