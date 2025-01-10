@@ -243,13 +243,115 @@
             font-weight: bold;
         }
 
-
-        #container_usage{
-            margin-top: 7rem;
-        }
-
         #blur-text {
             filter: blur(10px);
             cursor: pointer;
             transition: filter 0.3s ease;
         }
+
+
+
+        /* Styling of the carrds layout */
+        .wrapper {
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+        
+        
+        .wrapper {
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            align-items: flex-start;
+            justify-content: flex-start;
+            margin: 5rem;
+        }
+        
+        .container {
+            display: flex;
+            align-items: flex-start; /* Align cards to the bottom */
+            justify-content: start; /* Keep cards aligned to the left */
+            height: 300px; /* Minimum height for the container */
+            flex-wrap: nowrap;
+        }
+        
+        .card {
+            width: 100px;
+            border-radius: 2rem;
+            background-size: cover;
+            cursor: pointer;
+            overflow: hidden;
+            margin: 0 10px;
+            display: flex;
+            align-items: flex-end;
+            transition: all 0.6s cubic-bezier(0.28, -0.03, 0, 0.99); /* Smooth size animation */
+            box-shadow: 0px 10px 30px -5px rgba(0, 0, 0, 0.8);
+        }
+        
+        /* Adjust card heights progressively */
+        .card:nth-of-type(1) {
+            height: 200px; /* Smallest */
+        }
+        
+        .card:nth-of-type(2) {
+            height: 400px; /* Medium */
+        }
+        
+        .card:nth-of-type(3) {
+            height: 600px; /* Largest */
+        }
+        
+        /* Animation for cards when selected */
+        input:checked + label {
+            width: 600px;
+            height: 400px;
+        }
+        
+        /* Content inside cards */
+        .card > .row {
+            color: white;
+            display: flex;
+            flex-wrap: nowrap;
+        }
+        
+        .card > .row > .icon {
+            background: #223;
+            color: white;
+            border-radius: 50%;
+            width: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 15px;
+        }
+        
+        .card > .row > .description {
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            overflow: hidden;
+            height: 80px;
+            width: 520px;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.3s ease;
+        }
+        
+        .description p {
+            color: #b0b0ba;
+            padding-top: 5px;
+        }
+        
+        .description h4 {
+            text-transform: uppercase;
+        }
+        
+        input {
+            display: none;
+        }
+        
+        input:checked + label .description {
+            opacity: 1 !important;
+            transform: translateY(0) !important;
+        }
+        
