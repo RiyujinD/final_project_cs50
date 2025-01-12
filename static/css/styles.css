@@ -8,7 +8,6 @@
             --bg-secondary:  #0D1117;
         }
 
-
         /* prevent unexpected behaviour with the carrousel main page*/ 
         html {
             scroll-behavior: smooth;
@@ -180,12 +179,10 @@
             opacity: 1; /* Make it fully opaque */
         }
 
-        h1, h2 {
+        .container_glass_box > h1 {
             color: rgba(245, 245, 245, 0.981);
             text-align: center;
         }
-
-
 
         /* Contain the glass item*/
         .container_glass_box {
@@ -193,10 +190,10 @@
             left: 50%;
             transform: translate(-50%, -69%);
             position: absolute;
-            width: auto; 
-            height: 13rem;
+            width: 35%; 
+            height: 25%;
             max-width: auto;
-            max-height: 30rem;
+            max-height: 45rem;
             z-index: 100; 
             display: flex;
             align-items: center;
@@ -206,8 +203,8 @@
         /* Make the box 'glass' alike trnasparant*/
         .glass {
             height: auto;
-            width: 500px;
-            max-width: auto;
+            width: auto;
+            max-height: 45rem;
             background: linear-gradient(135deg, rgba(2, 2, 2, 0.2), rgba(30, 31, 31, 0.1));
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
@@ -240,150 +237,144 @@
         }
 
         #blur-text {
-            filter: blur(10px);
+            filter: blur(7px);
             cursor: pointer;
-            transition: filter 0.3s ease;
+            transition: filter 0.4s ease;
         }
+    
 
-        
-
-        .wrapper {
-            width: 100%;
-            height: 100vh;
-            display: flex;
-            align-items: flex-start;
-            justify-content: flex-start;
-            padding-left: 5vw; /* Relative padding */
+        /* Implementation of a grid cointaining a card caroussel in first row and a list in the second*/
+        .container-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: repeat(3, 1fr);
+            height: 25rem;
+            gap: 1rem;
+            margin: 3rem;
+            padding: 3rem;
             box-sizing: border-box;
+          }
+          
+          .ul-grid-layout {
+            grid-column: 2 / 3;
+            grid-row: 1 / 2;
+            display: flex;
+            flex-direction: column;
+            align-self: center;
+            justify-self: center;
             font-family: Arial, Helvetica, sans-serif;
-            margin-top: 7vh; /* Relative margin */
-        }
-        
-        .container {
+            font-size: 4rem;
+            text-transform: uppercase;
+          }
+          
+          .item-list-grid-layout {
+            margin: 1rem;
+          }
+          
+          .container-card {
+            grid-column: 1 / 2;
+            grid-row: 1 / 2;
+            height: 25rem;
             display: flex;
-            align-items: flex-end; /* Align cards to the bottom */
-            justify-content: start; /* Keep cards aligned to the left */
-            max-height: 80vh; /* Relative maximum height */
-            height: auto;
-            flex-wrap: nowrap;
-        }
-        
-        .card {
-            position: relative; /* Required for ::before overlay */
-            width: 15vw; /* Dynamic width based on viewport width */
-            border-radius: 2rem;
+            justify-content: flex-start; 
+            align-items: flex-end; 
+          }
+          
+          .card {
+            width: 5rem;
+            border-radius: 1rem;
             background-size: cover;
-            background-position: center;
-            cursor: pointer;
             overflow: hidden;
+            margin: 0 1rem;
+            cursor: pointer;
             display: flex;
-            align-items: flex-end;
-            transition: all 0.6s cubic-bezier(0.28, -0.03, 0, 0.99);
+            justify-content: flex-start;
+            align-items: flex-start;
             box-shadow: 0px 10px 30px -5px rgba(0, 0, 0, 0.8);
-            margin: 0 1.5vw;
-            opacity: 0.8; /* Initial opacity */
-        }
-        
-        .card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5); /* Dark overlay */
-            z-index: 1; /* Below text */
-            transition: background 0.3s ease; /* Smooth transition for overlay */
-        }
-        
-        .card:hover::before,
-        input:checked + label::before {
-            background: rgba(0, 0, 0, 0.3); /* Reduce overlay darkness on hover/selection */
-        }
-        
-        .card > .row {
-            position: relative; /* Keep text above overlay */
-            z-index: 2;
+            transition: all 0.6s cubic-bezier(0.28, 0, 0.33, 0.66);
+          }
+          
+          .card:nth-of-type(1) {
+            height: 35%;
+            display: flex;
+          }
+          
+          .card:nth-of-type(2) {
+            height: 70%;
+          }
+          
+          .card:nth-of-type(3) {
+            height: 100%;  
+          }
+          
+          input:checked + label {
+            width: 45rem;
+          }
+          
+          .card > .row {
             color: white;
             display: flex;
-            flex-wrap: nowrap;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.7); /* Add subtle shadow for better readability */
-        }
-        
-        .card > .row > .description {
+            justify-content: flex-start;
+            position: relative;
+            width: 100%;
+          }
+          
+          .card > .row > .icon {
+            position: absolute;
+            background: #1ED760;
             display: flex;
             justify-content: center;
+            align-items: center;
+            width: 3rem;
+            height: 3rem;
+            border-radius: 1.5rem;
+            left: 1rem;
+            top: 1rem
+          }
+          
+          .card > .row > .description {
+            width: 100%;
+            display: flex;
             flex-direction: column;
+            align-items: start;
+            justify-content: flex-start;
             overflow: hidden;
-            height: auto; /* Adjust height dynamically */
-            width: 90%; /* Relative width */
+            width: 100%;
+            margin-left: 5rem;
             opacity: 0;
-            transform: translateY(30px);
-            margin: 3rem;
-            transition: all 0.2s ease;
-        }
-        
-        .description p {
-            color: #fff;
-            font-size: 1.3vw; /* Dynamic font size */
-        }
-        
-        .description h4 {
+            transform: translateY(-20rem);
+            transition-delay: .4s;
+            transition: transform .4s ease, opacity 0.9s ease;
+            font-size: 1.5rem;
+          }
+          
+          .description > p {
+            color: var(--bg-secondary);
+          }
+          
+          .description > h4 {
+            padding-top: 1.5rem;
             text-transform: uppercase;
-            font-size: 1.6vw; /* Dynamic font size */
-        }
-        
-        input {
+          }
+          
+          input {
             display: none;
-        }
-        
-        input:checked + label .description {
-            opacity: 1 !important;
-        }
-        
-        /* Specific card images */
-        .card[for="c1"] {
-            background-image: url('https://images.unsplash.com/photo-1611484550037-d5a0da2b1446?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
-        }
-        
-        .card[for="c2"] {
-            background-image: url('https://images.unsplash.com/photo-1511233002817-99325d7cc2d6?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
-        }
-        
-        .card[for="c3"] {
-            background-image: url('https://images.unsplash.com/photo-1586095087956-bc66fe634955?q=80&w=1966&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
-        }
-        
-        /* Adjust card heights progressively */
-        .card:nth-of-type(1) {
-            height: 20vh; /* Dynamic height based on viewport height */
-        }
-        
-        .card:nth-of-type(2) {
-            height: 30vh; /* Larger card height */
-        }
-        
-        .card:nth-of-type(3) {
-            height: 40vh; /* Largest card height */
-        }
-        
-        /* Animation for cards when selected */
-        input:checked + label {
-            width: 40vw; /* Dynamic width when selected */
-            height: 50vh; /* Dynamic height when selected */
-            opacity: 1 !important;
-        }
+          }
 
-        @media (max-width: 768px) {
-            .card {
-                width: 30vw;
-            }
-            .card:nth-of-type(1),
-            .card:nth-of-type(2),
-            .card:nth-of-type(3) {
-                height: 25vh;
-            }
-            .description p {
-                font-size: 1rem; /* Smaller font for smaller screens */
-            }
-        }
+          input:checked + label .description {
+            opacity: 1 !important;
+            transform: translateY(-2rem) !important;
+          }
+          
+          .card[for="c1"] {
+              background-image: url('https://images.unsplash.com/photo-1736266602950-765dbdcfb9f1?crop=entropy&cs=srgb&fm=jpg&ixid=M3wzMjM4NDZ8MHwxfHJhbmRvbXx8fHx8fHx8fDE3MzY1MjAwOTV8&ixlib=rb-4.0.3&q=85');
+          }
+          
+          .card[for="c2"] {
+              background-image: url('https://images.unsplash.com/photo-1736266602950-765dbdcfb9f1?crop=entropy&cs=srgb&fm=jpg&ixid=M3wzMjM4NDZ8MHwxfHJhbmRvbXx8fHx8fHx8fDE3MzY1MjAwOTV8&ixlib=rb-4.0.3&q=85');
+          }
+          
+          .card[for="c3"] {
+              background-image: url('https://images.unsplash.com/photo-1736266602950-765dbdcfb9f1?crop=entropy&cs=srgb&fm=jpg&ixid=M3wzMjM4NDZ8MHwxfHJhbmRvbXx8fHx8fHx8fDE3MzY1MjAwOTV8&ixlib=rb-4.0.3&q=85');
+          }
+    

@@ -6,6 +6,8 @@
     <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
 {% endblock %} 
 {% block main %}
+
+        <!-- Carrousel on main -->
         <div class="carrousel">
             <div class="slider-wrap">
                 <div class="slider">
@@ -16,12 +18,13 @@
                     <img id="slide3" src="{{ url_for('static', filename='images/spotify_liked.jpg') }}" alt="Like playlist Spotify">
                 </div>
                 <div class="slider-nav">
-                    <a href="#slide1"></a>
+                    <!-- achor to image 1, 2 and 3-->
+                    <a href="#slide1"></a> 
                     <a href="#slide2"></a>
                     <a href="#slide3"></a>
-                </div>
-            </div>
-        </div>
+                </div> <!-- end slider-nav-->
+            </div>  <!-- End slider-wrap -->
+        </div> <!-- End carrousel -->
 
         <div class="container_glass_box glass">
             <div class="text_glass">
@@ -35,38 +38,59 @@
         </div>
 
         <!-- css card animation inpire of webtutorialsw/css_sliding_cards-->
-        <div class="container_card_wrapper">
-            <div class="wrapper">
-                <div class="container">
-                    <input type="radio" name="slide" id="c1" checked>
-                    <label for="c1" class="card">
-                        <div class="row">
-                            <div class="description">
-                                <h4>Connect you account</h4>
-                                <p>Play with your songs</p>
-                            </div>
-                        </div>
-                    </label>
-                    <input type="radio" name="slide" id="c2" >
-                    <label for="c2" class="card">
-                        <div class="row">
-                            <div class="description">
-                                <h4>Make a choice</h4>
-                                <p> Choose playlist - pick a song </p>
-                            </div>
-                        </div>
-                    </label>
-                    <input type="radio" name="slide" id="c3">
-                    <label for="c3" class="card">
-                        <div class="row">
-                            <div class="description">
-                                <h4>Show off</h4>
-                                <p>You can sing or type the missing part</p>
-                            </div>
-                        </div>
-                    </label>
+        <div class="container-grid">
+
+            <!-- Card Container -->
+            <div class="container-card">
+              
+              <!-- Card 1 -->
+              <input type="radio" name="slide" id="c1" checked>
+              <label for="c1" class="card">
+                <div class="row">
+                  <div class="icon">1</div>
+                  <div class="description">
+                    <h4>Register</h4>
+                    <p>Link your Spotify account to play with your songs</p>
+                  </div>
                 </div>
-            </div>
-        </div>
+              </label>
+        
+              <!-- Card 2 -->
+              <input type="radio" name="slide" id="c2">
+              <label for="c2" class="card">
+                <div class="row">
+                  <div class="icon">2</div>
+                  <div class="description">
+                    <h4>Discovery</h4>
+                    <p>Choose your playlist or discover the recommended ones</p>
+                  </div>
+                </div>
+              </label>
+        
+              <!-- Card 3 -->
+              <input type="radio" name="slide" id="c3">
+              <label for="c3" class="card">
+                <div class="row">
+                  <div class="icon">3</div>
+                  <div class="description">
+                    <h4>Show Time</h4>
+                    <p>Try to sing / type the cut-out lyrics</p>
+                  </div>
+                </div>
+              </label>
+        
+            </div> <!-- End of container-card -->
+            
+            <!-- Ordered List -->
+            <ol class="ul-grid-layout">
+              <li class="item-list-grid-layout">Testing</li>
+              <li class="item-list-grid-layout">Lorem</li>
+              <li class="item-list-grid-layout">Severus</li>
+            </ol>
+        
+          </div> <!-- End of container-grid -->
+
+
+          <h1 style="font: size 15rem; text-align: center; margin: 15rem;">Loream ipsum</h1>
     
 {% endblock %}
