@@ -21,7 +21,7 @@
             background-color: #1DB954; 
             border: none; 
             height: 0.1rem; 
-            opacity: 0.2;
+            opacity: 0.1;
         }
 
         /* prevent unexpected behaviour with the carrousel main page*/ 
@@ -197,27 +197,24 @@
             opacity: 1; 
         }
 
-        /* Contain the glass item*/
         .container_glass_box {
-            top: 67%; 
-            left: 50%;
-            transform: translate(-50%, -67%);
             position: absolute;
-            width: 45%; 
-            height: 25%;
-            max-width: auto;
-            max-height: 3rem;
-            z-index: 100; 
+            top: 50%; 
+            left: 50%;
+            transform: translate(-50%, -25%); 
+            width: 45%;
+            height: auto; 
+            z-index: 100;
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
-        /* Make the box 'glass' alike trnasparant*/
+
         .glass {
-            height: auto;
-            width: auto;
-            max-height: 40rem;
+            width: 100%; 
+            max-width: 30rem; 
+            height: auto; 
             background: linear-gradient(135deg, rgba(2, 2, 2, 0.2), rgba(30, 31, 31, 0.1));
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
@@ -225,7 +222,7 @@
             border: 1px solid rgba(0, 0, 0, 0.4);
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5), inset 0 1px 3px rgba(255, 255, 255, 1);
         }
-
+        
 
         .text_glass {
             text-align: center;
@@ -375,7 +372,7 @@
             aspect-ratio: 1;
             top: 1rem;
             left: 3%;
-            transform: translateX(-3%); 
+            transform: translateX(-2%); 
             transition: all 0.3s ease;
         }
 
@@ -407,6 +404,11 @@
 
         /* Responsive Media Query */
         @media (max-width: 750px) {
+
+
+            hr {
+                margin-top: 25%;
+            }
             
             .text_glass {
                 line-height: 3rem;
