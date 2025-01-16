@@ -218,7 +218,7 @@
 
 
         .glass {
-            width: 100%; 
+            width: auto; 
             max-width: 30rem; 
             height: auto; 
             background: linear-gradient(135deg, rgba(2, 2, 2, 0.2), rgba(30, 31, 31, 0.1));
@@ -481,11 +481,8 @@
 
         @media (max-width: 768px) {
             .other-elements {
-                display: flex;
-                justify-self: center !important;
-                justify-content: center !important;
-                text-align: center !important;
-                margin-inline: auto;
+                margin: auto;
+                text-align: center;
             }
         }
 
@@ -498,7 +495,7 @@
             }
 
             #text_main_manual {
-                margin-top: 7rem;
+                margin-top: 10rem;
             }
 
             .text_glass {
