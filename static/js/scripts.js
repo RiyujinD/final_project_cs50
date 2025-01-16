@@ -41,9 +41,9 @@ document.addEventListener('DOMContentLoaded', () => {
     
     if (cards.length > 0) {
         // Automatically expand the third card on page load
-        const thirdCard = cards[2]; // Zero-based index, so 2 is the third card
-        if (thirdCard) {
-            thirdCard.classList.add('expanded');
+        const firstCard = cards[0]; // Zero-based index, so 2 is the third card
+        if (firstCard) {
+            firstCard.classList.add('expanded');
         }
 
         // Add click event listeners to each card
