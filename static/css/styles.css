@@ -1,25 +1,27 @@
         /* Set some variable and preset to use around the all app */
         :root {
-            font-size: 15px;
-            font-family: 'Montserrat';
+            font-family: 'Montserrat', sans-serif;
             --text-primary: rgba(204, 184, 184, 0.7);
             --text-secondary: #5d9f80d3;
             --bg-primary:  #010409;
             --bg-secondary:  #0D1117;
         }
 
+        /* Global Styles */
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+
         /* prevent unexpected behaviour with the carrousel main page*/ 
         html {
             scroll-behavior: smooth;
         }
 
-        /* Set background color and remove default padding/nargin */
         body {
-            height: 100vh;
             color: var(--text-secondary);
             background-color: var(--bg-secondary);  /* change to a nice animated background subtil ? */
-            margin: 0;
-            padding: 0;
         }
 
         /* set margin of size of navbar*/
@@ -41,21 +43,22 @@
             border-radius: 10px;
         }
 
+
+
          /* Set a fix navbar with bottom border  */
         .navbar {
             height: 5.5rem;
-            width: 100vw;
+            width: 100%;
             top: 0;
             position: fixed;
             background-color: var(--bg-primary);
             border-bottom: 0.1rem solid rgba(142, 142, 142, 0.33);
-            box-sizing: border-box; /* Ensures the border is included in the total size */
             display: flex; 
             align-items: flex-start; 
             padding-top: 1rem;
             transition: height 0.4s ease-in, opacity ease 250ms;
             overflow: hidden;
-            z-index: 10000;
+            z-index: 1000000;
         }
 
          /* remove decoration set the item to be square size 4rem navbar is 4rem*/
@@ -69,7 +72,7 @@
         }
 
         .nav-item:nth-child(1), .nav-item:nth-child(2) {
-            margin: 0 1.7rem;
+            margin: 0 1%;
         }
 
 
@@ -77,7 +80,7 @@
             height: 100%;
         }
         
-        .icon {
+        .nav-icon {
             font-size: 3rem;
             min-height: 3rem;
             color: var(--text-secondary);
@@ -86,8 +89,6 @@
         .navbar-nav {
             list-style: none;
             width: 100%;
-            padding: 0;
-            margin: 0;
             display: flex;
             flex-direction: row-reverse;  /* Reverse direction of the row  */
         }
@@ -114,11 +115,13 @@
         }
         
 
+
+
         /* Carousel style base on SKillthrive video "https://www.youtube.com/@Skillthrive" */
         .carrousel {
             position: relative;
-            width: 100vw; /* Full viewport width */
-            height: 50vh; /* 25% of the viewport height */ 
+            width: 100%;
+            height: 50vh; 
             overflow: hidden;
             z-index: 1;
             /* border-bottom: 0.1rem solid rgba(142, 142, 142, 0.33); */
@@ -159,7 +162,7 @@
             display: flex;
             column-gap: 1rem;
             position: absolute;
-            top: 4rem;
+            top: clamp(2rem, 3%, 4rem);
             left: 50%;
             transform: translateX(-50%);
             z-index: 10; 
@@ -179,25 +182,20 @@
         }
 
         .slider-nav a.active {
-            background-color: #000; /* Highlight active dot */
-            opacity: 1; /* Make it fully opaque */
-        }
-
-        .container_glass_box > h1 {
-            color: rgba(245, 245, 245, 0.981);
-            text-align: center;
+            background-color: #000; /* Highlight dot */
+            opacity: 1; 
         }
 
         /* Contain the glass item*/
         .container_glass_box {
-            top: 69%; 
+            top: 67%; 
             left: 50%;
-            transform: translate(-50%, -69%);
+            transform: translate(-50%, -67%);
             position: absolute;
-            width: 35%; 
+            width: 45%; 
             height: 25%;
             max-width: auto;
-            max-height: 45rem;
+            max-height: 3rem;
             z-index: 100; 
             display: flex;
             align-items: center;
@@ -214,8 +212,7 @@
             -webkit-backdrop-filter: blur(10px);
             border-radius: 20px;
             border: 1px solid rgba(0, 0, 0, 0.4);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5), 
-                        inset 0 1px 3px rgba(255, 255, 255, 1);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5), inset 0 1px 3px rgba(255, 255, 255, 1);
         }
 
 
@@ -227,17 +224,27 @@
             margin: 2rem;
         }
 
+        .container_glass_box > h1 {
+            color: rgba(245, 245, 245, 0.981);
+            text-align: center;
+        }
+
+
+
+
+
+
+
         #text_main_manual {
-            margin-top: 17rem;
+            margin-top: 13rem;
             text-align: center;
         }
         
-        #text_main_manual > h2 {
-            margin-top: 2rem;
-        }
         
-        #text_main_manual > h1, #text_main_manual > h2 {
+        #text_main_manual > h1 {
             font-weight: bold;
+            font-size: clamp(4rem, 20%, 7rem);
+
         }
 
         #blur-text {
@@ -247,139 +254,232 @@
         }
     
 
-        /* Implementation of a grid cointaining a card caroussel in first row and a list in the second*/
+
+
+
+
+
+        
+        /* Grid Login Page */
         .container-grid {
+            height: auto;
+            margin-top: 2rem;
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            grid-template-rows: repeat(3, 1fr);
-            height: 25rem;
-            gap: 1rem;
-            margin: 3rem;
-            padding: 3rem;
-            box-sizing: border-box;
-          }
-          
-          .ul-grid-layout {
-            grid-column: 2 / 3;
-            grid-row: 1 / 2;
+            grid-template-columns: repeat(auto-fit, minmax(24rem, 1fr));
+            justify-items: center;
+            align-items: center;
+            row-gap: clamp(5rem, 10%, 10rem);
+        }
+
+        /* Other Elements Section */
+        .other-elements {
+            font-size: clamp(4rem, 7%, 6rem);
+            text-transform: uppercase;
             display: flex;
             flex-direction: column;
             align-self: center;
             justify-self: center;
-            font-family: Arial, Helvetica, sans-serif;
-            font-size: 4rem;
-            text-transform: uppercase;
-          }
-          
-          .item-list-grid-layout {
-            margin: 1rem;
-          }
-          
-          .container-card {
-            grid-column: 1 / 2;
-            grid-row: 1 / 2;
-            height: 25rem;
+            justify-content: center;
+            row-gap: 5rem;
+            flex-wrap: wrap;
+            margin: auto;
+            text-align: left;
+            padding-top: clamp(2rem, 5%, 4rem);
+        }
+
+        /* Card Container */
+        .container-card {
+            height: 35rem;
             display: flex;
-            justify-content: center; 
-            align-items: flex-end; 
-            margin-left: 5rem;
-          }
-          
-          .card {
-            width: 5rem;
+            flex-wrap: nowrap;
+            align-self: center;
+            justify-self: center;
+            justify-content: center;
+            align-items: flex-end;
+            gap: clamp(1rem, 3%, 3rem);
+            max-width: 100%;
+    
+        }
+
+        .card {
+            position: relative;
+            flex: 1 1 clamp(4rem, 25%, 5rem); /* Responsive shrinking */
+            max-width: 4rem; /* Initial size */
             border-radius: 1rem;
-            background-size: cover;
             overflow: hidden;
-            margin: 0 1rem;
             cursor: pointer;
             display: flex;
             justify-content: flex-start;
             align-items: flex-start;
+            margin: 0 0.5rem;
             box-shadow: 0px 10px 30px -5px rgba(0, 0, 0, 0.8);
             transition: all 0.6s cubic-bezier(0.28, 0, 0.33, 0.66);
-          }
-          
-          .card:nth-of-type(1) {
-            height: 35%;
-            display: flex;
-          }
-          
-          .card:nth-of-type(2) {
-            height: 70%;
-          }
-          
-          .card:nth-of-type(3) {
-            height: 100%;  
-          }
-          
-          input:checked + label {
-            width: 45rem;
-          }
-          
-          .card > .row {
-            color: white;
+            background-size: cover;
+            background-position: center;
+        }
+
+        /* Expanded Card Styles */
+        .card.expanded {
+            max-width: 45rem; /* Expanded width */
+            transition: all 0.6s ease-in-out;
+        }
+
+        /* Show Description in Expanded State */
+        .card.expanded .description {
+            opacity: 1 !important;
+            transform: translateY(0.5rem) !important;
+        }
+
+        /* Card Heights */
+        .card:nth-of-type(1) {
+            height: 40%;
+            background-image: url('https://images.unsplash.com/photo-1736266602950-765dbdcfb9f1?crop=entropy&cs=srgb&fm=jpg&ixid=M3wzMjM4NDZ8MHwxfHJhbmRvbXx8fHx8fHx8fDE3MzY1MjAwOTV8&ixlib=rb-4.0.3&q=85');
+        }
+
+        .card:nth-of-type(2) {
+            height: 65%;
+            background-image: url('https://images.unsplash.com/photo-1736266602950-765dbdcfb9f1?crop=entropy&cs=srgb&fm=jpg&ixid=M3wzMjM4NDZ8MHwxfHJhbmRvbXx8fHx8fHx8fDE3MzY1MjAwOTV8&ixlib=rb-4.0.3&q=85');
+        }
+
+        .card:nth-of-type(3) {
+            height: 90%;
+            background-image: url('https://images.unsplash.com/photo-1736266602950-765dbdcfb9f1?crop=entropy&cs=srgb&fm=jpg&ixid=M3wzMjM4NDZ8MHwxfHJhbmRvbXx8fHx8fHx8fDE3MzY1MjAwOTV8&ixlib=rb-4.0.3&q=85');
+        }
+
+        .card > .row {
             display: flex;
             justify-content: flex-start;
             position: relative;
-            width: 100%;
-          }
-          
-          .card > .row > .icon {
+        }
+
+        .card > .row > .icon {
             position: absolute;
             background: #1ED760;
             display: flex;
             justify-content: center;
             align-items: center;
-            width: 3rem;
+            width: 3rem; 
             height: 3rem;
-            border-radius: 1.5rem;
-            left: 1rem;
-            top: 1rem
-          }
-          
-          .card > .row > .description {
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: start;
-            justify-content: flex-start;
-            overflow: hidden;
-            width: 100%;
-            margin-left: 5rem;
-            opacity: 0;
-            transform: translateY(-20rem);
-            transition-delay: .4s;
-            transition: transform .4s ease, opacity 0.9s ease;
-            font-size: 1.5rem;
-          }
-          
-          .description > p {
-            color: var(--bg-secondary);
-          }
-          
-          .description > h4 {
-            padding-top: 1.5rem;
-            text-transform: uppercase;
-          }
-          
-          input {
-            display: none;
-          }
+            border-radius: 50%;
+            aspect-ratio: 1;
+            top: 1rem;
+            left: 3%;
+            transform: translateX(-3%); 
+            transition: all 0.3s ease;
+        }
 
-          input:checked + label .description {
-            opacity: 1 !important;
-            transform: translateY(-2rem) !important;
-          }
-          
-          .card[for="c1"] {
-              background-image: url('https://images.unsplash.com/photo-1736266602950-765dbdcfb9f1?crop=entropy&cs=srgb&fm=jpg&ixid=M3wzMjM4NDZ8MHwxfHJhbmRvbXx8fHx8fHx8fDE3MzY1MjAwOTV8&ixlib=rb-4.0.3&q=85');
-          }
-          
-          .card[for="c2"] {
-              background-image: url('https://images.unsplash.com/photo-1736266602950-765dbdcfb9f1?crop=entropy&cs=srgb&fm=jpg&ixid=M3wzMjM4NDZ8MHwxfHJhbmRvbXx8fHx8fHx8fDE3MzY1MjAwOTV8&ixlib=rb-4.0.3&q=85');
-          }
-          
-          .card[for="c3"] {
-              background-image: url('https://images.unsplash.com/photo-1736266602950-765dbdcfb9f1?crop=entropy&cs=srgb&fm=jpg&ixid=M3wzMjM4NDZ8MHwxfHJhbmRvbXx8fHx8fHx8fDE3MzY1MjAwOTV8&ixlib=rb-4.0.3&q=85');
-          }
-    
+        .card > .row > .description {
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            flex-direction: column;
+            margin-left: 7rem;
+            line-height: 1.2;
+            opacity: 0;
+            transform: translateY(-25rem);
+            transition: transform 0.6s ease-in-out, opacity 0.6s ease-in-out;
+        }
+
+        .description > p {
+            mix-blend-mode: difference;
+            padding-top: clamp(2.5rem, 1%, 3rem);
+            font-size: clamp(2rem, 3%, 2.5rem);
+        }
+
+        .description > h4 {
+            color: #1ED760;
+            text-transform: uppercase;
+            background-color: transparent !important;
+            font-size: clamp(2rem, 4%, 3rem);
+            margin-top: 4%;
+        }
+
+        /* Responsive Media Query */
+        @media (max-width: 750px) {
+
+
+
+            .carrousel {
+                height: 40vh; 
+            }
+
+            .other-elements {
+                font-size: clamp(3rem, 5%, 4rem);
+                row-gap: 4rem;
+                padding-top: clamp(1.8rem, 4%, 3.3rem);
+            }
+        
+
+            .container-card {
+                flex-wrap: wrap;
+                gap: 0;
+            }
+
+            .other-elements {
+                text-align: center;
+            }
+
+            .card {
+                max-width: clamp(2.5rem, 20%, 3.5rem);
+                margin-inline: auto;
+            }
+
+            .card > .row > .icon {
+                width: clamp(2rem, 25%, 2rem);
+                height: clamp(2rem, 25%, 2rem);
+                border-radius: 50%;
+                aspect-ratio: 1; /* Ensures perfect circle */
+            }
+
+            .card > .row > .description {
+                margin-left: 3rem;
+            }
+            
+            .description > p {
+                mix-blend-mode: difference;
+                padding-top: clamp(2.5rem, 1%, 3rem);
+                font-size: clamp(1rem, 2%, 1.5rem);
+            }
+
+            .description > h4 {
+                font-size: clamp(1.3rem, 3%, 2rem);
+                margin-top: 4%;
+            }
+
+            .card.expanded {
+                max-width: 60%; /* Adjust expanded size for smaller screens */
+            }
+        }
+
+        /* Responsive Media Query */
+        @media (max-width: 400px) {
+
+            .carrousel {
+                height: 35vh; 
+            }
+
+            .card {
+                max-width: clamp(2.5rem, 10%, 3rem);
+            }
+
+            .description > p {
+                padding-top: clamp(1.5rem, 3%, 2.5rem);
+                font-size: clamp(1.5rem, 3%, 2.5rem);
+            }
+
+            .description > h4 {
+                font-size: clamp(1.4rem, 2%, 1.7rem);
+            }
+
+            .card.expanded {
+                max-width: 45%; /* Adjust expanded size for smaller screens */
+            }
+        }
+
+
+        #last_element_login {
+            font-size: clamp(1rem, 10%, 4rem);
+            margin-top: 7rem;
+            text-align: center;
+            text-decoration: underline;
+        }

@@ -1,35 +1,60 @@
-// remove blur on the text in main page
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', () => {
+    // Remove blur on the text in the main page
     document.getElementById('blur-text').addEventListener('click', function () {
         this.style.filter = 'none';
     });
-});
 
-document.addEventListener('DOMContentLoaded', () => {
+    // Smooth scroll for slider navigation
     const navLinks = document.querySelectorAll('.slider-nav a');
     const slides = document.querySelectorAll('.slider img');
     const slider = document.querySelector('.slider');
 
-    // Smooth scroll to the specific slide when nav links are clicked
-    navLinks.forEach((link, i) => {
-        link.addEventListener('click', (e) => {
-            e.preventDefault();
-            slider.scrollTo({
-                left: slides[i].offsetLeft, // Scroll to the slide's left position
-                behavior: 'smooth'         // Smooth scrolling effect
-            });
-
-            // Update active nav link
-            navLinks.forEach((l) => l.classList.remove('active'));
-            link.classList.add('active');
-        });
-    });
-
-    // Update active nav link on scroll
-    slider.addEventListener('scroll', () => {
-        const index = Math.round(slider.scrollLeft / slider.offsetWidth);
+    if (navLinks.length > 0 && slides.length > 0 && slider) {
+        // Smooth scroll to the specific slide when nav links are clicked
         navLinks.forEach((link, i) => {
-            link.classList.toggle('active', i === index);
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                slider.scrollTo({
+                    left: slides[i].offsetLeft, // Scroll to the slide's left position
+                    behavior: 'smooth'         // Smooth scrolling effect
+                });
+
+                // Update active nav link
+                navLinks.forEach((l) => l.classList.remove('active'));
+                link.classList.add('active');
+            });
         });
-    });
+
+        // Update active nav link on scroll
+        slider.addEventListener('scroll', () => {
+            const index = Math.round(slider.scrollLeft / slider.offsetWidth);
+            navLinks.forEach((link, i) => {
+                link.classList.toggle('active', i === index);
+            });
+        });
+    }
+
+    
+
+    // Select all cards
+    const cards = document.querySelectorAll('.card');
+    
+    if (cards.length > 0) {
+        // Automatically expand the third card on page load
+        const thirdCard = cards[2]; // Zero-based index, so 2 is the third card
+        if (thirdCard) {
+            thirdCard.classList.add('expanded');
+        }
+
+        // Add click event listeners to each card
+        cards.forEach(card => {
+            card.addEventListener('click', () => {
+                // Remove the "expanded" class from all other cards
+                cards.forEach(c => c.classList.remove('expanded'));
+
+                // Add the "expanded" class to the clicked card
+                card.classList.add('expanded');
+            });
+        });
+    }
 });
