@@ -122,8 +122,8 @@
         .navbar:hover .link-text {
             margin-top: 0.59rem;
             display: block;
-        }
-        
+        }      
+
 
 
 
@@ -266,14 +266,14 @@
             cursor: pointer;
             transition: filter 0.4s ease;
         }
-    
+       
 
 
 
 
 
 
-        
+
         /* Grid Login Page */
         .container-grid {
             height: auto;
@@ -423,7 +423,7 @@
         /* Responsive Media Query */
         @media (max-width: 980px) {
 
-
+            
             hr {
                 margin-top: 25%;
             }
@@ -491,7 +491,7 @@
             
             /* Grid Login Page */
             .container-grid {
-                magin-top: 2rem;
+                margin-top: 2rem;
             }
 
             /* Card Container */
