@@ -6,7 +6,7 @@ from flask import Flask, url_for, redirect, request, jsonify, session, render_te
 from flask_session import Session
 from dotenv import load_dotenv
 from urllib.parse import urlencode
-# import requests
+import requests
 # from flask_cors import CORS
     
 # Load environment variables from .env file
@@ -96,15 +96,15 @@ def callback():
     }
 
     auth_data = {
-        "grant_type" = "authorization_code",
-        "code" = code
-        "redirect_uri" = REDIRECT_URI
+        "grant_type": "authorization_code",
+        "code": code,
+        "redirect_uri": REDIRECT_URI
     }
 
     # Make the request for a token to spotify's token endpoint
-    response = request.post(url, data=auth_data, headers=auth_headers)
-    if response != 200:
-        return jsonify({"error": "Failed to fetch tokens", "details": response.json()}), response.status_code
+    response = requests.post(url, data=auth_data, headers=auth_headers)
+    if response.status_code != 200:
+        return jsonify({"error": "Failed to fetch tokens", "details": response.json()})
     
     # Parse the response JSON
     token_data = response.json()
@@ -116,11 +116,6 @@ def callback():
 
     # Redirect to the main app or a success page
     return redirect(url_for("index"))
-
-
-
-
-    
 
 if __name__ == "__main__":
     app.run(debug=True)

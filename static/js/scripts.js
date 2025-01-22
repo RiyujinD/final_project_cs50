@@ -14,14 +14,20 @@ document.addEventListener('DOMContentLoaded', () => {
         navLinks.forEach((link, i) => {
             link.addEventListener('click', (e) => {
                 e.preventDefault();
+
+
                 slider.scrollTo({
                     left: slides[i].offsetLeft, // Scroll to the slide's left position
                     behavior: 'smooth'         // Smooth scrolling effect
                 });
 
+
+            // Use a timeout to ensure smooth scroll completes before updating active state
+            setTimeout(() => {
                 // Update active nav link
                 navLinks.forEach((l) => l.classList.remove('active'));
                 link.classList.add('active');
+            }, 20); // Adjust the timeout if needed (in ms)
             });
         });
 
