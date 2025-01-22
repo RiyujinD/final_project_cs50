@@ -2,6 +2,7 @@ import os
 import secrets
 import string
 import base64
+import time
 from flask import Flask, url_for, redirect, request, jsonify, session, render_template
 from flask_session import Session
 from dotenv import load_dotenv
@@ -14,15 +15,17 @@ load_dotenv()
 
 app = Flask(__name__)
 
-app_secret_key = os.getenv("APP_SECRET_KEY")
-
 # Configure session to use filesystem
 app.config["SESSION_TYPE"] = "filesystem"
 app.config["SESSION_PERMANENT"] = False
+app_secret_key = os.getenv("APP_STATE")
+if not app_secret_key:
+    raise ValueError("Missing APP_SECRET_KEY in the environment")
+
 Session(app)
 
 # CORS(app)
-#session['oauth_state'] = 
+
 
 
 # Load credentials and URLs from .env
@@ -32,16 +35,61 @@ REDIRECT_URI = os.getenv("REDIRECT_URI")
 AUTHORIZATION_URL = "https://accounts.spotify.com/authorize"
 TOKEN_URL = "https://accounts.spotify.com/api/token"
 
+if not CLIENT_ID or not CLIENT_SECRET or not REDIRECT_URI:
+    raise ValueError("Missing necessary environment variables (CLIENT_ID, CLIENT_SECRET, REDIRECT_URI)")
+
+
+
+# Base64 encoding of the client ID and secret
+auth_str = f"{CLIENT_ID}:{CLIENT_SECRET}"                   # Combine client_id and client_secret
+auth_bytes = auth_str.encode("utf-8")                       # Convert to bytes
+auth_base64 = base64.b64encode(auth_bytes).decode("utf-8")  # Base64 encode and decode to string
+
 
 def generate_secure_secret(length=16):
+    """Generate a random state string for security."""
     # Define the characters to use (A-Z, a-z, 0-9)
     characters = string.ascii_letters + string.digits
     # Randomly choose `length` characters from the pool
     return ''.join(secrets.choice(characters) for _ in range(length))
 
 
+def refresh_access_token():
+    """Refresh the access token when it has expired."""
+    if time.time() > session.get("token_expiry", 0):
+        refresh_token = session.get("refresh_token")
+        if not refresh_token:
+            return jsonify({"error": "No refresh token found"}), 401
+
+        auth_headers = {
+            "Authorization": "Basic " + auth_base64,
+            "Content-Type": "application/x-www-form-urlencoded"
+        }
+
+        auth_data = {
+            "grant_type": "refresh_token",
+            "refresh_token": refresh_token
+        }
+
+        response = requests.post(TOKEN_URL, data=auth_data, headers=auth_headers)
+
+        if response.status_code == 200:
+            token_data = response.json()
+            session["access_token"] = token_data.get("access_token")
+            session["expires_in"] = token_data.get("expires_in")
+            session["token_expiry"] = time.time() + token_data.get("expires_in")
+            return {"access_token": session["access_token"], "expires_in": session["expires_in"]}
+        else:
+            return jsonify({"error": "Failed to refresh token", "details": response.json()}), 500
+    else:
+        return jsonify({"message": "Token still valid"}), 200
+
+
+
+
 @app.route("/")
 def index():
+
     return render_template("index.html")
 
 
@@ -50,8 +98,16 @@ def login():
 
     state = generate_secure_secret() 
     session["oauth_state"] = state # Store the state generate above in the session 
-    scope = "user-read-private, user-modify-playback-state"
-
+    scope = (
+        "user-read-private, "
+        "playlist-read-private, "
+        "user-modify-playback-state, "
+        "user-read-playback-state, "
+        "playlist-read-collaborative, "
+        "user-library-read, "
+        "streaming"
+    )
+    
     # Spotify auth URL build
     auth_url = AUTHORIZATION_URL + "?" + urlencode({
         "response_type": "code",
@@ -78,15 +134,10 @@ def callback():
 
     # Check if state match stored one and if state not NULL
     if not state or state != stored_state:
-        return redirect(url_for("index") + "?" + urlencode({"error": "state_mismatch"})) # Build url and redirect to index page
+        return redirect(url_for("index", error="state_mismatch"))
 
     # Clear the stored state from the session
     session.pop("oauth_state", None)
-
-    # Base64 encoding of the client ID and secret and decoding back in utf-8
-    auth_str = f"{CLIENT_ID}:{CLIENT_SECRET}"  # Combine client_id and client_secret
-    auth_bytes = auth_str.encode("utf-8")     # Convert to bytes
-    auth_base64 = base64.b64encode(auth_bytes).decode("utf-8")  # Base64 encode and decode to string
 
     # Request access token  
     url = "https://accounts.spotify.com/api/token"  
@@ -113,6 +164,7 @@ def callback():
     session["access_token"] = token_data.get("access_token")
     session["refresh_token"] = token_data.get("refresh_token")
     session["expires_in"] = token_data.get("expires_in")
+    session["token_expiry"] = time.time() + token_data.get("expires_in")  # Set token expiry
 
     # Redirect to the main app or a success page
     return redirect(url_for("index"))
