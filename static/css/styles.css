@@ -186,6 +186,7 @@
         }
 
         .slider-nav a {
+            color: var(--bg-secondary);
             width: 0.5rem;
             height: 0.5rem;
             border-radius: 50%;
@@ -199,7 +200,7 @@
         }
 
         .slider-nav a.active {
-            background-color: #000; /* Highlight dot */
+            background-color: red; /* Highlight dot */
             opacity: 1; 
         }
 
@@ -296,7 +297,7 @@
             row-gap: 4rem;
             flex-wrap: wrap;
             text-align: left;
-            margin-left: clamp(6rem, 15%, 10rem); 
+            margin-left: clamp(4rem, 10%, 7rem); 
             padding-top: clamp(1.5rem, 5%, 4rem);
         }
 
