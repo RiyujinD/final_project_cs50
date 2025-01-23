@@ -200,7 +200,7 @@
         }
 
         .slider-nav a.active {
-            background-color: red; /* Highlight dot */
+            background-color: black; /* Highlight dot */
             opacity: 1; 
         }
 

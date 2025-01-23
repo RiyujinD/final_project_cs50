@@ -14,19 +14,13 @@ import requests
 load_dotenv()
 
 app = Flask(__name__)
-
-# Configure session to use filesystem
-app.config["SESSION_TYPE"] = "filesystem"
-app.config["SESSION_PERMANENT"] = False
-app_secret_key = os.getenv("APP_STATE")
-if not app_secret_key:
-    raise ValueError("Missing APP_SECRET_KEY in the environment")
-
 Session(app)
-
 # CORS(app)
 
-
+# Configure session
+app.config["SESSION_TYPE"] = "filesystem" 
+app.config["SESSION_PERMANENT"] = False
+app_secret_key = os.getenv("APP_STATE")
 
 # Load credentials and URLs from .env
 CLIENT_ID = os.getenv("CLIENT_ID")
@@ -35,19 +29,14 @@ REDIRECT_URI = os.getenv("REDIRECT_URI")
 AUTHORIZATION_URL = "https://accounts.spotify.com/authorize"
 TOKEN_URL = "https://accounts.spotify.com/api/token"
 
-if not CLIENT_ID or not CLIENT_SECRET or not REDIRECT_URI:
-    raise ValueError("Missing necessary environment variables (CLIENT_ID, CLIENT_SECRET, REDIRECT_URI)")
-
-
-
 # Base64 encoding of the client ID and secret
 auth_str = f"{CLIENT_ID}:{CLIENT_SECRET}"                   # Combine client_id and client_secret
 auth_bytes = auth_str.encode("utf-8")                       # Convert to bytes
 auth_base64 = base64.b64encode(auth_bytes).decode("utf-8")  # Base64 encode and decode to string
 
-
 def generate_secure_secret(length=16):
-    """Generate a random state string for security."""
+    """ Generate a random state string for security """
+
     # Define the characters to use (A-Z, a-z, 0-9)
     characters = string.ascii_letters + string.digits
     # Randomly choose `length` characters from the pool
@@ -55,7 +44,8 @@ def generate_secure_secret(length=16):
 
 
 def refresh_access_token():
-    """Refresh the access token when it has expired."""
+    """ Refresh the access token when it has expired """
+
     if time.time() > session.get("token_expiry", 0):
         refresh_token = session.get("refresh_token")
         if not refresh_token:
@@ -82,9 +72,10 @@ def refresh_access_token():
         else:
             return jsonify({"error": "Failed to refresh token", "details": response.json()}), 500
     else:
-        return jsonify({"message": "Token still valid"}), 200
-
-
+        return {
+            "access_token": session.get("access_token"),
+            "expires_in": session.get("expires_in")
+        }
 
 
 @app.route("/")
@@ -107,7 +98,7 @@ def login():
         "user-library-read, "
         "streaming"
     )
-    
+
     # Spotify auth URL build
     auth_url = AUTHORIZATION_URL + "?" + urlencode({
         "response_type": "code",
