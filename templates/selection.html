@@ -1,0 +1,11 @@
+{% extends "layout.html" %}
+
+{% block title %}Spotify{% endblock %}
+
+{% block head %}
+    <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+{% endblock %}
+
+{% block main %}
+        <img id="#playlist_image" src="{{ images_url }}">
+{% endblock %}

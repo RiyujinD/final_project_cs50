@@ -14,13 +14,15 @@ import requests
 load_dotenv()
 
 app = Flask(__name__)
-Session(app)
 # CORS(app)
 
 # Configure session
 app.config["SESSION_TYPE"] = "filesystem" 
 app.config["SESSION_PERMANENT"] = False
-app_secret_key = os.getenv("APP_STATE")
+app.config["SESSION_FILE_DIR"] = "./.flask_session/"
+app.secret_key = os.getenv("APP_STATE", "default_secret_key")
+Session(app)
+
 
 # Load credentials and URLs from .env
 CLIENT_ID = os.getenv("CLIENT_ID")
@@ -58,37 +60,32 @@ def get_auth_headers():
 
 def refresh_access_token():
     """ Refresh the access token when it has expired """
+    refresh_token = session.get("refresh_token")
+    if not refresh_token:
+        return {"error": "No refresh token found", "status": 401}
 
-    if time.time() > session.get("token_expiry", 0):
-        refresh_token = session.get("refresh_token")
-        if not refresh_token:
-            return {"error": "No refresh token found", "status": 401}
+    auth_headers = {
+        "Authorization": "Basic " + auth_base64,
+        "Content-Type": "application/x-www-form-urlencoded"
+    }
 
-        auth_headers = {
-            "Authorization": "Basic " + auth_base64,
-            "Content-Type": "application/x-www-form-urlencoded"
-        }
+    auth_data = {
+        "grant_type": "refresh_token",
+        "refresh_token": refresh_token
+    }
 
-        auth_data = {
-            "grant_type": "refresh_token",
-            "refresh_token": refresh_token
-        }
+    response = requests.post(TOKEN_URL, data=auth_data, headers=auth_headers)
 
-        response = requests.post(TOKEN_URL, data=auth_data, headers=auth_headers)
-
-        if response.status_code == 200:
-            token_data = response.json()
-            session["access_token"] = token_data.get("access_token")
-            session["expires_in"] = token_data.get("expires_in")
-            session["token_expiry"] = time.time() + token_data.get("expires_in")
-            return {"access_token": session["access_token"], "expires_in": session["expires_in"]}
-        else:
-            return jsonify({"error": "Failed to refresh token", "details": response.json()}), 500
+    if response.status_code == 200:
+        token_data = response.json()
+        new_access_token = token_data.get("access_token")
+        session["access_token"] = new_access_token  # Store the refreshed access token
+        session["expires_in"] = token_data.get("expires_in")
+        session["token_expiry"] = time.time() + token_data.get("expires_in")  # Update expiry time
+        return {"access_token": new_access_token, "expires_in": session["expires_in"], "refreshed": True}
     else:
-        return {
-            "access_token": session.get("access_token"),
-            "expires_in": session.get("expires_in")
-        }
+        return {"error": "Failed to refresh token", "details": response.json(), "status": 500}
+
     
 
 def get_user_playlist():
@@ -103,7 +100,7 @@ def get_user_playlist():
         if response.status_code != 200:
             return {"error": "Failed to fetch playlists", "details": response.text}
 
-        data = response.json()
+        data = response.json()  
         playlists.extend(data.get("items", []))  # Add playlists from the current page
         url = data.get("next")  # Get the URL for the next page
     
@@ -189,7 +186,42 @@ def callback():
     session["token_expiry"] = time.time() + token_data.get("expires_in")  # Set token expiry
 
     # Redirect to the main app or a success page
-    return redirect(url_for("index"))
+    return redirect(url_for("selection"))
+
+
+@app.route("/selection")
+def selection():
+    """ return playlist/song of user for him to select one"""
+
+    # Check if token has expired
+    if time.time() > session.get("token_expiry", 0):
+        # refresh if need
+        token_data = refresh_access_token()
+        if "error" in token_data:
+            return jsonify(token_data), token_data.get("status", 500)
+        
+        access_token = token_data["access_token"]
+        # Debug print 
+        print(access_token)
+
+    else:
+        access_token = session.get("access_token")
+
+    playlists = get_user_playlist()
+    if not playlists:
+        return {"error": "No playlists found"}  
+    
+    first_playlist = playlists[0]
+    image = first_playlist.get("images", [])
+    if not image:
+        return {"error": "No images available for this playlist"}
+    
+    # Get url of the first playlist image
+    images_url = image[0].get("url", "") 
+    print(images_url)
+
+    return render_template("selection.html", images_url=images_url)
+
 
 if __name__ == "__main__":
     app.run(debug=True)
