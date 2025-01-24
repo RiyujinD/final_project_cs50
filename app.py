@@ -34,6 +34,7 @@ auth_str = f"{CLIENT_ID}:{CLIENT_SECRET}"                   # Combine client_id 
 auth_bytes = auth_str.encode("utf-8")                       # Convert to bytes
 auth_base64 = base64.b64encode(auth_bytes).decode("utf-8")  # Base64 encode and decode to string
 
+
 def generate_secure_secret(length=16):
     """ Generate a random state string for security """
 
@@ -43,13 +44,25 @@ def generate_secure_secret(length=16):
     return ''.join(secrets.choice(characters) for _ in range(length))
 
 
+def get_auth_headers():
+    """ Build the headers for API calls (spotify)"""
+
+    access_token = session["access_token"]
+    if not access_token:
+        return {"error": "Access token not available"}, 401  # Or handle it gracefully
+
+    return {
+        "Authorization": f"Bearer {access_token}"
+    }
+
+
 def refresh_access_token():
     """ Refresh the access token when it has expired """
 
     if time.time() > session.get("token_expiry", 0):
         refresh_token = session.get("refresh_token")
         if not refresh_token:
-            return jsonify({"error": "No refresh token found"}), 401
+            return {"error": "No refresh token found", "status": 401}
 
         auth_headers = {
             "Authorization": "Basic " + auth_base64,
@@ -76,7 +89,25 @@ def refresh_access_token():
             "access_token": session.get("access_token"),
             "expires_in": session.get("expires_in")
         }
+    
 
+def get_user_playlist():
+    """ Get users playlists (in multiple 'page' if user has many)"""
+    
+    url = "https://api.spotify.com/v1/me/playlists"
+    headers = get_auth_headers()
+    
+    playlists = []
+    while url:
+        response = requests.get(url, headers=headers)
+        if response.status_code != 200:
+            return {"error": "Failed to fetch playlists", "details": response.text}
+
+        data = response.json()
+        playlists.extend(data.get("items", []))  # Add playlists from the current page
+        url = data.get("next")  # Get the URL for the next page
+    
+    return playlists
 
 @app.route("/")
 def index():
