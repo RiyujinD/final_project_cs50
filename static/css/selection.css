@@ -1,0 +1,138 @@
+        /* Set some variable and preset to use around the all app */
+        :root {
+            font-family: 'Montserrat', sans-serif;
+            --text-primary: rgba(204, 184, 184, 0.7);
+            --text-secondary: #5d9f80d3;
+            --bg-primary:  #010409;
+            --bg-secondary:  #0D1117;
+        }
+
+        /* Global Styles */
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+
+        hr {
+            margin: 5% 0;
+            margin-inline: auto; 
+            width: 50%;
+            background-color: #1DB954; 
+            border: none; 
+            height: 0.1rem; 
+            opacity: 0.1;
+        }
+
+        /* prevent unexpected behaviour with the carrousel main page*/ 
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            color: var(--text-secondary);
+        }
+
+        /* set margin of size of navbar*/
+        main {
+            height: 100vh;
+            margin-top: 5.5rem;
+            background-color: var(--bg-secondary);  
+        }
+
+        /* Change width of the default scrollbar */
+        body::-webkit-scrollbar {
+            width: 1rem;
+        }
+         /* Change the color of the track */
+        body::-webkit-scrollbar-track {
+            background: #1e1e24;
+        }
+         /* Change the thumb (scrollable part */
+        body::-webkit-scrollbar-thumb {
+            background: rgba(116, 105, 105, 0.3);
+            border-radius: 10px;
+        }
+
+
+
+         /* Set a fix navbar with bottom border  */
+        .navbar {
+            height: 5.5rem;
+            width: 100%;
+            top: 0;
+            position: fixed;
+            background-color: var(--bg-primary);
+            border-bottom: 0.1rem solid rgba(142, 142, 142, 0.33);
+            display: flex; 
+            align-items: flex-start; 
+            padding-top: 1rem;
+            transition: height 0.4s ease-in, opacity ease 250ms;
+            overflow: hidden;
+            z-index: 1000000;
+        }
+
+         /* remove decoration set the item to be square size 4rem navbar is 4rem*/
+        .nav-link {
+            text-decoration: none;
+            width: 5.5rem;
+            color: var(--text-primary);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .nav-item:nth-child(1), .nav-item:nth-child(2) {
+            margin: 0 1%;
+        }
+
+
+        .nav-item {
+            height: 100%;
+        }
+        
+        .nav-icon {
+            font-size: 3rem;
+            min-height: 3rem;
+            color: var(--text-secondary);
+        }
+
+        .navbar-nav {
+            list-style: none;
+            width: 100%;
+            display: flex;
+            flex-direction: row-reverse;  /* Reverse direction of the row  */
+        }
+
+        /* Push last item to the opposite side by settings his margin to the max */
+        .nav-item:last-child {
+            margin-right: auto;
+        }
+
+        /* Display thhe text only after hover */
+        .link-text {
+            display: none;
+        }
+
+        /* When hover the height of navbar change and the text is display below the icon*/
+        .navbar:hover {
+            height: 7.5rem;
+            border-bottom: 0.1rem solid rgba(255, 255, 255, 0.4);
+        }
+
+        .navbar:hover .link-text {
+            margin-top: 0.59rem;
+            display: block;
+        }      
+
+        .playlists {
+            margin-top: 20rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #h1_playlist {
+            padding-top: 150px;
+            text-align: center;
+        }
