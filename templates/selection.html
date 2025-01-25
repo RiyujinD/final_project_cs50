@@ -3,9 +3,19 @@
 {% block title %}Spotify{% endblock %}
 
 {% block head %}
-    <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+    <!-- Link css file -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/selection.css') }}">
 {% endblock %}
 
 {% block main %}
-        <img id="playlist_image" src="{{ images_url }}">
+
+        <h1 id="h1_playlist">User's Playlists</h1>
+
+        <div class="coverflow_playlist">
+                {% for image_url in playlist_images %}
+                        <div class="playlist_image">
+                                <img id="images_playlist" src="{{ image_url }}" alt="Playlist Image" style="width:200px; height:auto;">
+                        </div>
+                {% endfor %}
+        </div>
 {% endblock %}

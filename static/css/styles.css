@@ -31,12 +31,12 @@
 
         body {
             color: var(--text-secondary);
-            background-color: var(--bg-secondary);  /* change to a nice animated background subtil ? */
         }
 
         /* set margin of size of navbar*/
         main {
             margin-top: 5.5rem;
+            background-color: var(--bg-secondary);  
         }
 
         /* Change width of the default scrollbar */
@@ -66,7 +66,7 @@
             display: flex; 
             align-items: flex-start; 
             padding-top: 1rem;
-            transition: height 0.4s ease-in, opacity ease 250ms;
+            transition: height 0.25s ease-in, opacity ease 250ms;
             overflow: hidden;
             z-index: 1000000;
         }
@@ -614,8 +614,9 @@
         }
 
         #playlist_image {
-            width: 100%;   /* Ensure the image stretches across the entire width */
-            height: auto;  /* Maintain aspect ratio */
-            object-fit: cover; /* Ensures the image fills the space, cropping if necessary */
-            display: block;  /* Remove any space below the image */        
+            max-width: 480px;
+            height: auto;
+            display: flex;
+            justify-content: center;
+            object-fit: cover;
         }
