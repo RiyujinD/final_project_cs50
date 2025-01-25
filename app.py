@@ -17,14 +17,14 @@ app = Flask(__name__)
 # CORS(app)
 
 # Configure session
-app.config["SESSION_TYPE"] = "filesystem" 
-app.config["SESSION_PERMANENT"] = False
-app.config["SESSION_FILE_DIR"] = "./.flask_session/"
-app.secret_key = os.getenv("APP_STATE", "default_secret_key")
-Session(app)
+app.config["SESSION_TYPE"] = "filesystem"  # Store session data in a folder on the server  
+app.config["SESSION_PERMANENT"] = False  # Session data expire when browser is closed
+app.config["SESSION_FILE_DIR"] = "./.flask_session/"  # Folder to store session data
+app.permanent_session_lifetime = 0 # Force browser to delete cache when browser is closed
+app.secret_key = os.getenv("APP_STATE", secrets.token_hex(32))  # Secret key for session data
+Session(app) 
 
-
-# Load credentials and URLs from .env
+# Load storedcredentials and URLs from .env
 CLIENT_ID = os.getenv("CLIENT_ID")
 CLIENT_SECRET = os.getenv("CLIENT_SECRET")
 REDIRECT_URI = os.getenv("REDIRECT_URI")
@@ -61,15 +61,16 @@ def refresh_access_token():
     }
 
     response = requests.post(TOKEN_URL, data=auth_data, headers=auth_headers)
-    if response.status_code == 200:
-        token_data = response.json()
-        session["access_token"] = token_data.get("access_token")
-        session["expires_in"] = token_data.get("expires_in")
-        session["token_expiry"] = time.time() + token_data.get("expires_in") # time.time() give 'the current time' + the expiry time of token, later we check if the current time has pass this time
-        return {"access_token": session["access_token"], "expires_in": session["expires_in"], "refreshed": True}
-    else:
+    if response.status_code != 200:
         return {"error": "Failed to refresh token", "details": response.json(), "status": 500}
+    
+    token_data = response.json()
+    session["access_token"] = token_data.get("access_token")
+    session["expires_in"] = token_data.get("expires_in")
+    session["token_expiry"] = time.time() + token_data.get("expires_in") # time.time() give 'the current time' + the expiry time of token, later we check if the current time has pass this time
+    return {"access_token": session["access_token"], "expires_in": session["expires_in"], "refreshed": True}
 
+        
 
 def get_auth_headers():
     """ Build the headers for API calls (spotify)"""
@@ -111,8 +112,23 @@ def get_user_playlist():
 
 
 @app.route("/")
+def main():
+    # Check if user is authenticated if so redirect to selection page directly
+    if session.get("is_authenticated", False): 
+        return redirect(url_for("selection"))
+    else:
+        return redirect(url_for("index"))
+
+@app.route("/index")
 def index():
     return render_template("index.html")
+
+@app.route("/logout")
+def logout():
+    """ Clear session """
+    session.clear()  # Clear the entire session
+    session["is_authenticated"] = False # Set the user as not authenticated
+    return redirect(url_for("index"))  # Redirect to the homepage
 
 
 @app.route("/login")
@@ -180,12 +196,16 @@ def callback():
     session["refresh_token"] = token_data.get("refresh_token")
     session["expires_in"] = token_data.get("expires_in")
     session["token_expiry"] = time.time() + token_data.get("expires_in") # Current time + expiry token time
+
+    # Set the user as authenticated
+    session["is_authenticated"] = True
+
     return redirect(url_for("selection"))
 
 
 @app.route("/selection")
 def selection():
-    """ return playlist/song of user for him to select one"""
+    """ Return playlists/songs of the user for selection """
 
     playlists = get_user_playlist()
     if isinstance(playlists, tuple):  
@@ -194,14 +214,20 @@ def selection():
     if not playlists:
         return {"error": "No playlists found"}
     
-    first_playlist = playlists[0]
-    image = first_playlist.get("images", [])
-    if not image:
-        return {"error": "No images available for this playlist"}
-    
-    # Get url of the first playlist image
-    images_url = image[0].get("url", "")
-    return render_template("selection.html", images_url=images_url)
+    # Extract all playlist images
+    playlist_images = []
+    for playlist in playlists:
+        images = playlist.get("images", [])
+        if images:
+            # Append the URL of the first image for each playlist
+            playlist_images.append(images[0].get("url", ""))
+
+    if not playlist_images:
+        return {"error": "No playlist images available"}
+
+    # Pass all playlist images to the template
+    return render_template("selection.html", playlist_images=playlist_images)
+
 
 if __name__ == "__main__":
     app.run(debug=True)
