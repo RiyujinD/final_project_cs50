@@ -39,24 +39,10 @@ auth_base64 = base64.b64encode(auth_bytes).decode("utf-8")  # Base64 encode and 
 
 def generate_secure_secret(length=16):
     """ Generate a random state string for security """
-
     # Define the characters to use (A-Z, a-z, 0-9)
     characters = string.ascii_letters + string.digits
-    # Randomly choose `length` characters from the pool
+    # Randomly choose char to use
     return ''.join(secrets.choice(characters) for _ in range(length))
-
-
-def get_auth_headers():
-    """ Build the headers for API calls (spotify)"""
-
-    access_token = session["access_token"]
-    if not access_token:
-        return {"error": "Access token not available"}, 401  # Or handle it gracefully
-
-    return {
-        "Authorization": f"Bearer {access_token}"
-    }
-
 
 def refresh_access_token():
     """ Refresh the access token when it has expired """
@@ -75,24 +61,42 @@ def refresh_access_token():
     }
 
     response = requests.post(TOKEN_URL, data=auth_data, headers=auth_headers)
-
     if response.status_code == 200:
         token_data = response.json()
-        new_access_token = token_data.get("access_token")
-        session["access_token"] = new_access_token  # Store the refreshed access token
+        session["access_token"] = token_data.get("access_token")
         session["expires_in"] = token_data.get("expires_in")
-        session["token_expiry"] = time.time() + token_data.get("expires_in")  # Update expiry time
-        return {"access_token": new_access_token, "expires_in": session["expires_in"], "refreshed": True}
+        session["token_expiry"] = time.time() + token_data.get("expires_in") # time.time() give 'the current time' + the expiry time of token, later we check if the current time has pass this time
+        return {"access_token": session["access_token"], "expires_in": session["expires_in"], "refreshed": True}
     else:
         return {"error": "Failed to refresh token", "details": response.json(), "status": 500}
 
-    
+
+def get_auth_headers():
+    """ Build the headers for API calls (spotify)"""
+
+    # Check if token need to be refresh before making the call
+    if time.time() > session.get("token_expiry", 0):
+        token_data = refresh_access_token() # Token has expired
+        if "error" in token_data:
+            raise RuntimeError("Failed to refresh access token.")
+        
+    access_token = session.get("access_token")
+    if not access_token:
+        raise RuntimeError("Access token not available.")
+
+    return {
+        "Authorization": f"Bearer {access_token}"
+    }
+
 
 def get_user_playlist():
     """ Get users playlists (in multiple 'page' if user has many)"""
     
     url = "https://api.spotify.com/v1/me/playlists"
-    headers = get_auth_headers()
+    try:
+        headers = get_auth_headers()
+    except RuntimeError as e:
+        return {"error": str(e)}, 401
     
     playlists = []
     while url:
@@ -103,31 +107,30 @@ def get_user_playlist():
         data = response.json()  
         playlists.extend(data.get("items", []))  # Add playlists from the current page
         url = data.get("next")  # Get the URL for the next page
-    
     return playlists
+
 
 @app.route("/")
 def index():
-
     return render_template("index.html")
 
 
 @app.route("/login")
 def login():
+    """Initiate Spotify OAuth flow."""
 
     state = generate_secure_secret() 
     session["oauth_state"] = state # Store the state generate above in the session 
-    scope = (
-        "user-read-private, "
-        "playlist-read-private, "
-        "user-modify-playback-state, "
-        "user-read-playback-state, "
-        "playlist-read-collaborative, "
-        "user-library-read, "
+    scope = " ".join([
+        "user-read-private",
+        "playlist-read-private",
+        "user-modify-playback-state",
+        "user-read-playback-state",
+        "playlist-read-collaborative",
+        "user-library-read",
         "streaming"
-    )
+    ])
 
-    # Spotify auth URL build
     auth_url = AUTHORIZATION_URL + "?" + urlencode({
         "response_type": "code",
         "client_id": CLIENT_ID,
@@ -136,19 +139,17 @@ def login():
         "state": state,
         "show_dialog": "True"
     })
-
     return redirect(auth_url)
 
 
 
 @app.route("/callback")
 def callback():
+    """Handle the Spotify OAuth callback."""
 
     # Get the auth code and state from uri
     code = request.args.get("code")
     state = request.args.get("state")
-
-    # Retrieve the stored state from the session
     stored_state = session.get("oauth_state")
 
     # Check if state match stored one and if state not NULL
@@ -157,9 +158,7 @@ def callback():
 
     # Clear the stored state from the session
     session.pop("oauth_state", None)
-
-    # Request access token  
-    url = "https://accounts.spotify.com/api/token"  
+    
     auth_headers = {
         "Authorization": "Basic " + auth_base64,
         "Content-Type": "application/x-www-form-urlencoded"
@@ -172,20 +171,15 @@ def callback():
     }
 
     # Make the request for a token to spotify's token endpoint
-    response = requests.post(url, data=auth_data, headers=auth_headers)
+    response = requests.post(TOKEN_URL, data=auth_data, headers=auth_headers)
     if response.status_code != 200:
         return jsonify({"error": "Failed to fetch tokens", "details": response.json()})
     
-    # Parse the response JSON
     token_data = response.json()
-
-    # Store the tokens in the session or handle them as needed
     session["access_token"] = token_data.get("access_token")
     session["refresh_token"] = token_data.get("refresh_token")
     session["expires_in"] = token_data.get("expires_in")
-    session["token_expiry"] = time.time() + token_data.get("expires_in")  # Set token expiry
-
-    # Redirect to the main app or a success page
+    session["token_expiry"] = time.time() + token_data.get("expires_in") # Current time + expiry token time
     return redirect(url_for("selection"))
 
 
@@ -193,23 +187,12 @@ def callback():
 def selection():
     """ return playlist/song of user for him to select one"""
 
-    # Check if token has expired
-    if time.time() > session.get("token_expiry", 0):
-        # refresh if need
-        token_data = refresh_access_token()
-        if "error" in token_data:
-            return jsonify(token_data), token_data.get("status", 500)
-        
-        access_token = token_data["access_token"]
-        # Debug print 
-        print(access_token)
-
-    else:
-        access_token = session.get("access_token")
-
     playlists = get_user_playlist()
+    if isinstance(playlists, tuple):  
+        return playlists
+
     if not playlists:
-        return {"error": "No playlists found"}  
+        return {"error": "No playlists found"}
     
     first_playlist = playlists[0]
     image = first_playlist.get("images", [])
@@ -217,11 +200,8 @@ def selection():
         return {"error": "No images available for this playlist"}
     
     # Get url of the first playlist image
-    images_url = image[0].get("url", "") 
-    print(images_url)
-
+    images_url = image[0].get("url", "")
     return render_template("selection.html", images_url=images_url)
-
 
 if __name__ == "__main__":
     app.run(debug=True)
