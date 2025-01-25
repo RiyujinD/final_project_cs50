@@ -113,12 +113,15 @@ def get_user_playlist():
 
 @app.route("/")
 def main():
+
+
+    
     # Check if user is authenticated if so redirect to selection page directly
     if session.get("is_authenticated", False): 
         return redirect(url_for("selection"))
     else:
         return redirect(url_for("index"))
-
+    
 @app.route("/index")
 def index():
     return render_template("index.html")
