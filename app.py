@@ -24,6 +24,10 @@ app.permanent_session_lifetime = 0 # Force browser to delete cache when browser 
 app.secret_key = os.getenv("APP_STATE", secrets.token_hex(32))  # Secret key for session data
 Session(app) 
 
+app.config.update({
+    "TEMPLATES_AUTO_RELOAD": True,  # Reload templates when they are changed
+})
+
 # Load storedcredentials and URLs from .env
 CLIENT_ID = os.getenv("CLIENT_ID")
 CLIENT_SECRET = os.getenv("CLIENT_SECRET")
