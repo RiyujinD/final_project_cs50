@@ -138,7 +138,7 @@ def logout():
 @app.route("/login")
 def login():
     """Initiate Spotify OAuth flow."""
-
+    
     state = generate_secure_secret() 
     session["oauth_state"] = state # Store the state generate above in the session 
     scope = " ".join([
