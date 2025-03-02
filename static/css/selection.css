@@ -1,413 +1,282 @@
-        /* Set some variable and preset to use around the all app */
-        :root {
-            font-family: 'Montserrat', sans-serif;
-            --text-primary: rgba(204, 184, 184, 0.7);
-            --text-secondary: #5d9f80d3;
-            --bg-primary:  #010409;
-            --bg-secondary:  #0D1117;
-        }
 
-        /* Global Styles */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+    body {
+        color: #5d9f80d3;/*var(--text-secondary);*/
+    }
 
-        /* Change width of the default scrollbar */
-        body::-webkit-scrollbar {
-            width: 1rem;
-        }
-         /* Change the color of the track */
-        body::-webkit-scrollbar-track {
-            background: #1e1e24;
-        }
-         /* Change the thumb (scrollable part */
-        body::-webkit-scrollbar-thumb {
-            background: rgba(116, 105, 105, 0.3);
-            border-radius: 10px;
-        }
-
-
-        hr {
-            margin: 5% 0;
-            margin-inline: auto; 
-            width: 50%;
-            background-color: #1DB954; 
-            border: none; 
-            height: 0.1rem; 
-            opacity: 0.1;
-        }
-
-
-        
-        body {
-            width: 100%;
-            height: auto;
-            /* color: var(--text-secondary); */
-            color: #fff;
-            overflow-x: hidden;
-            background-color: var(--bg-secondary);  
-        }
-
-        main {
-            padding-top: 5.5rem;
-            height: 100%;
-            width: 100%;
-        }
-
-
-         /* Set a fix navbar with bottom border  */
-        .navbar {
-            height: 5.5rem;
-            width: 100%;
-            top: 0;
-            position: fixed;
-            background-color: var(--bg-primary);
-            border-bottom: 0.1rem solid rgba(8, 8, 8, 0.33);
-            display: flex; 
-            align-items: flex-start; 
-            padding-top: 1rem;
-            transition: height 0.4s ease-in, opacity ease 250ms;
-            overflow: hidden;
-            z-index: 1000000;
-        }
-
-         /* remove decoration set the item to be square size 4rem navbar is 4rem*/
-        .nav-link {
-            text-decoration: none;
-            width: 5.5rem;
-            color: var(--text-primary);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .nav-item:nth-child(1), .nav-item:nth-child(2) {
-            margin: 0 1%;
-        }
-
-        .nav-item {
-            height: 100%;
-        }
-        
-        .nav-icon {
-            font-size: 3rem;
-            min-height: 3rem;
-            color: var(--text-secondary);
-        }
-
-        .navbar-nav {
-            list-style: none;
-            width: 100%;
-            display: flex;
-            flex-direction: row-reverse;  /* Reverse direction of the row  */
-        }
-
-        /* Push last item to the opposite side by settings his margin to the max */
-        .nav-item:last-child {
-            margin-right: auto;
-        }
-
-        /* Display thhe text only after hover */
-        .link-text {
-            display: none;
-        }
-
-        /* When hover the height of navbar change and the text is display below the icon*/
-        .navbar:hover {
-            height: 7.5rem;
-            border-bottom: 0.1rem solid rgba(255, 255, 255, 0.4);
-        }
-
-        .navbar:hover .link-text {
-            margin-top: 0.59rem;
-            display: block;
-        }       
-
-
-        .user_profile_wrapper {
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          width: 100%;
-          height: auto; /* Adjust as needed */
-        }
-
-        /* Profile section layout */
-        .user_profile_section {
-          width: 80%;  
-          height: auto;
-          display: flex;
-          align-items: center; 
-          justify-content: center;
-          margin-top: 5rem;
-        }
-
-        /* Image section */
-        .spotify_pp_wrapper {
-          width: clamp(10rem, 50%, 15rem); 
-          min-width: 10rem;
-          aspect-ratio: 1 / 1; 
-          border-radius: 50%; 
-          border: solid 3px rgba(240, 240, 240, 0.7); 
-          overflow: hidden;
-
-        }
-
-        .spotify_pp_wrapper img {
-          width: 100%;
-          height: 100%;
-          object-fit: cover; 
-          border-radius: inherit; 
-        }
-
-        .search-form {
-          margin-left: 10rem;
-          height: 3.5rem;
-          width: min(35%, 35rem);
-        }
-
-        .search-container {
-          position: relative;
-          width: 100%;
-          height: 100%;
-        }
-
-        .ryuji_button {
-          width: 100%;
-          height: 100%;
-          border-radius: 0.5em;
-          padding: 0 3.33rem; 
-          background-color: rgba(0, 0, 0, 0.3);
-          font-size: 1rem;
-          border: 0.13rem solid rgba(0, 155, 155, 0.7); 
-          outline-color: transparent;
-          color: white;
-        }
-
-        .ryuji_button:focus {
-          outline: 0.155rem solid rgba(0, 155, 155, 0.7);
-          box-shadow: 0 0 1rem rgba(0, 155, 155, 0.8); 
-          border: none;
-        }
-
-        #search-icon {
-          position: absolute;
-          top: 50%;
-          left: 1rem; 
-          transform: translateY(-50%); /* Flip on X axis, center Y axis */
-          transform-origin: center;
-          width: 1.5rem;
-          height: 1.5rem;
-          color: rgba(255, 255, 255, 0.3);
-          pointer-events: none;
-          transition: color 0.2s, filter 0.2s; /* Smooth transition for glow effect */
-        }
-
-        #clear_button {
-          position: absolute;
-          top: 50%;
-          right: 1rem; 
-          transform: translateY(-50%); /* Flip on X axis, center Y axis */
-          transform-origin: center;
-          width: 2rem;
-          height: 2rem;
-          opacity: 0.6;
-          cursor: pointer; /* Changes cursor to indicate it's clickable */
-        }
-
-        /* Hover Effect */
-        #clear_button:hover {
-          opacity: 0.9; /* Makes it more visible when hovered */
-        }
-
-        .ryuji_button:focus + #search-icon {
-          color: rgba(0, 255, 255, 0.8); 
-          filter: drop-shadow(0px 0px 10px rgba(0, 255, 255, 0.8));
-        }
-
-        .greetings_user {
-          font-family: "Gill Sans", sans-serif;
-          text-align: left;
-          margin-left: 2rem; 
-          letter-spacing: 0.3rem;
-          color: rgba(255, 255, 255, 0.8); 
-        }
-
-        .greetings_user > h1 {
-          transform: translateX(-0.2rem); /* Maintain proper alignment with the different sized h2 element */
-          font-size: clamp(3rem, 4rem, 4rem);
-          color: #1DB954;
-        }
-
-      .greetings_user > h2 {
-        font-size: clamp(2rem, 2rem, 3rem);
-        
-      }
-
-
-      @media screen and (max-width: 1000px) {
-          /* 100vw for better spacing between elements */
-        .user_profile_section {
-          width: 95%;
-        }
-      }
-
-      @media screen and (max-width: 800px) {
-
-        .user_profile_section {
-          flex-direction: column;
-          align-items: center; 
-          justify-content: center; 
-          flex-wrap: wrap; /* Allows elements to move to the next line */
-          gap: 2rem;
-        }
-        
-        .spotify_pp_wrapper {
-          padding: 0;
-          margin: 0;
-        }
-
-        .search-form {
-          width: min(80%, 20rem); /* Ensures it doesn't exceed 90% of the screen width */
-          margin: 0;
-          order: 1; /* Push the form below */
-          margin-top: 2rem;
-        }
-        
-        .greetings_user {
-          width: 100%;
-          margin: 0;  
-          padding: 0;
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          align-items: center;
-          transform: translateX(0);
-        }
-      }
-
-      /* Set the style of the music box grid */
-      .centered_wrapper_musicBox {
-        width: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
+      /* Profile section layout */  
+    .user_profile_wrapper {
+      width: 100%;
+      height: max-content;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      margin-top: 3rem;
+      overflow: hidden;
+    }
+    
+    .user_profile_section {
+      width: 35rem;  
+      height: max-content;
+      display: flex;
+      margin-left: 25%;
+    }
       
-      /* music box section Section */
-      .wrapper_containerPas {
-        height: 25rem;
-        width: 100%;
-        margin-top: 5%;
-      }
-      
-      /* Grid Layout */
-      .grid_pas {
-        margin-inline: auto;
-        width: 70%;
-        height: 100%;
+    .greetings_user {
+      display: flex;
+      flex-direction: column;
+      align-items: start;
+      justify-content: center;
+      font-family: "Gill Sans", sans-serif;
+      text-align: left;
+      margin-left: 2rem;
+      color: rgba(255, 255, 255, 0.8); 
+    }
+    
+    .greetings_user h1 {
+      font-size: 4rem;
+      color: #1DB954;
+    }
+    
+    .greetings_user h2 {
+      font-size: clamp(2rem, 2rem, 3rem);
+    }
+    
+    /* Image section */
+    .spotify_pp_wrapper {
+      width: clamp(10rem, 50%, 15rem); 
+      min-width: 10rem;
+      aspect-ratio: 1 / 1; 
+      border-radius: 50%; 
+      border: 0.2rem solid rgba(0, 155, 155, 0.7); 
+      overflow: hidden;
+    }
+    
+    .spotify_pp_wrapper img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover; 
+      border-radius: inherit; 
+    }
+    
+    .search-form {
+      position: relative;
+      height: 3.3rem;
+      width: 25rem;
+    }
+       
+    .ryuji_button {
+      width: 100%;
+      height: 100%;
+      border-radius: 0.5em;
+      padding: 0 4rem; 
+      background-color: rgba(0, 0, 0, 0.3);
+      font-size: 1rem;
+      border: 0.13rem solid rgba(0, 155, 155, 0.7); 
+      outline-color: transparent;
+      color: white;
+    }
+    
+    .ryuji_button:focus {
+      outline: 0.155rem solid rgba(0, 155, 155, 0.7);
+      box-shadow: 0 0 1rem rgba(0, 155, 155, 0.8); 
+      border: none;
+    }
+    
+    #search-icon {
+      position: absolute;
+      top: 50%;
+      left: 1rem; 
+      transform: translateY(-50%); /* Flip on X axis, center Y axis */
+      transform-origin: center;
+      width: 1.5rem;
+      height: 1.5rem;
+      color: rgba(255, 255, 255, 0.3);
+      pointer-events: none;
+      transition: color 0.2s, filter 0.2s; /* Smooth transition for glow effect */
+    }
+    
+    #clear_button {
+      position: absolute;
+      top: 50%;
+      right: 1rem; 
+      transform: translateY(-50%); /* Flip on X axis, center Y axis */
+      transform-origin: center;
+      width: 2rem;
+      height: 2rem;
+      opacity: 0.6;
+      color: rgba(255, 255, 255, 0.5);
+      cursor: pointer; /* Changes cursor to indicate it's clickable */
+    }
+    
+    /* Hover Effect */
+    #clear_button:hover {
+      opacity: 0.9; /* Makes it more visible when hovered */
+    }
+    
+    .ryuji_button:focus + #search-icon {
+      color: rgba(0, 255, 255, 0.8); 
+      filter: drop-shadow(0px 0px 10px rgba(0, 255, 255, 0.8));
+    }
+    
+    
+
+
+  @media screen and (max-width: 1000px) {
+      /* 100vw for better spacing between elements */
+    .user_profile_section {
+      width: 95%;
+    }
+  }
+
+  @media screen and (max-width: 800px) {
+
+    .user_profile_section {
+      flex-direction: column;
+      align-items: center; 
+      justify-content: center; 
+      flex-wrap: wrap; /* Allows elements to move to the next line */
+      gap: 2rem;
+    }
+    
+    .spotify_pp_wrapper {
+      padding: 0;
+      margin: 0;
+    }
+
+    .search-form {
+      width: min(80%, 20rem); /* Ensures it doesn't exceed 90% of the screen width */
+      margin: 0;
+      order: 1; /* Push the form below */
+      margin-top: 2rem;
+    }
+    
+    .greetings_user {
+      width: 100%;
+      margin: 0;  
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      transform: translateX(0);
+    }
+  }
+
+  /* Set the style of the music box grid */
+  .centered_wrapper_musicBox {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  /* music box section Section */
+  .wrapper_containerPas {
+    height: 35rem;
+    width: 100%;
+    margin-top: 7rem;
+  }
+  
+  /* Grid Layout */
+  .grid_pas {
+    margin-inline: auto;
+    width: 60%;
+    height: 100%;
+    display: grid;
+    column-gap: 3rem;
+    grid-template-columns: repeat(auto-fit, minmax(2rem, 1fr)); 
+    grid-template-rows: repeat(auto-fit, minmax(1rem, 1fr)); 
+  }
+  
+
+  .music_box {
+    position: relative;
+    width: 100%;
+    min-width: 10rem;
+    height: 60%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 2rem;
+    align-self: center;
+    border: 0.17rem solid hsla(210, 30%, 50%, 0.263); 
+    box-shadow: 0.6rem 0.6rem 1rem rgba(0, 155, 155, 0.153), inset 0 0 0.5rem rgba(0, 155, 155, 0.5);
+    cursor: pointer;
+    overflow: hidden;
+    transition: transform 0.3s;
+  }
+
+  .music_box:hover {
+    transform: translateY(-0.5rem);
+  }
+  
+  .music_box img {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 1;
+    border-radius: inherit;
+  }
+  
+  /* Text inside carts */
+  .music_box .text {
+    text-align: center;
+    position: absolute;
+    color: white;
+    font-size: 2rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+    pointer-events: none;
+  }
+  
+  /* Grid Positioning */
+  .card1 { grid-column: 1 / 2; grid-row: 1 / 4; }
+  .card2 { grid-column: 2 / 4; grid-row: 1 / 3; }
+  .card3 { grid-column: 1 / 2; grid-row: 4 / 6; }
+  .card4 { grid-column: 2 / 4; grid-row: 3 / 6; }
+
+  /* Responsive Design */
+  @media (max-width: 850px) {
+    .grid_pas {
+      width: 100%;
+      row-gap: 2rem;
+    }
+    
+    /* Box Styling */
+    .music_box {
+      box-shadow: 0 0 0.9rem hsl(209, 98%, 30%);
+    }
+  }
+  
+  @media (max-width: 600px) {
+    .grid_pas {
+        padding: 1rem;
+        column-gap: 1rem;
         display: grid;
-        row-gap: 5rem;
-        column-gap: 5rem;
-        grid-template-columns: repeat(auto-fit, minmax(2rem, 1fr)); 
-        grid-template-rows: repeat(auto-fit, minmax(1rem, 1fr)); 
-      }
-      
-
-      .music_box {
-        position: relative;
-        width: 100%;
-        min-width: 10rem;
-        height: 100%;
-        display: flex;
+        grid-template-columns: repeat(auto-fit, minmax(2rem, 1fr));
         justify-content: center;
         align-items: center;
-        border-radius: 2rem;
-        align-self: center;
-        border: 0.17rem solid hsla(210, 30%, 50%, 0.263); 
-        box-shadow: 0.6rem 0.6rem 1rem rgba(0, 155, 155, 0.5), inset 0 0 0.5rem rgba(0, 155, 155, 0.5);
-        cursor: pointer;
-        overflow: hidden;
-        transition: transform 0.3s;
-      }
-
-      .music_box:hover {
-        transform: translateY(-0.5rem);
-      }
-      
-      .music_box img {
-        position: relative;
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        opacity: 1;
-        border-radius: inherit;
-      }
-      
-      /* Text inside carts */
-      .music_box .text {
-        text-align: center;
-        position: absolute;
-        color: white;
-        font-size: 2rem;
-        font-weight: bold;
-        text-transform: uppercase;
-        text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
-        pointer-events: none;
-      }
-      
-      /* Grid Positioning */
-      .card1 { grid-column: 1 / 2; grid-row: 1 / 4; }
-      .card2 { grid-column: 2 / 4; grid-row: 1 / 3; }
-      .card3 { grid-column: 1 / 2; grid-row: 4 / 6; }
-      .card4 { grid-column: 2 / 4; grid-row: 3 / 6; }
-
-
-      /* Set the style playlist */
-      .coverflow_playlist {
-        display: none;
-        margin-top: 10rem;
-        max-width: 100%;
-        max-height: 25rem;
-        gap: 1rem;
-        justify-content: center;
     }
 
-      
-      
-      /* Responsive Design */
-      @media (max-width: 850px) {
-        .grid_pas {
-          width: 100%;
-          row-gap: 2rem;
-        }
-        
-        /* Box Styling */
-        .music_box {
-          box-shadow: 0 0 0.9rem hsl(209, 98%, 30%);
-        }
-      }
-      
-      @media (max-width: 600px) {
-        .grid_pas {
-            padding: 1rem;
-            column-gap: 1rem;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(2rem, 1fr));
-            justify-content: center;
-            align-items: center;
-        }
-
-        .music_box {
-          border: 0.17rem solid hsla(210, 30%, 50%, 0.263); 
-          box-shadow: 0 0.3rem 1rem rgba(0, 155, 155, 0.3), inset 0 0 0.5rem rgba(0, 155, 155, 0.3);
-        }
-    
-        .card1 { grid-column: 1 / 2; grid-row: 1 / 2; }
-        .card2 { grid-column: 2 / 3; grid-row: 1 / 2; }
-        .card3 { grid-column: 1 / 2; grid-row: 2 / 3; }
-        .card4 { grid-column: 2 / 3; grid-row: 2 / 3; }
+    .music_box {
+      border: 0.17rem solid hsla(210, 30%, 50%, 0.263); 
+      box-shadow: 0 0.3rem 1rem rgba(0, 155, 155, 0.3), inset 0 0 0.5rem rgba(0, 155, 155, 0.3);
     }
-    
+
+    .card1 { grid-column: 1 / 2; grid-row: 1 / 2; }
+    .card2 { grid-column: 2 / 3; grid-row: 1 / 2; }
+    .card3 { grid-column: 1 / 2; grid-row: 2 / 3; }
+    .card4 { grid-column: 2 / 3; grid-row: 2 / 3; }
+}
+
+  /* Set the style playlist */
+  .coverflow_playlist {
+    display: none;
+    margin-top: 10rem;
+    max-width: 100%;
+    max-height: 25rem;
+    gap: 1rem;
+    justify-content: center;
+} /* ? */ 
