@@ -2,10 +2,9 @@
 
 {% block title %}Spotify{% endblock %}
 
-
 {% block head %}
     <!-- Link css file -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
     <!-- Link js file -->
     <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
 {% endblock %}
@@ -20,7 +19,6 @@
                 <img id="slide3" src="{{ url_for('static', filename='images/spotify_liked.jpg') }}" alt="Like playlist Spotify">
             </div>
             <div class="slider-nav">
-                <!-- Anchor to image 1, 2, and 3 -->
                 <a href="#slide1"></a>
                 <a href="#slide2"></a>
                 <a href="#slide3"></a>
