@@ -1,4 +1,13 @@
 document.addEventListener('DOMContentLoaded', () => {
+
+    window.addEventListener('load', function() {
+        let items = document.querySelectorAll('.nav-item');
+        items.forEach(item => {
+            item.classList.remove("no-animate");
+        });
+    });
+
+
     // Remove blur on the text in the main page
     document.getElementById('blur-text').addEventListener('click', function () {
         this.style.filter = 'none';

@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
       previous_main.opacity = main.style.opacity;
 
       main.style.filter = 'blur(10px)';
-      main.style.opacity = '0.2';
+      main.style.opacity = '0.3';
       cover_flow.style.display = 'block';
     });
   });
@@ -50,12 +50,12 @@ document.addEventListener('DOMContentLoaded', () => {
   document.addEventListener('click', (event) => {
     // If cover flow is visible and user clicks outside it, close it
     if (cover_flow.style.display === 'block' && !cover_flow.contains(event.target)) {
-      close_coverFlow();
+      close_coverFlow(); 
     }
   });
 
-  // Prevent clicks on cover_flow from triggering the document click listener
+  // Prevent clicks inside the cover flow from propagating to the document
   cover_flow.addEventListener('click', (event) => {
-    event.stopPropagation(); // Prevent closing the cover flow
+    event.stopPropagation();
   });
 });
