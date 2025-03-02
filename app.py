@@ -8,18 +8,19 @@ from flask_session import Session
 from dotenv import load_dotenv
 from urllib.parse import urlencode
 import requests
-# from flask_cors import CORS
+from flask_cors import CORS  # Import Flask-CORS
     
 # Load environment variables from .env file
 load_dotenv()
 
 app = Flask(__name__)
-# CORS(app)
+CORS(app)
+
 
 # Configure session
 app.config["SESSION_TYPE"] = "filesystem"  # Store session data in a folder on the server  
 app.config["SESSION_PERMANENT"] = False  # Session data expire when browser is closed
-app.config["SESSION_FILE_DIR"] = "./.flask_session/"  # Folder to store session data
+app.config["SESSION_FILE_DIR"] = "./.flask_session/"  # Folder to store session datas
 app.permanent_session_lifetime = 0 # Force browser to delete cache when browser is closed
 app.secret_key = os.getenv("APP_STATE", secrets.token_hex(32))  # Secret key for session data
 Session(app) 
@@ -113,6 +114,12 @@ def get_user_playlist():
         playlists.extend(data.get("items", []))  # Add playlists from the current page
         url = data.get("next")  # Get the URL for the next page
     return playlists
+
+
+# def get_user_likedTitle():
+
+#     headers = get_auth_headers();
+    
 
 
 @app.route("/")
@@ -231,6 +238,32 @@ def selection():
 
     # Pass all playlist images to the template
     return render_template("selection.html", playlist_images=playlist_images)
+
+
+
+@app.route("/api/playlist-images")
+def get_playlist_images():
+
+    refresh_access_token()
+    playlists = get_user_playlist()
+    if isinstance(playlists, tuple):
+        return playlists  
+    
+    if not playlists:
+        return jsonify({"error": "No playlists found"}), 404  
+
+    playlists_img = [
+        playlist.get("images", [{}])[0].get("url", "")  # Store first img of playlists and the url for it
+        for playlist in playlists
+        if playlist.get("images")  # Filter out playlists with no images
+    ]
+
+    if not playlists_img:
+        return jsonify({"error": "No playlist images available"}), 404
+
+    return jsonify({"images": playlists_img})
+
+
 
 
 if __name__ == "__main__":
