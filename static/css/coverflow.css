@@ -1,0 +1,241 @@
+
+#wrapper_slider {
+    --cover_size: 13rem;
+    position: relative;
+    padding: 3rem 0;
+    margin-top: 6rem;
+    height: 20rem;
+    width: 100vw;
+    perspective: 700px;
+    overflow: visible;
+    scrollbar-width: none; /* Firefox */
+  }
+  
+  #slider_track {
+    display: flex;
+    height: 100%;
+    width: max-content;
+    scroll-snap-type: x mandatory; 
+    -webkit-overflow-scrolling: touch;
+    transform-style: preserve-3d;
+    will-change: transform;
+    transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    cursor: grab;
+  }
+  
+  #slider_track.dragging {
+    cursor: grabbing;
+  }
+  
+  .item {
+    position: relative;
+    width: var(--cover_size);
+    height: var(--cover_size);
+    background-image: var(--cover-url);
+    background-size: cover;
+    background-position: center;
+    background-color: transparent;
+    white-space: nowrap;
+    will-change: transform; /* Hardware Acceleration */
+    margin-inline: -25px;
+  
+    transition: transform 0.1s cubic-bezier(0.25, 0.8, 0.25, 1);
+  }
+  
+  .item::after {
+    content: '';
+    position: absolute;
+    top: 160%; 
+    left: 0;
+    height: 100%;
+    width: 100%;
+    
+    /* Flip and reduce height */
+    transform: scaleY(-0.6); 
+    transform-origin: top;
+    
+    background-image: var(--cover-url);
+    background-size: cover; 
+    background-position: center;
+    white-space: nowrap;
+    filter: blur(2px) brightness(0.8);
+    -webkit-filter: blur(2px) brightness(0.8);
+    
+    /* Fade out*/
+    mask-image: linear-gradient(
+      to top,
+      rgba(0, 0, 0, 0.8) 0%,
+      rgba(0, 0, 0, 0.6) 30%,
+      rgba(0, 0, 0, 0.1) 60%,
+      rgba(0, 0, 0, 0.0) 100%
+    );
+    -webkit-mask-image: linear-gradient(
+      to top,
+      rgba(0, 0, 0, 1) 0%,
+      rgba(0, 0, 0, 0.6) 30%,
+      rgba(0, 0, 0, 0.3) 60%,
+      rgba(0, 0, 0, 0.0) 100%
+    );
+    
+    will-change: transform;
+    mix-blend-mode: multiply;
+    z-index: -1;
+  }
+  
+  
+  .item.active {
+    box-shadow: 1px 2px 5px rgb(11, 11, 11, 1);
+  }
+  
+  /*Darken items not active */
+  .item:not(.active)::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6); 
+  }
+  
+  
+  .item:not(.active)::after {
+    filter: brightness(0.5);
+  }
+  
+  .item.leftItem {
+    transform-origin: left center;
+  }
+  
+  .item.rightItem {
+    transform-origin: right center;
+  }
+  
+  
+  .item .metadata_wrapper {
+    display: none; 
+    position: absolute;
+    width: 100%;
+    top: 113%;
+    text-align: center;
+    backface-visibility: hidden;
+    transform: translateZ(0); /* Avoid perspective breaking font */
+    text-transform: uppercase;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    white-space: normal;
+    z-index: 100;
+    color: rgba(255, 255, 255, 0.7);
+    pointer-events: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+  
+  
+  .item.active .metadata_wrapper {
+    display: flex;           
+    flex-direction: column; /* Stack title & artist vertically */
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .metadata_songTitle {
+    font-size: 1.4rem; 
+  }
+  
+  .metadata_artist {
+    font-size: 0.7rem;       
+  }
+  
+  #buttons_container {
+    position: absolute;
+    top: 150%;    
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: calc(var(--cover_size) * 2);   
+  }
+  
+  @media screen and (max-width: 450px) {
+    #buttons_container {
+      gap: calc(var(--cover_size) * 1.25);
+    }
+  }
+  
+  
+  
+  
+  
+  #previous_button,
+  #next_button {
+    width: 45px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background-color: hsl(0, 0%, 45%);
+    cursor: pointer;
+    opacity: 0.5;
+    transition: background-color 0.1s cubic-bezier(0.5, 0, 0.1, 1);
+    z-index: 1000;
+  }
+  
+  #previous_button svg {
+    transform: scaleX(-1); /* flip arrow horizontally */
+  }
+  
+  
+  #previous_button:hover,
+  #next_button:hover {
+    background-color: hsl(0, 0%, 65%);
+    transform: scale(1.1);
+    opacity: 0.7;
+  }
+  
+  
+  
+  @keyframes prevSvgRotation {
+    0% {
+      transform: rotate(0deg);
+      background-color: hsl(0, 0%, 65%);
+    }
+    50% {
+      transform: rotate(-20deg);
+      background-color: hsl(0, 0%, 100%);
+    }
+    100% {
+      transform: rotate(0deg);
+      background-color: hsl(0, 0%, 65%);
+    }
+  }
+  
+  @keyframes nextSvgRotation {
+    0% {
+      transform: rotate(0deg);
+      background-color: hsl(0, 0%, 65%);
+  
+    }
+    50% {
+      transform: rotate(20deg);
+      background-color: hsl(0, 0%, 90%);
+    }
+    100% {
+      transform: rotate(0deg);
+      background-color: hsl(0, 0%, 65%);
+    }
+  }
+  
+  
+  .anime_prev {
+    animation: prevSvgRotation 0.2s ease-in-out;
+    
+  }
+  
+  .anime_next {
+    animation: nextSvgRotation 0.2s ease-in-out;
+  }
