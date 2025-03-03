@@ -1,11 +1,17 @@
-/* Carousel style base on SKillthrive video "https://www.youtube.com/@Skillthrive" */
+/* Thinner scrollbar on smaller screen */
+@media (max-width: 600px) {
+    body::-webkit-scrollbar { 
+        width: 2rem;
+    }
+}
+
+/*  Start of Carrousel */
 .carrousel {
-    position: relative;
+    top: 0;
     width: 100%;
     height: 50vh; 
     overflow: hidden;
-    z-index: 100;
-    top: 0;
+    z-index: 10;
     box-shadow: 0 0 1rem rgba(84, 116, 66, 0.281);
 }
 
@@ -34,15 +40,12 @@
     width: auto;
     object-fit: cover;
     opacity: 0.8;
+    -webkit-tap-highlight-color: rgba(0, 0, 255, 0.3); 
     transition: all 1s ease;
 }
 
-.slider img {
-    -webkit-tap-highlight-color: rgba(0, 0, 255, 0.3); /* Blue with 30% opacity */
-}
-
 .slider img:hover {
-    opacity: 1; /* Reset opacity when hovered */
+    opacity: 1; 
 }
 
 .slider-nav {
@@ -72,66 +75,90 @@
 .slider-nav a.active {
     background-color: black; /* Highlight dot */
     opacity: 1; 
-}
+} 
+/* End of Carrousel */
 
-.container_glass_box {
-    position: absolute;
-    top: 60%; 
+
+
+/* Glass alike box with text inside */
+#container_glass_box {
+    position: absolute; /* To display a part on carrousel above another on body under */ 
     left: 50%;
+    top: 60%; 
     transform: translate(-50%, -40%); 
-    width: 45%;
-    height: auto; 
-    z-index: 100;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-
-.glass {
-    width: auto; 
-    max-width: 30rem; 
-    height: auto; 
+    width: 30rem; 
+    max-width: 35rem;
+    border: 1px solid rgba(0, 0, 0, 0.4);
     background: linear-gradient(135deg, rgba(2, 2, 2, 0.2), rgba(30, 31, 31, 0.1));
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     border-radius: 20px;
-    border: 1px solid rgba(0, 0, 0, 0.4);
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5), inset 0 1px 3px rgba(255, 255, 255, 1);
+    z-index: 100; /* Top of carrousel */ 
 }
 
-
-.text_glass {
-    text-align: center;
-    font-size: 1rem; /* Adjust the size as needed */
-    font-weight: bold; 
-    line-height: 4rem;
-    padding: 1rem;
-}
-
-.container_glass_box > h1 {
+#container_glass_box > h1 {
     color: rgba(245, 245, 245, 0.981);
+    font-size: 2rem; 
+    font-weight: bold; 
+    text-transform: uppercase;
     text-align: center;
+    padding: 3rem;
+    line-height: 4rem;
+}
+  
+@media (max-width: 600px) {
+    #container_glass_box {
+        width: 65%;
+    }
+
+    #container_glass_box > h1 {
+        font-size: 1.5rem;
+        line-height: 3rem;
+    }
 }
 
-
-#text_main_manual {
-    margin-top: 12rem;
-    text-align: center;
+@media (max-width: 480px) {
+    #container_glass_box > h1 {
+        font-size: 1.3rem;
+        line-height: 1.5ren;
+        padding: 1.5rem;
+    }
 }
+/* End of Glass Box */
+/* End of Glass Box */
 
 
-#text_main_manual > h1 {
+/* Main Title on page */
+h1#main_title {
+    text-align: center;
+    color: #fff;
+    margin-top: 13rem;
+    margin-inline: 3rem;
     font-weight: bold;
-    font-size: clamp(4rem, 20%, 7rem);
-
+    font-size: 5rem;
 }
 
-#blur-text {
+#main_title > span#blur_text {
     filter: blur(7px);
     cursor: pointer;
     transition: filter 0.4s ease;
 }
+
+@media (max-width: 480px) {
+    h1#main_title {
+        margin-top: 10rem;
+        font-size: 4rem;
+    }
+}
+
+@media (max-width: 350px) {
+    h1#main_title {
+        font-size: 2rem;
+    }
+}
+/* End of Main Title */
+/* End of Main Title */
 
 
 hr {
@@ -140,7 +167,7 @@ hr {
 }
 
 
-/* Grid Login Page */
+/* Grid with expendable cards and text-info  */
 .container-grid {
     height: auto;
     display: grid;
@@ -149,20 +176,16 @@ hr {
     align-items: center;
 }
 
-/* Other Elements Section */
 .other-elements {
     font-size: clamp(4rem, 7%, 6rem);
     text-transform: uppercase;
     display: flex;
     flex-direction: column;
     align-self: center;
-    justify-self: start;
-    justify-content: start;
-    transform: translateX(15%);
+    justify-self: center;
     row-gap: 4rem;
     flex-wrap: wrap;
     text-align: left;
-    margin-left: 5rem;
 }
 
 .text-otherElement {
@@ -175,10 +198,7 @@ hr {
     height: 35rem;
     display: flex;
     flex-wrap: nowrap;
-    align-self: center;
-    justify-self: center;
     justify-content: center;
-    transform: translateX(10%);
     align-items: flex-end;
     gap: clamp(2rem, 5%, 4rem);
 
@@ -189,8 +209,8 @@ hr {
     background-size: cover;
     background-position: center;
     position: relative;
-    flex: 1 1 clamp(4rem, 25%, 5rem); /* Responsive shrinking */
-    max-width: 4rem; /* Initial size */
+    flex: 1 1 clamp(4rem, 25%, 5rem); /* Responsive grow, shrink and basis size*/
+    max-width: 4rem; 
     border-radius: 1rem;
     overflow: hidden;
     cursor: pointer;
@@ -223,7 +243,7 @@ hr {
 /* Show Description in Expanded State */
 .card.expanded .description {
     opacity: 1 !important;
-    transform: translateY(0.5rem) !important; /* Descr. Animation outside element to fix on top */
+    transform: translateY(0.5rem) !important;
 }
 
 /* Card Heights and images*/
@@ -297,42 +317,12 @@ hr {
     margin-top: 3%;
 }
 
-
-@media (max-width: 1222px) {
-    .container-card {
-        transform: translateX(0%);
-    }
-}
-
 /* Responsive Media Query */
-@media (max-width: 980px) {
-
+@media screen and (max-width: 980px) {
     
-    hr {
-        margin-top: 25%;
-    }
-    
-    .text_glass {
-        line-height: 3rem;
-        margin: 1.7rem;
-        font-size: 0.8rem !important;
-    }
-
-    #text_main_manual {
-        margin-top: 9rem;
-        text-align: center;
-    }
-
     .other-elements {
         font-size: clamp(3rem, 5%, 4rem);
         row-gap: 4rem;
-        padding-top: clamp(1.8rem, 4%, 3.3rem);
-    }
-
-
-    .container-card {
-        flex-wrap: wrap;
-        gap: 0;
     }
 
     .card {
@@ -344,7 +334,7 @@ hr {
         width: clamp(2rem, 25%, 2rem);
         height: clamp(2rem, 25%, 2rem);
         border-radius: 50%;
-        aspect-ratio: 1; /* Ensures perfect circle */
+        aspect-ratio: 1; 
     }
 
     .card > .row > .description {
@@ -366,10 +356,9 @@ hr {
     }
 }
 
-@media (max-width: 768px) {
+@media screen and (max-width: 768px) {
 
     .other-elements {
-        transform: translate(0%);
         padding-top: 7rem;
         margin: auto;
         text-align: center;
@@ -405,62 +394,38 @@ hr {
     .card:nth-of-type(3) {
         height: 100%;
     }
+}
 
+
+@media screen and (max-width: 768px) {
+    
     .register_link_bot {
         margin-top: 5rem !important;
     } 
 }
 
-/* Responsive Media Query */
-@media (max-width: 600px) {
-
-            
-    body::-webkit-scrollbar { /**/
-        width: 2rem;
-    }
-
-    .container_glass_box {
-        top: 50%;
-        transform: translate(-50%, -65%);
-    }
-
-    #text_main_manual {
-        margin-top: 10rem;
-    }
-
-    .text_glass {
-        font-size: 0.5rem !important;
-    }
 
 
-    .carrousel {
-        height: 35vh; 
-    }
-
-    .card {
-        max-width: clamp(2.5rem, 10%, 3rem);
-    }
-
-    .description > p {
-        padding-top: clamp(1.5rem, 3%, 2.5rem);
-        font-size: clamp(1.5rem, 3%, 2.5rem);
-    }
-
-    .description > h4 {
-        font-size: clamp(1.4rem, 2%, 1.7rem);
-    }
-
-    .card.expanded {
-        max-width: 45%; /* Adjust expanded size for smaller screens */
-    }
-
-        
-    .container-grid {
-        margin-top: 5rem;
-    }
 
 
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 .register_link_bot {
     display: flex;
@@ -474,7 +439,7 @@ hr {
     text-decoration: underline !important; /* Remove underline if needed */
 }
 
-last_element_login:visited {
+.last_element_login:visited {
     color: #1DB954 !important;
 }
 
@@ -483,11 +448,16 @@ a.last_element_login:hover {
     opacity: 1 !important;
 }
 
-#playlist_image {
+
+
+
+
+
+/* #playlist_image {
     max-width: 480px;
     height: auto;
     display: flex;
     justify-content: center;
     object-fit: cover;
-} /*? ? */
+}  */
 

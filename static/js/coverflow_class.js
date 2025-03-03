@@ -85,6 +85,23 @@ const images_playlist = [
   
       this.init();
     } // End of constructor
+
+    init() {
+      if (this.totalItems <= 1) return;
+      this.centerItem();
+  
+      // Update container width and re-center on window resize
+      window.addEventListener("resize", () => {
+        this.containerWidth = this.trackContainer.clientWidth;
+        this.centerItem();
+      });
+  
+      this.setupSvgEvent();
+      this.setupWheelScrolling();
+      this.setupDragging();
+      this.setupTouchEvents();
+      this.setupClickEvents();
+    } // End of init
   
     // Helper: Update currentIndex and center() item (note: newIndex calculate in the setup functions)
     moveToIndex(newIndex) {
@@ -103,7 +120,6 @@ const images_playlist = [
   
     centerItem() {
       if (this.totalItems === 0) return;
-  
       /* 
            Loop through all items and update their styles based on their position relative to currentIndex:
            - Remove old state classes
@@ -178,23 +194,7 @@ const images_playlist = [
         metadataWrapper.appendChild(artistName); // Append to metadataWrapper
       });
     } // End of populateImages
-  
-    init() {
-      if (this.totalItems <= 1) return;
-      this.centerItem();
-  
-      // Update container width and re-center on window resize
-      window.addEventListener("resize", () => {
-        this.containerWidth = this.trackContainer.clientWidth;
-        this.centerItem();
-      });
-  
-      this.setupSvgEvent();
-      this.setupWheelScrolling();
-      this.setupDragging();
-      this.setupTouchEvents();
-      this.setupClickEvents();
-    } // End of init
+
   
     setupSvgEvent() {
       // Handler for the previous button: moves to the previous index and animates the prevButton.

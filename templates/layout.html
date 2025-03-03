@@ -20,10 +20,7 @@
 
 <body>
 
-    
-    <!-- Navbar no framework, need to be dynamic; transition ease media querry-->
-    <!-- If user is login or !login display different options-->
-    <nav class="navbar">
+    <nav id="navbar">
         <ul class="navbar-nav">
             
             {% if session.get("is_authenticated", True) %}

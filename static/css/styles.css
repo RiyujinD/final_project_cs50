@@ -57,8 +57,16 @@ body::-webkit-scrollbar-thumb {
 
 
 
-  /* Set a fix navbar with bottom border  */
-.navbar {
+
+
+
+
+
+
+
+
+/* nav Navbar > ul navbar_nav > li nav_item > a nav_link > items inside link */
+#navbar {
 
   /* Varible for the Light/Night toggle button  */
   --width_button: 90px;
@@ -67,7 +75,7 @@ body::-webkit-scrollbar-thumb {
   --svg_padding: calc((var(--height_button) - var(--svg_size)) / 2);
   --outline: 2px solid hsla(204, 35%, 74%, 0.568);
   --outlineNight: solid rgba(100, 0, 233, 0.3);
-
+  
   height: 6rem;
   width: 100%;
   top: 0;
@@ -75,34 +83,8 @@ body::-webkit-scrollbar-thumb {
   display: flex; 
   align-items: flex-start; 
   padding-top: 1rem;
-  transition: height 0.2s ease-in, opacity 2s ease-in-out;
+  transition: opacity 2s ease-in-out;
   z-index: 100;
-}
-
-  /* remove decoration set the item to be square size 4rem navbar is 4rem*/
-.nav-link {
-  text-decoration: none;
-  width: 5.5rem;
-  color: var(--text-primary);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
-.nav-item:nth-child(1), .nav-item:nth-child(2) {
-  margin: 0 1%;
-}
-
-.nav-item {
-  height: 100%;
-  width: max-content;
-}
-
-.nav-icon {
-  font-size: 3rem;
-  min-height: 3rem;
-  color: var(--text-secondary);
 }
 
 .navbar-nav {
@@ -111,6 +93,34 @@ body::-webkit-scrollbar-thumb {
   display: flex;
   flex-direction: row-reverse;  /* Reverse direction of the row  */
 }
+
+.nav-item {
+  height: 100%;
+  width: max-content;
+}
+
+.nav-item:nth-child(1), .nav-item:nth-child(2) {
+  margin: 0 1%;
+}
+
+.nav-link {
+  text-decoration: none;
+  width: 5.5rem;
+  color: var(--text-primary);
+  display: flex;
+  flex-direction: column; 
+  align-items: center;
+  justify-content: center;
+}
+
+.nav-icon {
+  font-size: 3rem; /* svg size */
+  min-height: 3rem;
+  color: rgba(255, 255, 255, 0.9);
+  /* color: var(--text-secondary); Too change */
+}
+
+
 
 /* Push last item to the opposite side by settings his margin to the max */
 .nav-item:last-child {
@@ -125,6 +135,33 @@ body::-webkit-scrollbar-thumb {
 .nav-item:hover .link-text {
   display: block;
 }      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /* Night/light Mod button */  
 /* SVG styling */
