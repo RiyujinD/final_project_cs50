@@ -10,7 +10,7 @@ from urllib.parse import urlencode
 import requests
 from flask_cors import CORS  # Import Flask-CORS
     
-# Load environment variables from .env file
+
 load_dotenv()
 
 app = Flask(__name__)

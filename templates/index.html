@@ -3,10 +3,9 @@
 {% block title %}Spotify{% endblock %}
 
 {% block head %}
-    <!-- Link css file -->
+    <!-- Link css / js file for route -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
-    <!-- Link js file -->
-    <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/index.js') }}"></script>
 {% endblock %}
 
 {% block main %}
@@ -34,49 +33,51 @@
 
     <hr>
 
-    <!-- CSS card animation inspired by webtutorialsw/css_sliding_cards -->
-    <div class="container-grid">
-        <!-- Card container -->
-        <div class="container-card">
-            <!-- Card 1 -->
-            <div class="card" onclick="expandCard(this)">
-                <div class="row">
-                    <div class="icon">1</div>
-                    <div class="description">
-                        <h4>Connect</h4>
-                        <p>Link your Spotify account.</p>
-                    </div>
-                </div>
+    <div class="containerGrid grid_component">
+        <div class="containerCard_row1">
+          
+          <!-- Card 1 -->
+          <div class="card" onclick="expandCard(this)">
+            <div class="row">
+              <div class="icon">1</div>
+              <div class="description">
+                <h4>Connect</h4>
+                <p>Link your Spotify account.</p>
+              </div>
             </div>
-            <!-- Card 2 -->
-            <div class="card" onclick="expandCard(this)">
-                <div class="row">
-                    <div class="icon">2</div>
-                    <div class="description">
-                        <h4>Select Playlist</h4>
-                        <p>Choose your favorite song.</p>
-                    </div>
-                </div>
+          </div>
+          
+          <!-- Card 2 -->
+          <div class="card" onclick="expandCard(this)">
+            <div class="row">
+              <div class="icon">2</div>
+              <div class="description">
+                <h4>Select Playlist</h4>
+                <p>Choose your favorite song.</p>
+              </div>
             </div>
-            <!-- Card 3 -->
-            <div class="card" onclick="expandCard(this)">
-                <div class="row">
-                    <div class="icon">3</div>
-                    <div class="description">
-                        <h4>Sing Cut-out Lyrics</h4>
-                        <p>Challenge yourself and sing along!</p>
-                    </div>
-                </div>
+          </div>
+          
+          <!-- Card 3 -->
+          <div class="card" onclick="expandCard(this)">
+            <div class="row">
+              <div class="icon">3</div>
+              <div class="description">
+                <h4>Sing Cut-out Lyrics</h4>
+                <p>Challenge yourself and sing along!</p>
+              </div>
             </div>
+          </div>
+        </div> <!-- End of container card -->
+        
+        <!-- Section for additional info -->
+        <div class="cardInfo_row2">
+          <div class="infoItem"><span>1</span> Connect</div>
+          <div class="infoItem"><span>2</span> Pick song</div>
+          <div class="infoItem"><span>3</span> Have fun!</div>
         </div>
-
-        <!-- Section for additional elements -->
-        <div class="other-elements">
-            <div class="other-element">1 - <div class="text-otherElement">Connect</div></div>
-            <div class="other-element">2 - <div class="text-otherElement">Pick song</div></div>
-            <div class="other-element">3 - <div class="text-otherElement">Have fun!</div></div>
-        </div>
-    </div> <!-- End of container grid -->
+        
+     </div> <!-- End of container grid -->
 
     <div class="register_link_bot">
         <a href="/login" class="last_element_login">Login</a>
