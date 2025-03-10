@@ -5,7 +5,7 @@
     height: 50vh; 
     overflow: hidden;
     z-index: 10;
-
+    box-shadow: 0px 1px 13px 15px rgba(0, 0, 0, 0.4), 0px 1px 8px 1px rgba(0, 0, 0, 0.5), inset 0px 2px 8px 3px rgba(255, 255, 255, 1);
 }
 
 .slider-wrap {
@@ -52,7 +52,7 @@
 }
 
 .slider-nav a {
-    color: var(--bg-secondary);
+    color: var(--bg-color);
     width: 0.5rem;
     height: 0.5rem;
     border-radius: 50%;
@@ -84,18 +84,18 @@
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     border-radius: 20px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5), inset 0 1px 3px rgba(255, 255, 255, 1);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5), 0 1px 0px rgba(0, 0, 0, 0.7), inset 0 2px 3px rgba(255, 255, 255, 1), inset 0 -1px 4px 0px rgba(255, 255, 255, 1);
     z-index: 100; /* Top of carrousel */ 
 }
 
 #container_glass_box > h1 {
-    color: rgba(245, 245, 245, 0.981);
     font-size: 2rem; 
     font-weight: bold; 
     text-transform: uppercase;
     text-align: center;
     padding: 3rem;
     line-height: 4rem;
+    text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.5);
 }
   
 @media (max-width: 600px) {
@@ -123,11 +123,11 @@
 /* Main Title on page */
 h1#main_title {
     text-align: center;
-    color: #fff;
     margin-top: 15rem;
     margin-inline: 3rem;
     font-weight: bold;
     font-size: 5rem;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
 }
 
 #main_title > span#blur_text {
@@ -154,8 +154,10 @@ h1#main_title {
 
 
 hr {
-    margin-block: 7rem;
+    margin-top: 7rem;
+    margin-bottom: 10rem;
 }
+
 
 /* Global variables in .containerGrid local to this component */
 .containerGrid.grid_component {
@@ -181,12 +183,12 @@ hr {
   justify-content: center;
   height: 30rem;
   width: 100%;
-  margin-left: 1rem;
+  padding-left: 1rem;
 }
 
 /* Cards */
 .containerCard_row1 .card {
-  opacity: 0.5;
+  opacity: 0.9;
   background-size: cover;
   background-position: center;
   position: relative;
@@ -195,8 +197,7 @@ hr {
   overflow: hidden;
   margin: 0 2rem;
   cursor: pointer;
-  box-shadow: 0px 25px 20px -20px rgba(40, 197, 66, 0.45), 0 0 10px rgba(255, 255, 255, 0.2); 
-  transition: transform .6s ease-in-out, opacity .6s ease-in-out, width .6s ease-in-out;
+  transition: transform .6s ease-in-out, opacity .6s ease-in-out, width .6s ease-in-out, box-shadow 0.3s ease-in-out;
 }
 
 .containerCard_row1 .card:hover {
@@ -234,7 +235,7 @@ hr {
   position: absolute;
   background: var(--iconColor);
   opacity: 0.8;
-  color: var(--bg-secondary);
+  color: black;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -245,6 +246,8 @@ hr {
   top: 1rem;
   left: calc((var(--cardWidth) / 2) - (var(--iconSize) / 2));
 }
+
+/*expanded and icon:hover state */
 .containerCard_row1 .card.expanded .row .icon {
   left: 0.5rem;
   opacity: 0.9;
@@ -268,6 +271,7 @@ hr {
   word-wrap: break-word;
   white-space: normal;
   opacity: 0;
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
   transform: translateY(25rem);
   transition: opacity 0.7s ease-in, transform .5s ease-in-out;
 }
@@ -276,7 +280,7 @@ hr {
 .containerCard_row1 .card.expanded .row .description {
   opacity: 1;
   transform: translateY(0);
-  padding: 0 2.5rem;
+  margin-inline: 2rem;
 }
 
 .containerCard_row1 .card .row .description h4 {
@@ -284,30 +288,14 @@ hr {
   text-transform: uppercase;
   font-size: clamp(1.8rem, 1.2rem, 3rem);
 }
+
 .containerCard_row1 .card .row .description p {
   font-size: 1.8rem;
-  color: var(--text-secondary);
-  padding-top: clamp(1rem, 2rem, 2rem);
+  color: #f5f5f5;
+  margin-top: clamp(1rem, 2rem, 2rem);
   mix-blend-mode: lighten;
-}
-
-
-.containerCard_row1 .card:nth-of-type(1) .description p {
-    background: rgba(0, 0, 0, 0.5);
-    border-radius: 5px; /* Optional: for a smoother look */
-    display: inline-block; /* Ensures the background fits the text */
-}
-
-.containerCard_row1 .card:nth-of-type(2) .description p {
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 5px; /* Optional: for a smoother look */
-    display: inline-block; /* Ensures the background fits the text */
-}
-
-.containerCard_row1 .card:nth-of-type(3) .description p {
-    background: rgba(0, 0, 0, 0.5);
-    border-radius: 5px; /* Optional: for a smoother look */
-    display: inline-block; /* Ensures the background fits the text */
+  background: #00000034;
+  border-radius: 5px; 
 }
 
 /* Right Column on grid */
@@ -325,6 +313,7 @@ hr {
   transform: translateY(75%);
   gap: 5rem;
   transition: all 1s ease-in-out;
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
 }
 
 .cardInfo_row2 .infoItem span {
@@ -450,6 +439,8 @@ a.last_element_login:hover {
         margin-top: 15rem !important;
     } 
 }
+
+
 
 
 /* #playlist_image {

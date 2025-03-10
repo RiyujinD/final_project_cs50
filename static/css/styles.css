@@ -1,13 +1,28 @@
 /* Variable and preset to use around the all app */
 :root {
   font-family: 'Montserrat', sans-serif;
-  --text-primary: rgba(204, 184, 184, 0.9);
-  --text-secondary: #5d9f80d3;
-  --bg-primary:  #010409;
-  --bg-secondary:  hsl(240, 5%, 4%);
-  --color_button: linear-gradient(to right, #2c2c2c, #3a323a, #484848, #5a5a5a, #6c6c6c);
-  --text_color_day_theme: #000;
-  --text_color_night_theme: #fff;
+  --width_button: 100px;
+  --height_button: 50px;
+  --svg_size: 70px;
+
+}
+
+/* Dark Theme */
+[data-theme="dark"] {
+  --bg-color: hsl(240, 5%, 4%);
+  --text-color: #f5f5f5;
+  --hr-color: rgba(255, 255, 255, 0.5);
+  --button-bg: linear-gradient(to bottom, hsl(240, 5%, 6%) 0%, hsl(240, 5%, 4%) 50%, hsl(240, 5%, 2%) 100%);
+  --outline: 2px solid rgba(100, 0, 233, 0.6);
+}
+
+/* Light Theme */
+[data-theme="light"] {
+  --bg-color: rgba(255, 255, 255, 0.479);
+  --text-color: black;
+  --hr-color: rgba(0, 0, 0, 0.5);
+  --button-bg: linear-gradient(to right, #222, #444);
+  --outline: 2px solid hsla(204, 35%, 74%, 0.6);
 }
 
 /* Global Styles */
@@ -19,65 +34,51 @@
   text-rendering: optimizeLegibility;
 }
 
+html {
+  scroll-behavior: smooth;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  transition: background 1s ease, color 1s ease;
+}
+
 
 hr {
   margin-inline: auto; 
   width: 50%;
-  background-color: #1DB954; 
+  background-color: var(--hr-color); 
   border: none; 
   height: 0.1rem; 
   opacity: 0.1;
 }
 
-  /* prevent unexpected behaviour with the carrousel main page*/ 
-  html {
-    scroll-behavior: smooth;
-    background-color: var(--bg-secondary);
-  }
+/* Change width of the default scrollbar */
+body::-webkit-scrollbar {
+  width: 1rem;
+}
+  /* Change the color of the track */
+body::-webkit-scrollbar-track {
+  background: #1e1e24;
+}
+  /* Change the thumb (scrollable part */
+body::-webkit-scrollbar-thumb {
+  background: rgba(116, 105, 105, 0.3);
+  border-radius: 10px;
+}
 
-  body {
-    color: rgba(255, 255, 255, 0.9);
-    background-color: var(--bg-secondary);  
-    overflow-x: hidden; /* TO CHECK */
+/* Thinner scrollbar on smaller screen */
+@media (max-width: 600px) {
+  body::-webkit-scrollbar { 
+      width: 0.9rem;
   }
+}
 
-
-  /* Change width of the default scrollbar */
-  body::-webkit-scrollbar {
-    width: 1rem;
-  }
-    /* Change the color of the track */
-  body::-webkit-scrollbar-track {
-    background: #1e1e24;
-  }
-    /* Change the thumb (scrollable part */
-  body::-webkit-scrollbar-thumb {
-    background: rgba(116, 105, 105, 0.3);
-    border-radius: 10px;
-  }
-
-  /* Thinner scrollbar on smaller screen */
-  @media (max-width: 600px) {
-    body::-webkit-scrollbar { 
-        width: 0.9rem;
-    }
-  }
 
 /* nav Navbar > ul navbar_nav > li nav_item > a nav_link > items inside link logo / infotext*/
 #navbar {
-
-  /* Varible for the Light/Night toggle button  */
-  --width_button: 90px;
-  --height_button: 45px;
-  --svg_size: 70px;
-  --svg_padding: calc((var(--height_button) - var(--svg_size)) / 2);
-  --outline: 2px solid hsla(204, 35%, 74%, 0.568);
-  --outlineNight: solid rgba(100, 0, 233, 0.3);
-  
   height: 6rem;
   width: 100%;
   top: 0;
-  background-color: var(--bg-secondary);
+  background-color: hsl(240, 5%, 4%);
   display: flex; 
   align-items: flex-start; 
   padding-top: 1rem;
@@ -85,26 +86,27 @@ hr {
   z-index: 100;
 }
 
-.navbar-nav {
+#navbar-nav {
   list-style: none;
   width: 100%;
   display: flex;
-  flex-direction: row-reverse;  /* Reverse direction of the row  */
+  flex-direction: row-reverse;  
 }
 
 .nav-item {
   height: 100%;
   width: max-content;
-}
-
-.nav-item:nth-child(1), .nav-item:nth-child(2) {
   margin: 0 1%;
 }
+
+.nav-item:nth-child(2) {
+  margin-block: auto;
+} 
 
 .nav-link {
   text-decoration: none;
   width: 5.5rem;
-  color: var(--text-primary);
+  color: #f5f5f5;
   display: flex;
   flex-direction: column; 
   align-items: center;
@@ -114,16 +116,13 @@ hr {
 .nav-icon {
   font-size: 3rem; /* svg size */
   min-height: 3rem;
-  color: rgba(255, 255, 255, 0.9);
-  /* color: var(--text-secondary); Too change */
 }
 
-/* Push last item to the opposite side by settings his margin to the max */
 .nav-item:last-child {
   margin-right: auto;
 }
 
-/* Display thhe text only after hover */
+/* Display the text only after hover */
 .link-text {
   display: none;
 }
@@ -132,139 +131,60 @@ hr {
   display: block;
 }      
 
-
 /* Night/light Mod button */  
-/* SVG styling */
-svg {
-  height: var(--svg_size);
-  width: var(--svg_size);
-  position: absolute;
-  cursor: pointer;
-  
-}
-
-svg#svg_day {
-  right: var(--svg_padding);
-  top: 50%;
-  transform: translateY(-50%) rotate(-10deg);
-  filter: drop-shadow(3px 3px 4px rgba(0, 0, 0, 0.5));
-}
-
-svg#svg_night {
-  right: var(--svg_padding);
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 10;
-  filter: drop-shadow(-3px 3px 3px rgba(0, 0, 0, 0.5));
-  opacity: 0;
-}
-
-/* Hidden checkbox */
-input[type="checkbox"].switch {
+/* Removing the default check input */
+input[type="checkbox"]#theme_toggle {
   opacity: 0;
   position: absolute;
   left: -9999px;
   top: -9999px;
-  
 }
 
-/* Label styling and button base */
-input[type="checkbox"].switch + label {
-  display: flex; 
+/* label container */
+input[type="checkbox"]#theme_toggle + label {
   position: relative;
-  opacity: 0.6;
-  transition: opacity 0.2s ease-in-out;
-  align-self: center;
-  justify-self: center;
-  margin: 0.5rem 0.5rem;
+  display: flex; 
+  transform: scaleX(-1);
+  transition: opacity .4s ease-in-out;
 }
 
-input[type="checkbox"].switch + label:hover {
-    opacity: 1;
-}
-
-input[type="checkbox"].switch + label::before {
+/* New checkbox styling */
+input[type="checkbox"]#theme_toggle + label::before {
   content: '';
   width: var(--width_button);
   height: var(--height_button);
-  background: var(--color_button);
   border-radius: calc(max(var(--height_button), var(--width_button)) / 2);
   cursor: pointer;
-  /* margin-top: 0.3rem; */
   transition: box-shadow 1s ease-in-out;
   outline: var(--outline);
+  opacity: .5;
 }
 
-/* Button state: unchecked */
-input[type="checkbox"].switch:checked + label::before {
-  background: linear-gradient(to right, #f4d03fc6, #f8e7a1, #c4b8a5, #a9a9a9, #958787);
-  box-shadow: 3px 7px 15px rgba(0, 0, 0, 0.8);
+input[type="checkbox"]#theme_toggle + label:hover::before {
+  opacity: .7;
+  outline: 3px solid rgba(33, 0, 233, .7);
 }
 
-/* Button state: checked */
-input[type="checkbox"].switch:not(:checked) + label::before {
-  background: linear-gradient(
-    to bottom,
-    hsl(240, 5%, 6%) 0%,
-    hsl(240, 5%, 4%) 50%,
-    hsl(240, 5%, 2%) 100%
-  );
-  box-shadow: 3px 5px 13px rgba(255, 255, 255, 0.1);
-  outline: var(--outlineNight);
+/* SVG styling */
+label svg {
+  height: var(--svg_size);
+  width: var(--svg_size);
+  position: absolute;
+  cursor: pointer;
+  top: 50%;
+  filter: drop-shadow(.2px .2px 5px rgba(0, 120, 200, .5));
+  transform: translateY(-50%);
+  transition: transform 2s ease;
 }
 
-/* SVG animations for toggling states */
-input[type="checkbox"].switch:checked + label svg#svg_day {
-  animation: offsetReverse 2s ease-in-out forwards, fadeIn 2s ease-in-out forwards;
+
+/* ANIMATIONS: dynamically add in js scripts/js depending on checkbox state */
+.offsetCheck {
+  transform: translate(calc(var(--width_button) - var(--svg_size)), -50%) rotate(360deg);    
 }
 
-input[type="checkbox"].switch:checked + label svg#svg_night {
-  animation: offsetReverse 2s ease-in-out forwards, fadeOut 2s ease-in-out forwards;
-}
-
-input[type="checkbox"].switch:not(:checked) + label svg#svg_day {
-  animation: offset 2s ease-in-out forwards, fadeOut 2s ease-in-out forwards;
-}
-
-input[type="checkbox"].switch:not(:checked) + label svg#svg_night {
-  animation: offset 2s ease-in-out forwards, fadeIn 2s ease-in-out forwards;
-}
-
-/* Keyframes */
-@keyframes offset {
-  0% {
-    left: var(--svg_padding);
-    transform: translateY(-50%) rotate(0deg);
-  }
-  50% {
-    left: calc((var(--width_button) - var(--svg_size)) / 2);
-    transform: translateY(-50%) rotate(180deg);
-  }
-  100% {
-    left: calc(100% - var(--svg_size) - var(--svg_padding));
-    transform: translateY(-50%) rotate(360deg);
-  }
-}
-
-@keyframes offsetReverse {
-  0% {
-    left: calc(100% - var(--svg_size) - var(--svg_padding));
-    transform: translateY(-50%) rotate(360deg);
-  }
-  50% {
-    left: calc((var(--width_button) - var(--svg_size)) / 2);
-    transform: translateY(-50%) rotate(180deg);
-  }
-  100% {
-    left: var(--svg_padding);
-    transform: translateY(-50%) rotate(0deg);
-  }
-}
-
-@keyframes fadeOut {
-  0% { opacity: 1; }
-  50% { opacity: 0; }
-  100% { opacity: 0; }
+.offsetUncheck {
+  transform: translate(0, -50%) rotate(-360deg);   
 }
 
 @keyframes fadeIn {
@@ -273,6 +193,17 @@ input[type="checkbox"].switch:not(:checked) + label svg#svg_night {
   100% { opacity: 1; }
 }
 
-.nav-item.no-animate svg {
-  animation: none !important;
+@keyframes fadeOut {
+  0% { opacity: 1; }
+  50% { opacity: 0; }
+  100% { opacity: 0; }
 }
+
+.fadeOut {
+  animation: fadeOut 2s ease-in-out forwards;
+}
+
+.fadeIn {
+  animation: fadeIn 2s ease-in-out forwards;
+}
+/* END OF ANIMATIONS */

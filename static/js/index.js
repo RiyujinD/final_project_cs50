@@ -33,58 +33,97 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Carrousel scrolling and click nav link event
 document.addEventListener('DOMContentLoaded', () => {
-    
-    // Smooth scroll for slider navigation on carrousel
     const navLinks = document.querySelectorAll('.slider-nav a');
     const slides = document.querySelectorAll('.slider img');
     const slider = document.querySelector('.slider');
 
     if (navLinks.length > 0 && slides.length > 0 && slider) {
-        // Smooth scroll to the specific slide when nav links are clicked
+
+        navLinks[0].classList.add('active'); // Default active slide 
+
+        // Smooth scroll to specific slide when nav links are clicked
         navLinks.forEach((link, i) => {
             link.addEventListener('click', (e) => {
                 e.preventDefault();
-
-                slider.scrollTo({
-                    left: slides[i].offsetLeft, // Scroll to the slide's left position
-                    behavior: 'smooth'         // Smooth scrolling effect
-                });
-
-                // Use a timeout to ensure smooth scroll completes before updating active state
-                setTimeout(() => {
-                    // Update active nav link
-                    navLinks.forEach((l) => l.classList.remove('active'));
-                    link.classList.add('active');
-                }, 20); 
+                scrollToSlide(i);
             });
         });
 
-        // Update active nav link on scroll
-        slider.addEventListener('scroll', () => {
-            const index = Math.round(slider.scrollLeft / slider.offsetWidth);
-            navLinks.forEach((link, i) => {
-                link.classList.toggle('active', i === index);
+        // Automatically switch slides every 5 seconds
+        let currentIndex = 0;
+        const switchSlide = () => {
+            currentIndex = (currentIndex + 1) % slides.length; // Loop back to the first slide
+            scrollToSlide(currentIndex);
+        };
+
+        const scrollToSlide = (index) => {
+            slider.scrollTo({
+                left: slides[index].offsetLeft,
+                behavior: 'smooth',
             });
-        });
+            updateActiveNav(index);
+        };
+
+        const updateActiveNav = (index) => {
+            navLinks.forEach((link, i) => link.classList.toggle('active', i === index));
+        };
+
+        // Start the automatic slide switch with a 5-second interval
+        setInterval(switchSlide, 5000);
     }
 });
 
 
-// Expand cards on click (3 cards below title)
+// expand cards and add shadow base on color theme
 document.addEventListener("DOMContentLoaded", () => {
 
+    const html = document.documentElement;
     const cards = document.querySelectorAll('.card');
+    
+    // Expand cards on click 
     if (cards.length > 0) {
 
         // Expanding first card on page load
         const firstCard = cards[0]; 
         firstCard.classList.add('expanded'); 
         
-        cards.forEach((card) => {
-            card.addEventListener('click', () => {
-                cards.forEach((c) => c.classList.remove('expanded'));               
-                card.classList.add('expanded');               
+        
+        cards.forEach((target) => {
+            target.addEventListener('click', () => {
+                cards.forEach((card) => card.classList.remove('expanded'));               
+                target.classList.add('expanded');               
             });
         });
     }
+    
+    // Change shadow of cards 
+    const shadowHandler = () => {
+        const theme = html.getAttribute('data-theme');
+
+        cards.forEach((card) => {
+            if (theme === "dark") {
+                card.style.boxShadow = "0px 25px 20px -20px rgba(40, 197, 66, 0.45), 0 0 10px rgba(255, 255, 255, 0.2)";
+            }
+            else if (theme === "light") {
+                card.style.boxShadow = "13px 13px 10px -4px rgba(0, 0, 0, 0.4),"
+                                    + "5px 3px 6px -2px rgba(0, 0, 0, 0.5),"
+                                    + "inset 4px 15px 13px -14px rgba(255, 255, 255, 1)";
+            }
+        });
+    };
+
+    shadowHandler();
+
+    // Observe change to html data-theme
+    const observer = new MutationObserver(shadowHandler);
+
+    observer.observe(html, {
+        attributes: true,                   // Watch for changes to attributes
+        attributeFilter: ['data-theme']     // Only watch changes to the 'data-theme' attribute
+    });
+
+
 });
+
+
+

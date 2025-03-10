@@ -13,6 +13,7 @@ from flask_cors import CORS  # Import Flask-CORS
 
 load_dotenv()
 
+
 app = Flask(__name__)
 CORS(app)
 
@@ -44,13 +45,14 @@ auth_base64 = base64.b64encode(auth_bytes).decode("utf-8")  # Base64 encode and 
 
 def generate_secure_secret(length=16):
     """ Generate a random state string for security """
-    # Define the characters to use (A-Z, a-z, 0-9)
-    characters = string.ascii_letters + string.digits
-    # Randomly choose char to use
+
+    characters = string.ascii_letters + string.digits       # Define the characters to use (A-Z, a-z, 0-9)
+
     return ''.join(secrets.choice(characters) for _ in range(length))
 
 def refresh_access_token():
     """ Refresh the access token when it has expired """
+
     refresh_token = session.get("refresh_token")
     if not refresh_token:
         return {"error": "No refresh token found", "status": 401}
@@ -72,7 +74,7 @@ def refresh_access_token():
     token_data = response.json()
     session["access_token"] = token_data.get("access_token")
     session["expires_in"] = token_data.get("expires_in")
-    session["token_expiry"] = time.time() + token_data.get("expires_in") # time.time() give 'the current time' + the expiry time of token, later we check if the current time has pass this time
+    session["token_expiry"] = time.time() + token_data.get("expires_in")
     return {"access_token": session["access_token"], "expires_in": session["expires_in"], "refreshed": True}
 
         
