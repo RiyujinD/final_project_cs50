@@ -3,53 +3,50 @@
 {% block title %}Spotify{% endblock %}
 
 {% block head %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/selection.css') }}">
-<script src="{{ url_for('static', filename='js/selection.js') }}"></script>
-<script src="{{ url_for('static', filename='js/scripts.js') }}"></script> <!-- To remove un use functions (mainly index endpoint function in this js file)-->
+
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/selection.css') }}">
+        <script src="{{ url_for('static', filename='js/selection.js') }}"></script>
 
 {% endblock %}
 
 {% block main %}
 
-<div class="user_profile_wrapper">
-
-        <div class="user_profile_section">
-        
-                <div class="spotify_pp_wrapper">
-                        <img src="https://images.unsplash.com/photo-1735809491847-1af1c3025b92?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Spotify Profile Picture">
-                </div>
-        
-                <div class="greetings_user">
-                        <h2>Hello,</h2>
-                        <h1>USER</h1>
-                </div>
-        
-        </div> <!-- End of user_profile_section -->
-        
-        
-        <form class="search-form" action="#" method="get">
-        
-                <input class="ryuji_button" 
+        <div class="user_profile_wrapper">
+                <div class="user_profile_section">
+                        
+                        <!-- Profile picture -->
+                        <div class="spotify_pp_wrapper">
+                                <img src="https://images.unsplash.com/photo-1735809491847-1af1c3025b92?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Spotify Profile Picture">
+                        </div>
+                        
+                        <!-- Greetin user -->
+                        <div class="greetings_user">
+                                <h2>Hello,</h2>
+                                <h1>USER</h1>
+                        </div>
+                </div> <!-- End of user_profile_section -->
+                
+                <form class="search-form" action="#" method="get">
+                        <input class="ryuji_button" 
                         autofocus 
                         autocomplete="off" 
                         autocapitalize="off" 
-                        required 
                         name="Query" 
                         placeholder="Search for Song / Playlist..." 
                         type="text">
-        
-                <!-- Search Icon -->
-                <svg xmlns="http://www.w3.org/2000/svg" 
-                fill="none" 
-                viewBox="0 0 24 24" 
-                stroke-width="1.5" 
-                stroke="currentColor" 
-                id="search-icon">
-                <path stroke-linecap="round" 
+                        
+                        <!-- Search Icon -->
+                        <svg xmlns="http://www.w3.org/2000/svg" 
+                        fill="none" 
+                        viewBox="0 0 24 24" 
+                        stroke-width="1.5" 
+                        stroke="currentColor" 
+                        id="search-icon">
+                        <path stroke-linecap="round" 
                         stroke-linejoin="round" 
                         d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
                 </svg>
-        
+                
                 <!-- Clear Button (X Icon) -->
                 <svg id="clear_button" 
                 xmlns="http://www.w3.org/2000/svg" 
@@ -59,44 +56,43 @@
                 stroke="currentColor" 
                 class="clear-icon">
                 <path stroke-linecap="round" 
-                        stroke-linejoin="round" 
-                        d="M6 18 18 6M6 6l12 12" />
-                </svg>
-                
+                stroke-linejoin="round" 
+                d="M6 18 18 6M6 6l12 12" />
+        </svg>
+
         </form> <!-- End of search-container form -->
-        
-</div> <!-- End of user_profile_wrapper -->
+        </div> <!-- End of user_profile_wrapper -->
 
 
-<div class="wrapper_containerPas">
-        <div class="grid_pas">
+        <div class="wrapper_containerPas">
+                <div class="grid_pas">
+                        
+                        <div class="music_box card1">
+                                <img src="https://images.unsplash.com/photo-1616356607338-fd87169ecf1a?q=80&w=2070&auto=format&fit=crop" alt="Playlist">
+                                <div class="text">Playlist</div>
+                        </div>
+                        
+                        <div class="music_box card2">
+                                <img src="https://images.unsplash.com/photo-1595177663993-4849619ab1f8?q=80&w=1974&auto=format&fit=crop" alt="Liked Title">
+                                <div class="text">Liked Title</div>
+                        </div>
+                        
+                        <div class="music_box card3">
+                                <img src="https://images.unsplash.com/photo-1595177663993-4849619ab1f8?q=80&w=1974&auto=format&fit=crop" alt="Artist">
+                                <div class="text">Artist</div>
+                        </div>
+                        <div class="music_box card4">
+                                <img src="https://images.unsplash.com/photo-1616356607338-fd87169ecf1a?q=80&w=2070&auto=format&fit=crop" alt="Album">
+                                <div class="text">Album</div>
+                        </div>
+                </div> <!-- End of grid_pas-->
+        </div> <!-- End of wrapper_containerPas-->
 
-                <div class="music_box card1">
-                        <img src="https://images.unsplash.com/photo-1616356607338-fd87169ecf1a?q=80&w=2070&auto=format&fit=crop" alt="Playlist">
-                        <div class="text">Playlist</div>
-                </div>
-
-                <div class="music_box card2">
-                        <img src="https://images.unsplash.com/photo-1595177663993-4849619ab1f8?q=80&w=1974&auto=format&fit=crop" alt="Liked Title">
-                        <div class="text">Liked Title</div>
-                </div>
-
-                <div class="music_box card3">
-                        <img src="https://images.unsplash.com/photo-1595177663993-4849619ab1f8?q=80&w=1974&auto=format&fit=crop" alt="Artist">
-                        <div class="text">Artist</div>
-                </div>
-                <div class="music_box card4">
-                        <img src="https://images.unsplash.com/photo-1616356607338-fd87169ecf1a?q=80&w=2070&auto=format&fit=crop" alt="Album">
-                        <div class="text">Album</div>
-                </div>
-        </div> <!-- End of grid_pas-->
-</div> <!-- End of wrapper_containerPas-->
-
-<div class="coverflow_playlist">
-        {% for image_url in playlist_images %}
+        <div class="coverflow_playlist">
+                {% for image_url in playlist_images %}
                 <div class="playlist_image">
                         <img id="images_playlist" src="{{ image_url }}" alt="Playlist Image" style="width:200px; height:auto;">
                 </div>
-        {% endfor %}
-</div>
+                {% endfor %}
+        </div>
 {% endblock %}

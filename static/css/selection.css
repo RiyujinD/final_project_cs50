@@ -1,163 +1,161 @@
 
-    /* body {
-        color: #5d9f80d3;  *var(--text-secondary);?*
-    } */
+  /* body {
+      color: #5d9f80d3;  *var(--text-secondary);?*
+  } */
 
-      /* Profile section layout */  
+  * {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  
+  .user_profile_wrapper {
+    width: 100%;
+    height: 25rem;
+    display: flex;
+    margin-top: 1rem;
+    align-items: center;
+    justify-content: center;
+    gap: 5rem;
+  }
+  
+  
+  /* Profile section layout */
+  .user_profile_section {
+    display: flex;
+  }
+  
+  /* Image section */
+  .spotify_pp_wrapper {
+    width: 15rem; 
+    height: 15rem;
+    aspect-ratio: 1 / 1; 
+    border-radius: 50%; 
+    outline: 0.233rem solid rgba(0, 155, 155, 0.7); /* Need too find better outline*/
+    overflow: hidden;
+  }
+  
+  .spotify_pp_wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; 
+    border-radius: inherit; 
+  }
+  
+  .greetings_user {
+    transform: translateY(30%);
+    font-family: "Gill Sans", sans-serif;
+    text-align: left;
+    padding-left: 2rem;
+    color: var(--text-color); 
+  }
+  
+  .greetings_user h1 {
+    font-size: 4rem;
+    color: #1DB954; /* Spotify green color to store */
+  }
+  
+  .greetings_user h2 {
+    font-size: clamp(2rem, 2rem, 3rem);
+  }
+  
+  
+  
+  /*Row grid 2 section */
+  .search-form {
+    position: relative;
+    height: 3.3rem;
+    width: 22rem;
+    transform: translateY(45%);
+  }
+  
+  
+  .ryuji_button {
+    width: 100%;
+    height: 100%;
+    border-radius: 0.5em;
+    padding: 0 4rem 0 3rem; 
+    background-color: var(--glass-color);
+    font-size: 1rem;
+    border: 0.13rem solid rgba(0, 155, 155, 0.7); 
+    outline-color: transparent;
+    color: var(--text-color);
+  }
+  
+  .ryuji_button:focus {
+    outline: 0.155rem solid rgba(0, 155, 155, 0.7);
+    border: none;
+  }
+  
+  #search-icon {
+    position: absolute;
+    top: 50%;
+    left: 1rem; 
+    transform: translateY(-50%); /* Flip on X axis, center Y axis */
+    transform-origin: center;
+    width: 1.5rem;
+    height: 1.5rem;
+    color: var(--glass-textColor);
+    pointer-events: none;
+    transition: color 0.2s, filter 0.2s; /* Smooth transition for glow effect */
+  }
+  
+  #clear_button {
+    position: absolute;
+    top: 50%;
+    right: 1rem; 
+    transform: translateY(-50%); 
+    transform-origin: center;
+    width: 2rem;
+    height: 2rem;
+    opacity: 0.6;
+    color: var(--glass-textColor);
+    cursor: pointer; /
+  }
+  
+  .ryuji_button:focus + #search-icon {
+    color: var(--search-iconColor); 
+    filter: var(--search-iconFilter);
+  }
+  
+  
+  
+  @media screen and (max-width: 930px) {
+    
     .user_profile_wrapper {
-      width: 100%;
-      height: max-content;
-      display: flex;
+      display: grid;
       align-items: center;
-      justify-content: flex-start;
-      margin-top: 3rem;
-      overflow: hidden;
+      justify-items: center;
+      grid-template-columns: 1fr;
+      gap: 1rem;    
     }
     
     .user_profile_section {
-      width: 35rem;  
-      height: max-content;
-      display: flex;
-      margin-left: 25%;
-    }
-      
-    .greetings_user {
-      display: flex;
-      flex-direction: column;
-      align-items: start;
+      width: 100%;
       justify-content: center;
-      font-family: "Gill Sans", sans-serif;
-      text-align: left;
-      margin-left: 2rem;
-      color: rgba(255, 255, 255, 0.8); 
     }
     
+    .spotify_pp_wrapper {
+      width: 10rem; 
+      height: 10rem;
+    }
+  
     .greetings_user h1 {
-      font-size: 4rem;
-      color: #1DB954;
+      font-size: 3.4rem;
     }
-    
+  
     .greetings_user h2 {
-      font-size: clamp(2rem, 2rem, 3rem);
-    }
-    
-    /* Image section */
-    .spotify_pp_wrapper {
-      width: clamp(10rem, 50%, 15rem); 
-      min-width: 10rem;
-      aspect-ratio: 1 / 1; 
-      border-radius: 50%; 
-      border: 0.2rem solid rgba(0, 155, 155, 0.7); 
-      overflow: hidden;
-    }
-    
-    .spotify_pp_wrapper img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover; 
-      border-radius: inherit; 
+      font-size: 2rem;
     }
     
     .search-form {
-      position: relative;
-      height: 3.3rem;
-      width: 25rem;
-    }
-       
-    .ryuji_button {
-      width: 100%;
-      height: 100%;
-      border-radius: 0.5em;
-      padding: 0 4rem; 
-      background-color: rgba(0, 0, 0, 0.3);
-      font-size: 1rem;
-      border: 0.13rem solid rgba(0, 155, 155, 0.7); 
-      outline-color: transparent;
-      color: white;
-    }
-    
-    .ryuji_button:focus {
-      outline: 0.155rem solid rgba(0, 155, 155, 0.7);
-      box-shadow: 0 0 1rem rgba(0, 155, 155, 0.8); 
-      border: none;
-    }
-    
-    #search-icon {
-      position: absolute;
-      top: 50%;
-      left: 1rem; 
-      transform: translateY(-50%); /* Flip on X axis, center Y axis */
-      transform-origin: center;
-      width: 1.5rem;
-      height: 1.5rem;
-      color: rgba(255, 255, 255, 0.3);
-      pointer-events: none;
-      transition: color 0.2s, filter 0.2s; /* Smooth transition for glow effect */
-    }
-    
-    #clear_button {
-      position: absolute;
-      top: 50%;
-      right: 1rem; 
-      transform: translateY(-50%); /* Flip on X axis, center Y axis */
-      transform-origin: center;
-      width: 2rem;
-      height: 2rem;
-      opacity: 0.6;
-      color: rgba(255, 255, 255, 0.5);
-      cursor: pointer; /* Changes cursor to indicate it's clickable */
-    }
-    
-    /* Hover Effect */
-    #clear_button:hover {
-      opacity: 0.9; /* Makes it more visible when hovered */
-    }
-    
-    .ryuji_button:focus + #search-icon {
-      color: rgba(0, 255, 255, 0.8); 
-      filter: drop-shadow(0px 0px 10px rgba(0, 255, 255, 0.8));
-    }
-    
-  @media screen and (max-width: 1000px) {
-      /* 100vw for better spacing between elements */
-    .user_profile_section {
-      width: 95%;
-    }
+      transform: translateY(0%);
+    }  
   }
 
-  @media screen and (max-width: 800px) {
 
-    .user_profile_section {
-      flex-direction: column;
-      align-items: center; 
-      justify-content: center; 
-      flex-wrap: wrap; /* Allows elements to move to the next line */
-      gap: 2rem;
-    }
-    
-    .spotify_pp_wrapper {
-      padding: 0;
-      margin: 0;
-    }
-
-    .search-form {
-      width: min(80%, 20rem); /* Ensures it doesn't exceed 90% of the screen width */
-      margin: 0;
-      order: 1; /* Push the form below */
-      margin-top: 2rem;
-    }
-    
-    .greetings_user {
-      width: 100%;
-      margin: 0;  
-      padding: 0;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      transform: translateX(0);
-    }
-  }
 
   /* Set the style of the music box grid */
   .centered_wrapper_musicBox {
@@ -171,7 +169,7 @@
   .wrapper_containerPas {
     height: 35rem;
     width: 100%;
-    margin-top: 7rem;
+    margin-top: 1.2rem;
   }
   
   /* Grid Layout */
@@ -197,7 +195,7 @@
     border-radius: 2rem;
     align-self: center;
     border: 0.17rem solid hsla(210, 30%, 50%, 0.263); 
-    box-shadow: 0.6rem 0.6rem 1rem rgba(0, 155, 155, 0.153), inset 0 0 0.5rem rgba(0, 155, 155, 0.5);
+    box-shadow: var(--box-shadow);
     cursor: pointer;
     overflow: hidden;
     transition: transform 0.3s;
@@ -238,13 +236,13 @@
   @media (max-width: 850px) {
     .grid_pas {
       width: 100%;
-      row-gap: 2rem;
+      /* row-gap: 2rem; */
     }
     
     /* Box Styling */
-    .music_box {
+    /* .music_box {
       box-shadow: 0 0 0.9rem hsl(209, 98%, 30%);
-    }
+    } */
   }
   
   @media (max-width: 600px) {
@@ -259,7 +257,7 @@
 
     .music_box {
       border: 0.17rem solid hsla(210, 30%, 50%, 0.263); 
-      box-shadow: 0 0.3rem 1rem rgba(0, 155, 155, 0.3), inset 0 0 0.5rem rgba(0, 155, 155, 0.3);
+      /* box-shadow: 0 0.3rem 1rem rgba(0, 155, 155, 0.3), inset 0 0 0.5rem rgba(0, 155, 155, 0.3); */
     }
 
     .card1 { grid-column: 1 / 2; grid-row: 1 / 2; }

@@ -95,34 +95,6 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         });
     }
-    
-    // Change shadow of cards 
-    const shadowHandler = () => {
-        const theme = html.getAttribute('data-theme');
-
-        cards.forEach((card) => {
-            if (theme === "dark") {
-                card.style.boxShadow = "0px 25px 20px -20px rgba(40, 197, 66, 0.45), 0 0 10px rgba(255, 255, 255, 0.2)";
-            }
-            else if (theme === "light") {
-                card.style.boxShadow = "13px 13px 10px -4px rgba(0, 0, 0, 0.4),"
-                                    + "5px 3px 6px -2px rgba(0, 0, 0, 0.5),"
-                                    + "inset 4px 15px 13px -14px rgba(255, 255, 255, 1)";
-            }
-        });
-    };
-
-    shadowHandler();
-
-    // Observe change to html data-theme
-    const observer = new MutationObserver(shadowHandler);
-
-    observer.observe(html, {
-        attributes: true,                   // Watch for changes to attributes
-        attributeFilter: ['data-theme']     // Only watch changes to the 'data-theme' attribute
-    });
-
-
 });
 
 
