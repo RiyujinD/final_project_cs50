@@ -243,27 +243,27 @@ def selection():
 
 
 
-@app.route("/api/playlist-images")
-def get_playlist_images():
+# @app.route("/api/playlist-images")
+# def get_playlist_images():
 
-    refresh_access_token()
-    playlists = get_user_playlist()
-    if isinstance(playlists, tuple):
-        return playlists  
+#     refresh_access_token()
+#     playlists = get_user_playlist()
+#     if isinstance(playlists, tuple):
+#         return playlists  
     
-    if not playlists:
-        return jsonify({"error": "No playlists found"}), 404  
+#     if not playlists:
+#         return jsonify({"error": "No playlists found"}), 404  
 
-    playlists_img = [
-        playlist.get("images", [{}])[0].get("url", "")  # Store first img of playlists and the url for it
-        for playlist in playlists
-        if playlist.get("images")  # Filter out playlists with no images
-    ]
+#     playlists_img = [
+#         playlist.get("images", [{}])[0].get("url", "")  # Store first img of playlists and the url for it
+#         for playlist in playlists
+#         if playlist.get("images")  # Filter out playlists with no images
+#     ]
 
-    if not playlists_img:
-        return jsonify({"error": "No playlist images available"}), 404
+#     if not playlists_img:
+#         return jsonify({"error": "No playlist images available"}), 404
 
-    return jsonify({"images": playlists_img})
+#     return jsonify({"images": playlists_img})
 
 
 

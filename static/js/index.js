@@ -1,24 +1,22 @@
-// Remove blur on the text in Title 
+// Remove blur on text in Title 
 document.addEventListener('DOMContentLoaded', () => {
 
-    // Remove blur on the text in the main page
-    document.getElementById('blur_text').addEventListener('click', function () {
+    blurText = document.getElementById('blur_text');
 
-        // Store the filter style of element
+    blurText.addEventListener('click', function () {
         const stylesElement = window.getComputedStyle(this);
-        const Filter = stylesElement.getPropertyValue('filter');
-        const WebkitFilter = stylesElement.getPropertyValue('-webkit-filter');
+        const filter = stylesElement.getPropertyValue('filter');
+        const webkitFilter = stylesElement.getPropertyValue('-webkit-filter');
+        
+        const hasBlur = filter.includes("blur") || webkitFilter.includes("blur");
+        
 
-        // Checking if blur applyed
-        const hasBlur = Filter.includes("blur") || WebkitFilter.includes("blur");
-
-        // If blur store the value in the element html
         if (hasBlur) {
             if (!this.dataset.modernFilter) {
-                this.dataset.modernFilter = Filter;
-                this.dataset.webkitFilter = WebkitFilter;        
+                this.dataset.modernFilter = filter;
+                this.dataset.webkitFilter = webkitFilter;        
             }
-
+            
             // Remove the blur due to the click event
             this.style.filter = 'none';
             this.style.webkitFilter = 'none';
@@ -28,65 +26,67 @@ document.addEventListener('DOMContentLoaded', () => {
             this.style.webkitFilter = this.dataset.webkitFilter;
         }
     });
-}); // End of remove blur on click
+}); 
 
 
-// Carrousel scrolling and click nav link event
+// Scroll and auto scroll for the slider carousel
 document.addEventListener('DOMContentLoaded', () => {
-    const navLinks = document.querySelectorAll('.slider-nav a');
-    const slides = document.querySelectorAll('.slider img');
-    const slider = document.querySelector('.slider');
+    const slider = document.querySelector('#slider'),
+          slides = document.querySelectorAll('#slider img'),
+          navLinks = document.querySelectorAll('#slider-nav a');
 
-    if (navLinks.length > 0 && slides.length > 0 && slider) {
+    const sliderExist = slider && slides.length > 0 && navLinks.length > 0;
+    
+    if (!sliderExist) return;
 
-        navLinks[0].classList.add('active'); // Default active slide 
+    let currentIndex = 0;
+    let autoScrollTimer, scrollEndTimer;
 
-        // Smooth scroll to specific slide when nav links are clicked
-        navLinks.forEach((link, i) => {
-            link.addEventListener('click', (e) => {
-                e.preventDefault();
-                scrollToSlide(i);
-            });
+    navLinks[0].classList.add('active');
+    
+    const scrollToSlide = (index) => {
+        slider.scrollTo({
+            left: slides[index].offsetLeft,
+            behavior: 'smooth'
         });
+        navLinks.forEach((link, i) => link.classList.toggle('active', i === index));
+        currentIndex = index;
+    };
 
-        // Automatically switch slides every 5 seconds
-        let currentIndex = 0;
-        const switchSlide = () => {
-            currentIndex = (currentIndex + 1) % slides.length; // Loop back to the first slide
-            scrollToSlide(currentIndex);
-        };
+    const startAutoScroll = () => {
+        clearTimeout(autoScrollTimer);
+        autoScrollTimer = setTimeout(() => {
+            scrollToSlide((currentIndex + 1) % slides.length);
+            startAutoScroll();
+        }, 5000);
+    };
 
-        const scrollToSlide = (index) => {
-            slider.scrollTo({
-                left: slides[index].offsetLeft,
-                behavior: 'smooth',
-            });
-            updateActiveNav(index);
-        };
+    navLinks.forEach((link, index) => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            scrollToSlide(index);
+            startAutoScroll();
+        });
+    });
 
-        const updateActiveNav = (index) => {
-            navLinks.forEach((link, i) => link.classList.toggle('active', i === index));
-        };
+    slider.addEventListener('scroll', () => {
+        clearTimeout(scrollEndTimer);
+        scrollEndTimer = setTimeout(() => startAutoScroll(), 200); // Only reset after user stops scrolling
+    });
 
-        // Start the automatic slide switch with a 5-second interval
-        setInterval(switchSlide, 5000);
-    }
+    startAutoScroll();
 });
 
 
 // expand cards and add shadow base on color theme
 document.addEventListener("DOMContentLoaded", () => {
-
-    const html = document.documentElement;
-    const cards = document.querySelectorAll('.card');
     
-    // Expand cards on click 
-    if (cards.length > 0) {
+    const cards = document.querySelectorAll('.card');
 
-        // Expanding first card on page load
+    if (cards.length > 0) {
+        
         const firstCard = cards[0]; 
         firstCard.classList.add('expanded'); 
-        
         
         cards.forEach((target) => {
             target.addEventListener('click', () => {

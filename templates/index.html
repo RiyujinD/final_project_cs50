@@ -9,26 +9,25 @@
 {% endblock %}
 
 {% block main %}
-    <!-- Carrousel on main -->
-    <div class="carrousel">
-        <div class="slider-wrap">
-            <div class="slider">
-                <img id="slide1" src="{{ url_for('static', filename='images/spotify_lyrics.jpg') }}" alt="Lyrics Spotify">
-                <img id="slide2" src="{{ url_for('static', filename='images/spotify_list.jpg') }}" alt="Playlist Spotify">
-                <img id="slide3" src="{{ url_for('static', filename='images/spotify_liked.jpg') }}" alt="Like playlist Spotify">
-            </div>
-            <div class="slider-nav">
-                <a href="#slide1"></a>
-                <a href="#slide2"></a>
-                <a href="#slide3"></a>
-            </div> <!-- End slider-nav -->
-        </div> <!-- End slider-wrap -->
-
-        <div id="container_glass_box">
-          <h1>DO YOU KNOW YOUR <span style="color: #1DB954;">SPOTIFY</span> SONGS?</h1>
+  
+    <div id="carrousel">
+      <div id="slider-wrap">
+        <div id="slider">
+          <img id="slide1" src="{{ url_for('static', filename='images/spotify_lyrics.jpg') }}" alt="Lyrics Spotify">
+          <img id="slide2" src="{{ url_for('static', filename='images/spotify_list.jpg') }}" alt="Playlist Spotify">
+          <img id="slide3" src="{{ url_for('static', filename='images/spotify_liked.jpg') }}" alt="Liked Playlist Spotify">
+        </div>
+        <div id="slider-nav">
+          <a href="#slide1" class="nav-link"></a>
+          <a href="#slide2" class="nav-link"></a>
+          <a href="#slide3" class="nav-link"></a>
+        </div>
       </div>
 
-    </div> <!-- End carrousel -->
+      <div id="container_glass_box">
+        <h1>DO YOU KNOW YOUR <span style="color: #1DB954;">SPOTIFY</span> SONGS?</h1>
+      </div>
+    </div>
 
 
     <div id="wrapper_titleDescription">

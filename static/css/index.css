@@ -1,7 +1,4 @@
-
-
-/*  Start of Carrousel */
-.carrousel {
+#carrousel {
   position: relative;
   top: 0;
   width: 100%;
@@ -10,35 +7,34 @@
   box-shadow: var(--carrousel-boxShadow);
 }
 
-
 @media (max-width: 850px) {
-  .carrousel {
+  #carrousel {
     height: fit-content;
   }
 }
 
-.slider-wrap {
+#carrousel #slider-wrap {
   position: relative;
   width: 100%;
   overflow: hidden;
   height: 100%;
 }
 
-.slider {
+#carrousel #slider {
   display: flex;
   aspect-ratio: 16 / 11;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
   scroll-behavior: smooth;
   box-shadow: 0 1.5rem 3rem -0.75rem hsla(0, 0%, 0%, 0.25);
-  -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+  -webkit-overflow-scrolling: touch; 
 }
 
-.slider::-webkit-scrollbar {
-  display: none; /* Safari and Chrome */
+#slider::-webkit-scrollbar {
+  display: none; 
 }
 
-.slider img {
+#carrousel #slider img {
   scroll-snap-align: start;
   height: 100%;
   width: auto;
@@ -47,7 +43,7 @@
   transition: all 1s ease;
 }
 
-.slider-nav {
+#slider-nav {
   display: flex;
   column-gap: 1rem;
   position: absolute;
@@ -57,7 +53,7 @@
   z-index: 10; 
 }
 
-.slider-nav a {
+#slider-nav .nav-link {
   color: var(--bg-color);
   width: 0.5rem;
   height: 0.5rem;
@@ -67,17 +63,15 @@
   transition: opacity ease 250ms;
 }
 
-.slider-nav a:hover {
+#slider-nav .nav-link:hover {
   opacity: 0.9;
 }
 
-.slider-nav a.active {
-  background-color: black; /* Highlight dot */
+#slider-nav .nav-link.active {
+  background-color: black;
   opacity: 1; 
 } 
-/* End of Carrousel */
 
-/* Glass alike box with text inside */
 #container_glass_box {
   position: absolute; 
   left: 50%;
@@ -91,7 +85,7 @@
   -webkit-backdrop-filter: blur(10px);
   border-radius: 20px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5), 0 1px 0px rgba(0, 0, 0, 0.7), inset 0 2px 3px rgba(255, 255, 255, 1), inset 0 -1px 4px 0px rgba(255, 255, 255, 1);
-  z-index: 100; /* Top of carrousel */ 
+  z-index: 100; 
 }
 
 #container_glass_box > h1 {
@@ -121,9 +115,6 @@
     padding: 1.5rem;
   }
 }
-/* End of Glass Box */
-/* End of Glass Box */
-
 
 #wrapper_titleDescription {
   position: relative;
@@ -137,8 +128,7 @@
   text-align: center;
 }
 
-/* Main Title on page */
-h1#main_title {
+#wrapper_titleDescription h1#main_title {
   position: relative;
   width: 90%;
   max-width: 95%;
@@ -149,14 +139,14 @@ h1#main_title {
   text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
 }
 
-#main_title > span#blur_text {
+#wrapper_titleDescription #main_title > span#blur_text {
   filter: blur(7px);
   -webkit-filter: blur(7px);
   cursor: pointer;
   transition: all 0.4s ease;
 }
 
-#game_description {
+#wrapper_titleDescription #game_description {
   position: relative;
   width: 60%;
   max-width: 600px;
@@ -189,7 +179,6 @@ h1#main_title {
   }
 }
 
-
 @media (max-width: 400px) {
 
   #wrapper_titleDescription {
@@ -204,11 +193,6 @@ h1#main_title {
     margin-top: 2.3rem;
   }
 }
-/* End of Main Title */
-/* End of Main Title */
-
-
-
 
 hr {
   margin-top: 2rem;
@@ -218,7 +202,6 @@ hr {
 
 
 
-/* Global variables in .containerGrid local to this component */
 .containerGrid.grid_component {
   --cardWidth: 4rem;
   --cardWidthActive: 30rem;
@@ -297,6 +280,7 @@ hr {
   opacity: 0.8;
   color: black;
   display: flex;
+  font-size: 105%;
   justify-content: center;
   align-items: center;
   width: var(--iconSize);
