@@ -148,7 +148,7 @@ body::-webkit-scrollbar-thumb {
 
 .nav-icon {
   font-size: 3rem; /* svg size */
-  min-height: 3rem;
+  height: 3rem;
 }
 
 .nav-item:last-child {
