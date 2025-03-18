@@ -1,3 +1,15 @@
+.top_hr_wrapper {
+  margin-top: 2rem;
+  margin-bottom: 7rem;
+  opacity: 0;
+}
+
+.bot_hr_wrapper {
+  margin-top: 10rem;
+  margin-bottom: 2rem;
+}
+
+
 #carrousel {
   position: relative;
   top: 0;
@@ -116,7 +128,7 @@
   }
 }
 
-#wrapper_titleDescription {
+.wrapper_titleDescription {
   position: relative;
   width: 100%;
   display: flex;
@@ -128,25 +140,25 @@
   text-align: center;
 }
 
-#wrapper_titleDescription h1#main_title {
+.wrapper_titleDescription h1.main_title {
   position: relative;
   width: 90%;
   max-width: 95%;
   font-weight: 600;
   line-height: 64px;
-  font-size: 4.5rem;
+  font-size: 4rem;
   overflow-wrap: break-word;
   text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
 }
 
-#wrapper_titleDescription #main_title > span#blur_text {
-  filter: blur(7px);
-  -webkit-filter: blur(7px);
+.wrapper_titleDescription .main_title > span#blur_text {
+  filter: blur(5px);
+  -webkit-filter: blur(5px);
   cursor: pointer;
   transition: all 0.4s ease;
 }
 
-#wrapper_titleDescription #game_description {
+.wrapper_titleDescription .game_description {
   position: relative;
   width: 60%;
   max-width: 600px;
@@ -161,19 +173,19 @@
 
 @media (max-width: 768px) {
 
-  #wrapper_titleDescription {
+  .wrapper_titleDescription {
     padding-top: 10rem;
   }
 
-  h1#main_title {
+  h1.main_title {
     font-size: 3rem;
   }
 
-  #game_description {
+  .game_description {
     width: 85%;
   }
 
-  #main_title > span#blur_text {
+  .main_title > span#blur_text {
     filter: blur(4px);
     -webkit-filter: blur(4px);
   }
@@ -181,25 +193,18 @@
 
 @media (max-width: 400px) {
 
-  #wrapper_titleDescription {
+  .wrapper_titleDescription {
     padding-top: 9rem;
   }
 
-  h1#main_title {
+  h1.main_title {
     font-size: 2.5rem;
   }
 
-  #game_description {
+  .game_description {
     margin-top: 2.3rem;
   }
 }
-
-hr {
-  margin-top: 2rem;
-  margin-bottom: 10rem;
-}
-
-
 
 
 .containerGrid.grid_component {
@@ -214,7 +219,7 @@ hr {
 }
 
 .containerGrid {
-  height: 30rem;
+  height: 40rem;
   display: grid;
   grid-template-columns: auto 1fr;
 }
@@ -344,17 +349,15 @@ hr {
 
 /* Right Column on grid */
 .cardInfo_row2 {
-  position: relative;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-end;
   width: 100%;
   height: 100%;
   font-size: 4rem;
   text-transform: uppercase;
   text-align: left;
   padding-left: clamp(1rem, 10rem, 15rem);
-  transform: translateY(40%);
   gap: 5rem;
   transition: all 1s ease-in-out;
   text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
@@ -476,7 +479,157 @@ hr {
 }
 
 
-.register_link_bot {
+
+.wrapper_titleDescription_two {
+  margin: 0;
+  padding-top: 5rem;
+}
+
+
+
+
+.container_videoBattle {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  /* font-family: ; */
+}
+
+.wrapper_videoBattle {
+  position: relative;
+  width: 80%;
+  height: fit-content;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin-bottom: 7rem;
+}
+
+.vs_text {
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-5deg);
+  font-size: 2.4rem;
+  font-weight: 600;
+  color: var(--spotifyColor);
+}
+
+.video_item {
+  position: relative;
+  width: 400px; 
+  height: auto;
+}
+
+.video_index {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  height: 3rem;
+  width: 3rem;
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--spotifyColor);
+  background: var(--glass-color);
+  padding: 0.5rem;
+  border-radius: 50%;
+  z-index: 1;
+}
+
+.video_indexB {
+  top: 1rem;
+  left: 1rem;
+}
+
+
+.videos {
+  width: 400px;
+  height: 300px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 0px -3px 15px 3px rgba(255, 255, 255, 0.2), 0 0 10px rgba(255, 255, 255, 0.1);
+}
+
+.video_description {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+.metadata_artist {
+  margin-top: 0.5rem;
+  font-size: 1.2rem;
+  color: var(--text-secondary); 
+}
+
+.metadata_songTitle {
+  padding-top: 0.7rem;
+  font-weight: bold;
+  font-size: 1.8rem; 
+}
+
+@media screen and (max-width: 1500px) {
+  .wrapper_videoBattle {
+    display: none;
+  }
+}
+
+
+
+.split-button {
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  width: 30rem;
+  height: 5rem;
+  border: none;
+  border-radius: 5rem;
+  box-shadow: 1px 2px 5px rgba(255, 255, 255, 0.2);
+}
+
+.half {
+  flex: 1;
+  background: hsla(240, 5%, 10%, 0.8);
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.left {
+  border-top-left-radius: 5rem;
+  border-bottom-left-radius: 5rem;
+}
+
+.right {
+  border-top-right-radius: 5rem;
+  border-bottom-right-radius: 5rem;
+}
+
+.split-button {
+  outline: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.half:hover {
+  background: hsla(240, 5%, 20%, 0.8);
+}
+
+
+
+
+
+
+
+
+/* .register_link_bot {
   display: flex;
   justify-content: center;
   margin-top: 30rem;
@@ -503,10 +656,7 @@ a.last_element_login:hover {
   .register_link_bot {
     margin-top: 15rem !important;
   } 
-}
-
-
-
+} */
 
 /* #playlist_image {
 max-width: 480px;

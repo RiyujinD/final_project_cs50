@@ -5,7 +5,9 @@
 {% block head %}
     <!-- Link css / js file for route -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+
     <script src="{{ url_for('static', filename='js/index.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/coverflow_class.js') }}"></script>
 {% endblock %}
 
 {% block main %}
@@ -30,12 +32,12 @@
     </div>
 
 
-    <div id="wrapper_titleDescription">
-      <h1 id="main_title"> Can you find the <span id="blur_text"><del>missing</del></span> lyrics 🎵</h1>
-      <p id="game_description">Listen to your favorite Spotify tracks, but when the lyrics cut out, can you guess the next words? Who will be the ultimate Music Master?! 🎤</p>
+    <div class="wrapper_titleDescription">
+      <h1 class="main_title"> 🎵 Lyric Battle: Guess the <span id="blur_text"><del>missing</del></span> Lyrics! 🎵</h1>
+      <p class="game_description">Listen to your favorite Spotify tracks, but when the lyrics cut out, can you guess the next words? Who will be the ultimate music expert?! </p>
     </div>
 
-    <hr>
+    <hr class="top_hr_wrapper">
 
     <div class="containerGrid grid_component">
         <div class="containerCard_row1">
@@ -82,6 +84,65 @@
         </div>
         
      </div> <!-- End of container grid -->
+
+     <hr class="bot_hr_wrapper">
+
+     <div class="wrapper_titleDescription wrapper_titleDescription_two">
+      <h1 class="main_title"> ⚔️ Stream Battle: Guess the Top Track! ⚔️</h1>
+      <p class="game_description">Two songs, one winner. Guess which track is ruling the streaming charts! </p>
+    </div>
+
+    <hr class="top_hr_wrapper">
+
+
+    <div class="container_videoBattle">
+      <div class="wrapper_videoBattle">
+
+        <div class="video_item">
+  
+          <div class="video_index">A</div>
+
+          <video class="videos" controls >
+            <source src="{{ url_for('static', filename='videos/TheNotoriousBIG-Juicy.mp4') }}" type="video/mp4">
+            Your browser does not support the video tag. 
+          </video>
+
+          <div class="video_description">
+
+            <p class="metadata_songTitle">Juicy</p>
+            <p class="metadata_artist">The Notorious B.I.G.</p>
+          </div>
+        </div>
+
+        <h1 class="vs_text">VS</h1>
+
+        <div class="video_item">
+          <div class="video_index video_indexB">B</div>
+          <video class="videos" controls muted>
+            <source src="{{ url_for('static', filename='videos/2Pac-HitEmUp.mp4') }}" type="video/mp4">
+            Your browser does not support the video tag. 
+          </video>
+
+          <div class="video_description">
+            <p class="metadata_songTitle">Hit 'Em Up</p>
+            <p class="metadata_artist">2Pac</p>
+          </div>
+        </div>
+
+      </div> <!-- End of wrapper video battle -->
+    </div> <!-- End of container video battle -->
+
+    <div class="split-button">
+      <button class="half left">A</button>
+      <button class="half right">B</button>
+    </div>
+
+    <hr class="bot_hr_wrapper">
+
+    <div class="wrapper_titleDescription wrapper_titleDescription_two">
+      <h1 class="main_title"> 🎶 Guess the Artist 🎶</h1>
+      <p class="game_description">Challenge yours knowledge and try to find the artist of the song! 🎵 </p>
+    </div>
 
     <div class="register_link_bot">
         <a href="/login" class="last_element_login">Login</a>
