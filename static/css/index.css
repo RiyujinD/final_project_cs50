@@ -1,3 +1,8 @@
+body {
+  overflow-x: hidden;
+}
+
+
 .top_hr_wrapper {
   margin-top: 2rem;
   margin-bottom: 7rem;
@@ -595,6 +600,7 @@
   border: none;
   border-radius: 5rem;
   box-shadow: 1px 2px 5px rgba(255, 255, 255, 0.2);
+  outline: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .half {
@@ -615,13 +621,29 @@
   border-bottom-right-radius: 5rem;
 }
 
-.split-button {
-  outline: 1px solid rgba(255, 255, 255, 0.2);
-}
-
 .half:hover {
   background: hsla(240, 5%, 20%, 0.8);
 }
+
+
+@media screen and (max-width: 700px) {
+  .split-button {
+    display: flex;
+    width: 20rem;
+    height: 4rem;
+  }
+
+  .left {
+    border-top-left-radius: 4rem;
+    border-bottom-left-radius: 4rem;
+  }
+  
+  .right {
+    border-top-right-radius: 4rem;
+    border-bottom-right-radius: 4rem;
+  }
+}
+
 
 .container_songGuessing {
   position: relative;
@@ -651,8 +673,8 @@
 .songGuessing_pp::after {
   position: absolute;
   content: '';
-  width: 20rem;
-  height: 20rem;
+  width: inherit;
+  height: inherit;
   border-radius: 50%;
   background-image: url(/static/images/dvd2.png);
   background-size: cover;
@@ -695,9 +717,6 @@
   color: var(--spotifyColor);
   transition: all 0.2s ease-in-out;
 }
-
-
-
 
 
 .search-form {
@@ -756,8 +775,43 @@
   filter: var(--search-iconFilter);
 }
 
+#greenWave {
+  position: absolute;
+  width: 50rem;
+  background-size: cover;
+  z-index: -10;
+  opacity: 0.4;
+  filter: drop-shadow(0 0 0.75rem rgba(121, 184, 21, 0.76));
+}
 
 
+
+@media screen and (max-width: 800px) {
+  #greenWave {
+    width: 30rem;
+  }
+}
+
+@media screen and (max-width: 700px) {
+  #greenWave {
+    width: 23rem;
+  }
+
+  .svg-container {
+    height: 3rem;
+    width: 3rem;
+  }
+  
+  .svg-container:hover {
+    height: 5rem;
+    width: 5rem;
+  }
+
+  .songGuessing_pp {
+    height: 15rem;
+    width: 15rem;
+  }
+}
 
 .btn_callToAction { 
   position: relative;
@@ -780,10 +834,17 @@
   margin-top: 15rem;
 }
 
+
 .btn_callToAction:hover {
   background: var(--glass-color);
   color: var(--spotifyColor);
 }
+
+
+
+
+
+
 
 /* .register_link_bot {
   display: flex;
@@ -806,9 +867,6 @@ a.last_element_login:hover {
   opacity: 1 !important;
 } */
 
-body {
-  overflow-x: hidden;
-}
 
 
 /* #playlist_image {
@@ -818,27 +876,3 @@ display: flex;
 justify-content: center;
 object-fit: cover;
 }  */
-
-
-
-
-
-
-#greenWave {
-  position: absolute;
-  width: 50rem;
-  background-size: cover;
-  z-index: -10;
-  opacity: 0.4;
-  filter: drop-shadow(0 0 0.75rem rgba(121, 184, 21, 0.76));
-  animation: wave 10s infinite linear;  
-}
-
-@keyframes wave {
-  0% {
-    background-position: 0 0;
-  }
-  100% {
-    background-position: 100% 0;
-  }
-}
