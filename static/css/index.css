@@ -151,12 +151,11 @@ body {
   font-weight: 600;
   line-height: 64px;
   font-size: 4rem;
-  padding-inline: 1rem;
   overflow-wrap: break-word;
   text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
 }
 
-.wrapper_titleDescription h1.main_title.oneT::before {
+/* .wrapper_titleDescription h1.main_title.oneT::before {
   content: '🎵';
   position: absolute;
   left: 0;
@@ -171,7 +170,7 @@ body {
   right: 0;
   top: 50%;
   transform: translate(100%, -50%) scaleX(-1);
-}
+} */
 
 
 
@@ -526,6 +525,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-direction: column;
   height: 100%;
   width: 100%;
 }
@@ -537,7 +537,7 @@ body {
   justify-content: center;
   align-items: center;
   gap: clamp(10rem, 17rem, 20rem);
-  margin-bottom: 7rem;
+  margin-bottom: 3rem;
   transform: all 1s ease-in-out;
 }
 
@@ -633,14 +633,17 @@ body {
 
 
 
-
-
+#containerSplitButtonNResult {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 20rem;
+  flex-direction: column;
+}
 
 
 .split-button {
-  position: relative;
-  left: 50%;
-  transform: translateX(-50%);
   display: flex;
   width: 30rem;
   height: 5rem;
@@ -672,6 +675,25 @@ body {
   background: hsla(240, 5%, 20%, 0.8);
 }
 
+.Aclicked, .Bclicked {
+  text-align: center;
+  margin-top: 4rem;
+  font-size: 2rem;
+}
+
+.Aclicked {
+  color: var(--spotifyColor);
+}
+
+.Bclicked {
+  color: rgba(211, 108, 104, 0.5);
+}
+
+.LogoResult {
+  /* text-align: center; */
+  font-size: 2rem;
+  margin-bottom: 4rem;
+}
 
 @media screen and (max-width: 700px) {
   .split-button {
@@ -793,17 +815,12 @@ body {
 
 
 #artistGuessInfo{
-  font-family: Georgia, 'Times New Roman', Times, serif;
+  /* font-family: Georgia, 'Times New Roman', Times, serif; */
   font-size: 1.5rem;
   letter-spacing: .4rem;
-  padding: 0 0 .5rem .5rem;
+  padding: 0 0 .7rem .7rem;
   color: var(--text-secondary);
 }
-
-
-
-
-
 
 
 
@@ -880,14 +897,6 @@ body {
 
 
 
-
-
-
-
-
-
-
-
 /* #greenWave {
   position: absolute;
   width: 30rem;
@@ -938,6 +947,11 @@ body {
 
 
 
+
+
+
+
+
 /* .register_link_bot {
   display: flex;
   justify-content: center;
@@ -961,6 +975,11 @@ a.last_element_login:hover {
 
 
 
+
+
+
+
+
 /* #playlist_image {
 max-width: 480px;
 height: auto;
@@ -968,14 +987,3 @@ display: flex;
 justify-content: center;
 object-fit: cover;
 }  */
-
-
-
-
-
-
-
-
-
-
-

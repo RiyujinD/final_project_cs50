@@ -99,6 +99,50 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 
+document.addEventListener('DOMContentLoaded', () => {
+    const buttonWrapper = document.getElementById('containerSplitButtonNResult');
+    const leftHalfButton = document.querySelector('.left');
+    const rightHalfButton = document.querySelector('.right');
+
+    if (!leftHalfButton || !rightHalfButton || !buttonWrapper) return;
+
+    let isActiveButton = false;
+    const halfsButton = [leftHalfButton, rightHalfButton];
+
+    halfsButton.forEach((button) => {
+        button.addEventListener('click', (e) => {
+
+            halfsButton.forEach((b) => {
+                b.innerHTML = "Login Now!";
+            });
+
+            if (!isActiveButton) {
+                let resultInfo = document.createElement('p');
+                let logoInfo = document.createElement('p');
+                logoInfo.classList.add('LogoResult');
+
+                if (e.target === leftHalfButton) {
+                    resultInfo.classList.add('Aclicked');
+                    resultInfo.innerHTML = 'Success!';
+                    logoInfo.innerHTML = '🏆';
+                } 
+                else if (e.target === rightHalfButton) {
+                    resultInfo.classList.add('Bclicked');
+                    resultInfo.innerHTML = 'Failure ❌';
+                    logoInfo.innerHTML = '❌';
+                }
+                buttonWrapper.prepend(logoInfo);
+                buttonWrapper.append(resultInfo);
+                isActiveButton = true;
+            }
+            else {
+                console.log("CTA button on");
+            }
+        });
+    });
+});
+
+
 
 // add Hover state for the play button to pulse with timeout
 document.addEventListener('DOMContentLoaded', () => {
