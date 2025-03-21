@@ -3,6 +3,6 @@ venv
 __pycache__
 .flask_session
 flask_session
-
+static/videos/
 
 
