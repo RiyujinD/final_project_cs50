@@ -3,6 +3,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     blurText = document.getElementById('blur_text');
 
+    if (!blurText) return;
+
     blurText.addEventListener('click', function () {
         const stylesElement = window.getComputedStyle(this);
         const filter = stylesElement.getPropertyValue('filter');
@@ -37,7 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const sliderExist = slider && slides.length > 0 && navLinks.length > 0;
     
-    if (!sliderExist) return;
+    if (card.length === 0) return;
 
     let currentIndex = 0;
     let autoScrollTimer, scrollEndTimer;
@@ -80,21 +82,47 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // expand cards and add shadow base on color theme
 document.addEventListener("DOMContentLoaded", () => {
-    
     const cards = document.querySelectorAll('.card');
+    if (cards.length === 0) return;
 
-    if (cards.length > 0) {
-        
-        const firstCard = cards[0]; 
-        firstCard.classList.add('expanded'); 
-        
-        cards.forEach((target) => {
-            target.addEventListener('click', () => {
-                cards.forEach((card) => card.classList.remove('expanded'));               
-                target.classList.add('expanded');               
-            });
+    const firstCard = cards[0];
+    firstCard.classList.add('expanded');
+
+    cards.forEach((target) => {
+        target.addEventListener('click', () => {
+            if (target.classList.contains('expanded')) return; // Skip if already expanded
+            
+            cards.forEach((card) => card.classList.remove('expanded'));
+            target.classList.add('expanded');
         });
+    });
+});
+
+
+
+// add Hover state for the play button to pulse with timeout
+document.addEventListener('DOMContentLoaded', () => {
+
+    const playButton = document.getElementById('svg-container');
+    if (!playButton) return; 
+    let isActive = false;
+
+    function pulseTimer() {
+        playButton.classList.add('hover_state');
+        setTimeout(() => {
+            playButton.classList.remove('hover_state');
+        }, 3000);
     }
+
+    setInterval(pulseTimer, 6000);
+
+    playButton.addEventListener('click', () => {
+        playButton.classList.remove('hover_state');
+
+        isActive = !isActive;
+
+        playButton.classList.toggle('activeButton', isActive); // If isActive true add active button class
+    });
 });
 
 

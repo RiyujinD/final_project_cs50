@@ -33,7 +33,7 @@
 
 
     <div class="wrapper_titleDescription">
-      <h1 class="main_title"> 🎵 Lyric Battle: Guess the <span id="blur_text"><del>missing</del></span> Lyrics! 🎵</h1>
+      <h1 class="main_title oneT">  Lyric Battle: Guess the <span id="blur_text"><del>missing</del></span> Lyrics! </h1>
       <p class="game_description">Listen to your favorite Spotify tracks, but when the lyrics cut out, can you guess the next words? Who will be the ultimate music expert?! </p>
     </div>
 
@@ -102,7 +102,7 @@
   
           <div class="video_index">A</div>
 
-          <video class="videos" controls >
+          <video class="videos" controls poster="{{ url_for('static', filename="images/BIG.jpg") }}">
             <source src="{{ url_for('static', filename='videos/TheNotoriousBIG-Juicy.mp4') }}" type="video/mp4">
             Your browser does not support the video tag. 
           </video>
@@ -118,7 +118,7 @@
 
         <div class="video_item">
           <div class="video_index video_indexB">B</div>
-          <video class="videos" controls muted>
+          <video class="videos" controls poster="{{ url_for('static', filename="images/2pac.jpg") }}">
             <source src="{{ url_for('static', filename='videos/2Pac-HitEmUp.mp4') }}" type="video/mp4">
             Your browser does not support the video tag. 
           </video>
@@ -146,52 +146,54 @@
     
     <hr class="top_hr_wrapper">
 
-    <div class="container_songGuessing">
-      <div class="songGuessing_pp">
-        <img id="greenWave" src="{{ url_for('static', filename='images/greenSoundWave.png') }}" alt="Green Sound Wave">
-        <div class="svg-container">
+    <div id="container_songGuessing">
+      <div id="songGuessing_pp">
+        <div id="svg-container">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
             <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z" />
           </svg>
         </div>
 
+      </div> 
+      
+      <div id="wrapper_infoAndForm">
+        <p id="artistGuessInfo">Artist Name: </p>
+
+        <form class="search-form" action="#" method="get">
+          <input class="ryuji_button" 
+          autocomplete="off" 
+          autocapitalize="off" 
+          name="Query Song" 
+          placeholder="Type your guess.." 
+          type="text">
+          
+          <!-- Search Icon -->
+          <svg xmlns="http://www.w3.org/2000/svg" 
+          fill="none" 
+          viewBox="0 0 24 24" 
+          stroke-width="1.5" 
+          stroke="currentColor" 
+          id="search-icon">
+          <path stroke-linecap="round" 
+          stroke-linejoin="round" 
+          d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+          </svg>
+
+          <!-- Clear Button (X Icon) -->
+          <svg id="clear_button" 
+          xmlns="http://www.w3.org/2000/svg" 
+          fill="none" 
+          viewBox="0 0 24 24" 
+          stroke-width="1.5" 
+          stroke="currentColor" 
+          class="clear-icon">
+          <path stroke-linecap="round" 
+          stroke-linejoin="round" 
+          d="M6 18 18 6M6 6l12 12" />
+          </svg>
+
+        </form> <!-- End of search-container form -->
       </div>
-
-      <form class="search-form" action="#" method="get">
-        <input class="ryuji_button" 
-        autocomplete="off" 
-        autocapitalize="off" 
-        name="Query Song" 
-        placeholder="Type your guess.." 
-        type="text">
-        
-        <!-- Search Icon -->
-        <svg xmlns="http://www.w3.org/2000/svg" 
-        fill="none" 
-        viewBox="0 0 24 24" 
-        stroke-width="1.5" 
-        stroke="currentColor" 
-        id="search-icon">
-        <path stroke-linecap="round" 
-        stroke-linejoin="round" 
-        d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
-        </svg>
-
-        <!-- Clear Button (X Icon) -->
-        <svg id="clear_button" 
-        xmlns="http://www.w3.org/2000/svg" 
-        fill="none" 
-        viewBox="0 0 24 24" 
-        stroke-width="1.5" 
-        stroke="currentColor" 
-        class="clear-icon">
-        <path stroke-linecap="round" 
-        stroke-linejoin="round" 
-        d="M6 18 18 6M6 6l12 12" />
-        </svg>
-
-      </form> <!-- End of search-container form -->
-
 
 
     </div>
