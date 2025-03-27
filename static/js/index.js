@@ -1,36 +1,3 @@
-// Remove blur on text in Title 
-document.addEventListener('DOMContentLoaded', () => {
-
-    blurText = document.getElementById('blur_text');
-
-    if (!blurText) return;
-
-    blurText.addEventListener('click', function () {
-        const stylesElement = window.getComputedStyle(this);
-        const filter = stylesElement.getPropertyValue('filter');
-        const webkitFilter = stylesElement.getPropertyValue('-webkit-filter');
-        
-        const hasBlur = filter.includes("blur") || webkitFilter.includes("blur");
-        
-
-        if (hasBlur) {
-            if (!this.dataset.modernFilter) {
-                this.dataset.modernFilter = filter;
-                this.dataset.webkitFilter = webkitFilter;        
-            }
-            
-            // Remove the blur due to the click event
-            this.style.filter = 'none';
-            this.style.webkitFilter = 'none';
-        }
-        else {
-            this.style.filter = this.dataset.modernFilter;
-            this.style.webkitFilter = this.dataset.webkitFilter;
-        }
-    });
-}); 
-
-
 // Scroll and auto scroll for the slider carousel
 document.addEventListener('DOMContentLoaded', () => {
     const slider = document.querySelector('#slider'),
@@ -39,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const sliderExist = slider && slides.length > 0 && navLinks.length > 0;
     
-    if (card.length === 0) return;
+
 
     let currentIndex = 0;
     let autoScrollTimer, scrollEndTimer;
@@ -347,3 +314,36 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
+
+
+// Remove blur on text in Title 
+document.addEventListener('DOMContentLoaded', () => {
+
+    blurText = document.getElementById('blur_text');
+
+    if (!blurText) return;
+
+    blurText.addEventListener('click', function () {
+        const stylesElement = window.getComputedStyle(this);
+        const filter = stylesElement.getPropertyValue('filter');
+        const webkitFilter = stylesElement.getPropertyValue('-webkit-filter');
+        
+        const hasBlur = filter.includes("blur") || webkitFilter.includes("blur");
+        
+
+        if (hasBlur) {
+            if (!this.dataset.modernFilter) {
+                this.dataset.modernFilter = filter;
+                this.dataset.webkitFilter = webkitFilter;        
+            }
+            
+            // Remove the blur due to the click event
+            this.style.filter = 'none';
+            this.style.webkitFilter = 'none';
+        }
+        else {
+            this.style.filter = this.dataset.modernFilter;
+            this.style.webkitFilter = this.dataset.webkitFilter;
+        }
+    });
+}); 
