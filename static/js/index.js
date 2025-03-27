@@ -167,10 +167,11 @@ document.addEventListener('DOMContentLoaded', () => {
       searchForm.dispatchEvent(new Event('submit', { bubbles: true }));
       searchInput.focus();
     });
+
+    let failCount = 0;
   
     searchForm.addEventListener('submit', (event) => {
       event.preventDefault();
-      buttonCTA.style.display = "flex";
       const oldResult = searchForm.querySelector('.ResultTagAG');
       if (oldResult) oldResult.remove();
   
@@ -182,6 +183,7 @@ document.addEventListener('DOMContentLoaded', () => {
         resultPTag.classList.add('SuccessResultAG');
         resultPTag.innerHTML = '🎉 Success 🎉';
         metaData.style.display = "flex";
+        buttonCTA.style.display = "flex";
         
         // Red or Green outline on search Icon
         searchInput.classList.add('success');
@@ -193,6 +195,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 3000);
       } 
       else {
+        failCount += 1 % 3;
+
+        if (failCount === 3) {
+            buttonCTA.style.display = "flex";
+        }
         resultPTag.classList.add('failResultAG');
         resultPTag.innerHTML = '❌ Failure ❌';
         metaData.style.display = "none";
