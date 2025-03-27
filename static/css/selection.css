@@ -17,8 +17,9 @@
     display: flex;
     margin-top: 1rem;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     gap: 5rem;
+    margin-left: clamp(4rem, 7rem, 8rem);
   }
   
   

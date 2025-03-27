@@ -33,57 +33,65 @@
 
 
     <div class="wrapper_titleDescription">
-      <h1 class="main_title oneT">  🎵 Lyric Battle: Guess the <span id="blur_text"><del>missing</del></span> Lyrics! 🎵 </h1>
-      <p class="game_description">Listen to your favorite Spotify tracks, but when the lyrics cut out, can you guess the next words? Who will be the ultimate music expert?! </p>
+      <h1 class="main_title oneT">  🎵 Music Battle: The Ultimate Showdown 🎵 </h1>
+      <p class="game_description"> Multiple battle modes await you. Choose your challenge and see if you have what it takes to be the ultimate music expert?! 🎵⭐ </p>
     </div>
 
 
 
-    <div class="containerGrid grid_component">
-        <div class="containerCard_row1">
-          
-          <!-- Card 1 -->
-          <div class="card" onclick="expandCard(this)">
-            <div class="row">
-              <div class="icon">1</div>
-              <div class="description">
-                <h4>Connect</h4>
-                <p>Link your Spotify account.</p>
-              </div>
-            </div>
+<div class="containerGrid grid_component">
+    <div class="containerCard_col1">
+      
+      <!-- Card 1 -->
+      <div class="card" onclick="expandCard(this)">
+        <div class="row">
+          <div class="icon">1</div>
+          <div class="description">
+            <h4>Connect</h4>
+            <p>Link your Spotify account.</p>
           </div>
-          
-          <!-- Card 2 -->
-          <div class="card" onclick="expandCard(this)">
-            <div class="row">
-              <div class="icon">2</div>
-              <div class="description">
-                <h4>Select Playlist</h4>
-                <p>Choose your favorite song.</p>
-              </div>
-            </div>
-          </div>
-          
-          <!-- Card 3 -->
-          <div class="card" onclick="expandCard(this)">
-            <div class="row">
-              <div class="icon">3</div>
-              <div class="description">
-                <h4>Sing Cut-out Lyrics</h4>
-                <p>Challenge yourself and sing along!</p>
-              </div>
-            </div>
-          </div>
-        </div> <!-- End of container card -->
-        
-        <!-- Section for additional info -->
-        <div class="cardInfo_row2">
-          <div class="infoItem"><span>1</span> Connect</div>
-          <div class="infoItem"><span>2</span> Pick song</div>
-          <div class="infoItem"><span>3</span> Have fun!</div>
         </div>
-        
-     </div> <!-- End of container grid -->
+      </div>
+      
+      <!-- Card 2 -->
+      <div class="card" onclick="expandCard(this)">
+        <div class="row">
+          <div class="icon">2</div>
+          <div class="description">
+            <h4>Select Playlist</h4>
+            <p>Choose your favorite song.</p>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Card 3 -->
+      <div class="card" onclick="expandCard(this)">
+        <div class="row">
+          <div class="icon">3</div>
+          <div class="description">
+            <h4>Sing Cut-out Lyrics</h4>
+            <p>Challenge yourself and sing along!</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="cardInfo_col2"> 
+      <div class="infoItem">
+        <div class="descriptionNumber">1</div>
+        <p>Connect</p>
+      </div>
+      <div class="infoItem">
+        <div class="descriptionNumber DN2">2</div>
+        <p id="pPushed">Pick song</p>
+      </div>
+      <div class="infoItem">
+        <div class="descriptionNumber">3</div>
+        <p>Have fun!</p>
+      </div>
+    </div>
+</div>
+
 
      <hr class="bot_hr_wrapper bot_hr_wrapper_1fr">
 
@@ -109,8 +117,8 @@
 
           <div class="video_description">
 
-            <p class="metadata_songTitle">Juicy</p>
-            <p class="metadata_artist">The Notorious B.I.G.</p>
+            <p class="metadata_songBattle">Juicy</p>
+            <p class="metadata_artistBattle">The Notorious B.I.G.</p>
           </div>
         </div>
 
@@ -124,8 +132,8 @@
           </video>
 
           <div class="video_description">
-            <p class="metadata_songTitle">Hit 'Em Up</p>
-            <p class="metadata_artist">2Pac</p>
+            <p class="metadata_songBattle">Hit 'Em Up</p>
+            <p class="metadata_artistBattle">2Pac</p>
           </div>
         </div>
 
@@ -140,8 +148,6 @@
       
     </div> <!-- End of container video battle -->
 
-
-
     <hr class="bot_hr_wrapper">
 
     <div class="wrapper_titleDescription wrapper_titleDescription_two">
@@ -151,63 +157,67 @@
     
     <hr class="top_hr_wrapper">
 
+
     <div id="container_songGuessing">
-      <div id="songGuessing_pp">
-        <div id="svg-container">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z" />
-          </svg>
+      <div id="mediaContainer">
+
+        <div id="coverSongGuessing">
+          <div class="metadata_wrapper">
+          <h3 class="metadata_songTitle">Karma Police</h3> 
+          <p class="metadata_artist">Artist: <span style="text-transform: uppercase;">Radiohead</span></p>
+          </div>
         </div>
 
-      </div> 
-      
+        <div id="songGuessing_pp">
+          <img class="cdImage" src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fstatic.vecteezy.com%2Fsystem%2Fresources%2Fpreviews%2F013%2F442%2F219%2Foriginal%2Fblank-cd-or-dvd-disc-png.png&f=1&nofb=1&ipt=26e72fd1228fa534526ac44655cdde3b8128a517cb8f97cd4ba7ed787a5aeb33&ipo=images" alt="CD Image">
+
+          <div id="svg-container">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z" />
+            </svg>
+          </div> <!-- End of svg-container-->
+
+        </div> <!-- End of songGuessing_pp-->
+      </div> <!-- End of mediaContainer-->
+
       <div id="wrapper_infoAndForm">
-        <p id="artistGuessInfo">Artist Name: </p>
+        <p id="artistGuessInfo">Artist Name:</p>
 
-        <form class="search-form" action="#" method="get">
-          <input class="ryuji_button" 
-          autocomplete="off" 
-          autocapitalize="off" 
-          name="Query Song" 
-          placeholder="Type your guess.." 
-          type="text">
+        <form class="searchForm">
+          <svg id="searchIcon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+          </svg>
+
+          <input class="ryuji_button" autocomplete="off" autocapitalize="off" name="Query Song" placeholder="Type your guess.." type="text">
+
+          <svg id="clear_button" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="clear-icon">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
           
-          <!-- Search Icon -->
-          <svg xmlns="http://www.w3.org/2000/svg" 
-          fill="none" 
-          viewBox="0 0 24 24" 
-          stroke-width="1.5" 
-          stroke="currentColor" 
-          id="search-icon">
-          <path stroke-linecap="round" 
-          stroke-linejoin="round" 
-          d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
-          </svg>
-
-          <!-- Clear Button (X Icon) -->
-          <svg id="clear_button" 
-          xmlns="http://www.w3.org/2000/svg" 
-          fill="none" 
-          viewBox="0 0 24 24" 
-          stroke-width="1.5" 
-          stroke="currentColor" 
-          class="clear-icon">
-          <path stroke-linecap="round" 
-          stroke-linejoin="round" 
-          d="M6 18 18 6M6 6l12 12" />
-          </svg>
-
-        </form> <!-- End of search-container form -->
-      </div>
 
 
+        </form>
+
+
+      <button class="btn_callToAction">Play Now!</button>
+      </div> <!-- End of wrapper_infoAndForm -->
+    </div> <!-- End of container_songGuessing -->
+
+    <hr class="bot_hr_wrapper" style="margin-top: 17rem;">
+
+    <div class="wrapper_titleDescription wrapper_titleDescription_two">
+      <h1 class="main_title">🎵 Lyric Battle: Guess the <span id="blur_text"><del>missing</del></span> Lyrics! 🎵 </h1>
+      <p class="game_description">Listen to your favorite Spotify tracks, but when the lyrics cut out, can you guess the next words?</p>
     </div>
+    
 
-    <button class="btn_callToAction">Play Now!</button>
+    <h1 id="comingSoon1">Coming soon!</h1>
 
 
-
-
+    <audio id="audioExtract" hidden>
+      <source src="https://raw.githubusercontent.com/RiyujinD/final_project_cs50/master/static/audio/karmaPolice.mp3" type="audio/mp3">
+        Your browser does not support the audio element.
+    </audio>
 
 
   <!--<div class="register_link_bot">
