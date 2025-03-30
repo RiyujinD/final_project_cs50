@@ -157,7 +157,13 @@ body {
   text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
 }
 
-.wrapper_titleDescription h1.main_title.oneT::before {
+@media screen and (max-width: 900px) {
+  .wrapper_titleDescription h1.main_title {
+    font-size: 3rem;
+  }
+}
+
+/* .wrapper_titleDescription h1.main_title.oneT::before {
 content: '🎵';
 position: absolute;
 left: 0;
@@ -172,7 +178,7 @@ position: absolute;
 right: 0;
 top: 50%;
 transform: translate(100%, -50%);
-} 
+}  */
 
 
 .wrapper_titleDescription .main_title > span#blur_text {
@@ -249,6 +255,7 @@ transform: translate(100%, -50%);
   height: auto;
   display: grid;
   width: 100%;
+  overflow: hidden;
   height: auto;
   grid-template-columns: 1fr 1fr auto;
   margin-top: 10rem;
@@ -458,6 +465,7 @@ transform: translate(100%, -50%);
   width: auto;
   height: auto;
   padding-top: 17rem;
+  margin-left: 10rem;
   gap: 5rem;
   transition: all 1s ease-in-out;
 }
@@ -465,7 +473,7 @@ transform: translate(100%, -50%);
 .cardInfo_col2 .infoItem {
   display: flex;
   height: auto;
-  width: 30rem;
+  width: 100%;
   text-transform: uppercase;
   gap: 3rem;
   text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
@@ -483,6 +491,7 @@ transform: translate(100%, -50%);
   border-radius: 1rem;
   padding: 0.8rem;
   font-size: 2.7rem;
+  cursor: pointer;
   z-index: 100;
 }
 
@@ -496,6 +505,7 @@ transform: translate(100%, -50%);
   font-size: 3rem;
   height: fit-content;
   color: var(--spotifyColor);
+  pointer-events: none;
 }
 
 .descriptionNumber::after {
@@ -515,31 +525,37 @@ transform: translate(100%, -50%);
 @media (max-width: 1600px) {
 
   .cardInfo_col2 {
-    width: 100%;
+    box-sizing: content-box;
     padding: 0;
-    margin-top: 13rem;
+    margin-left: 0;
+    margin-top: 10rem;
+    justify-content: center;
+    align-items: center;
 
   }
   
   .cardInfo_col2 .infoItem {
     font-size: 3rem;
+    width: 30rem;
+    align-self: center;
+    justify-self: center;
   }
 }
 
+
 @media (max-width: 700px) {
+
   .cardInfo_col2 .infoItem {
-    margin: 0;
-    width: auto;
+    width: 20rem;
   }
 
   .cardInfo_col2 .infoItem p#pPushed {
-    margin-left: 2rem;
+    margin-left: 1.3rem;
   }
 
   .cardInfo_col2 .infoItem p {
     box-sizing: content-box;
     color: var(--bg-color);
-    width: auto;
     background-color: #19af4e;
     border-radius: 1rem;
     padding: 0.8rem;
@@ -1132,22 +1148,22 @@ transform: translate(100%, -50%);
 
 .btn_callToAction { 
   position: absolute;
-  left: 100%;
+  left: 50%;
   top: 100%;
   transform: translateX(-50%);
   display: none;
   justify-content: center;
   align-items: center;
-  height: 5rem;
-  width: 7ren;
+  height: 4rem;
+  width: 5ren;
   border-radius: 5rem;
   background: var(--glass-color);
   color: var(--spotifyColor);
-  font-size: 3rem;
+  font-size: 2.5rem;
   text-transform: uppercase;
   font-weight: 600;
   cursor: pointer;
-  padding: 4rem;
+  padding: 3rem;
   margin-top: 11rem;
   -webkit-box-shadow: var(--box-shadow1);
   -moz-box-shadow: var(--box-shadow1);

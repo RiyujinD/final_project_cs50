@@ -3,19 +3,21 @@ import secrets
 import string
 import base64
 import time
+import requests
 from flask import Flask, url_for, redirect, request, jsonify, session, render_template
 from flask_session import Session
 from dotenv import load_dotenv
 from urllib.parse import urlencode
-import requests
-from flask_cors import CORS  # Import Flask-CORS
+
+# from flask_cors import CORS  # Import Flask-CORS
+from googleapiclient.discovery import build
     
 
 load_dotenv()
 
 
 app = Flask(__name__)
-CORS(app)
+# CORS(app)
 
 
 # Configure session
@@ -23,32 +25,43 @@ app.config["SESSION_TYPE"] = "filesystem"  # Store session data in a folder on t
 app.config["SESSION_PERMANENT"] = False  # Session data expire when browser is closed
 app.config["SESSION_FILE_DIR"] = "./.flask_session/"  # Folder to store session datas
 app.permanent_session_lifetime = 0 # Force browser to delete cache when browser is closed
-app.secret_key = os.getenv("APP_STATE", secrets.token_hex(32))  # Secret key for session data
+app.secret_key = os.getenv("APP_STATE", secrets.token_hex(32))  
+app.config["SESSION_COOKIE_SAMESITE"] = "Lax" # Handle CSRF attacks
+
 Session(app) 
 
 app.config.update({
-    "TEMPLATES_AUTO_RELOAD": True,  # Reload templates when they are changed
+    "TEMPLATES_AUTO_RELOAD": True,  # Refresh page on changes *dev*
 })
 
-# Load storedcredentials and URLs from .env
-CLIENT_ID = os.getenv("CLIENT_ID")
-CLIENT_SECRET = os.getenv("CLIENT_SECRET")
-REDIRECT_URI = os.getenv("REDIRECT_URI")
-AUTHORIZATION_URL = "https://accounts.spotify.com/authorize"
-TOKEN_URL = "https://accounts.spotify.com/api/token"
+# Load Spotify credentials 
+CLIENT_ID = os.getenv("CLIENT_ID") 
+CLIENT_SECRET = os.getenv("CLIENT_SECRET")  
+REDIRECT_URI = os.getenv("REDIRECT_URI") # Redirect URI Spotify OAuth flow
+AUTHORIZATION_URL = "https://accounts.spotify.com/authorize" 
+TOKEN_URL = "https://accounts.spotify.com/api/token" # Spotify token endpoint
 
 # Base64 encoding of the client ID and secret
-auth_str = f"{CLIENT_ID}:{CLIENT_SECRET}"                   # Combine client_id and client_secret
+auth_str = f"{CLIENT_ID}:{CLIENT_SECRET}"                 
 auth_bytes = auth_str.encode("utf-8")                       # Convert to bytes
 auth_base64 = base64.b64encode(auth_bytes).decode("utf-8")  # Base64 encode and decode to string
+
+
+# Set headers to prevent caching
+@app.after_request
+def add_no_cache_headers(response):
+    response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
+    response.headers["Pragma"] = "no-cache"
+    response.headers["Expires"] = "0"
+    return response
 
 
 def generate_secure_secret(length=16):
     """ Generate a random state string for security """
 
-    characters = string.ascii_letters + string.digits       # Define the characters to use (A-Z, a-z, 0-9)
-
+    characters = string.ascii_letters + string.digits    
     return ''.join(secrets.choice(characters) for _ in range(length))
+
 
 def refresh_access_token():
     """ Refresh the access token when it has expired """
@@ -83,8 +96,8 @@ def get_auth_headers():
     """ Build the headers for API calls (spotify)"""
 
     # Check if token need to be refresh before making the call
-    if time.time() > session.get("token_expiry", 0):
-        token_data = refresh_access_token() # Token has expired
+    if time.time() > session.get("token_expiry", 0) - 5:  # Refresh 5 seconds early
+        token_data = refresh_access_token() 
         if "error" in token_data:
             raise RuntimeError("Failed to refresh access token.")
         
@@ -117,11 +130,16 @@ def get_user_playlist():
         url = data.get("next")  # Get the URL for the next page
     return playlists
 
-
 # def get_user_likedTitle():
 
 #     headers = get_auth_headers();
     
+    
+# Load YouTube API Key from environment variables
+YOUTUBE_API_KEY = os.getenv("YOUTUBE_API_KEY")
+
+# Initialize YouTube API client
+youtube = build("youtube", "v3", developerKey=YOUTUBE_API_KEY)
 
 
 @app.route("/")
@@ -266,7 +284,7 @@ def selection():
 #     return jsonify({"images": playlists_img})
 
 
-
+youtube.close()
 
 if __name__ == "__main__":
     app.run(debug=True)
