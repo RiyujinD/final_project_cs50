@@ -255,7 +255,8 @@ transform: translate(100%, -50%);
   height: auto;
   display: grid;
   width: 100%;
-  overflow: hidden;
+  padding: 1rem;
+  overflow-x: hidden;
   height: auto;
   grid-template-columns: 1fr 1fr auto;
   margin-top: 10rem;
@@ -280,10 +281,11 @@ transform: translate(100%, -50%);
   border-radius: 1rem;
   overflow: hidden;
   margin: 0 2rem;
+  padding-inline: var(--cardPadding);
   cursor: pointer;
-  -webkit-box-shadow: var(--box-shadow1);
-  -moz-box-shadow: var(--box-shadow1);
-  box-shadow: var(--box-shadow1);
+  -webkit-box-shadow: var(--box-shadow1), var(--box-shadowGlass);
+  -moz-box-shadow: var(--box-shadow1), var(--box-shadowGlass);
+  box-shadow: var(--box-shadow1), var(--box-shadowGlass);
   transition: transform 0.6s ease-in-out, opacity 0.6s ease-in-out, width 0.6s ease-in-out, box-shadow 0.3s ease-in-out;
 }
 
@@ -332,7 +334,7 @@ transform: translate(100%, -50%);
   border-radius: 50%;
   aspect-ratio: 1;
   top: 1.5rem;
-  left: calc((var(--cardWidth) / 2) - (var(--iconSize) / 2));
+  left: calc((var(--cardWidth) - var(--cardPadding) * 2) / 2 - var(--iconSize) / 2);
 }
 
 /* Expanded and icon:hover state */
@@ -404,6 +406,10 @@ transform: translate(100%, -50%);
 @media (max-width: 980px) {
   .containerCard_col1 .card {
     width: 4rem;
+  }
+
+  .containerGrid {
+    padding: 0;
   }
   
   .containerCard_col1 .card.expanded {
@@ -485,11 +491,12 @@ transform: translate(100%, -50%);
   color: var(--bg-color);
   width: auto;
   background-color: #19af4e;
-  -webkit-box-shadow: var(--box-shadowItem);
-  -moz-box-shadow: var(--box-shadowItem);
-  box-shadow: var(--box-shadowItem);
+  -webkit-box-shadow: var(--box-shadowGlass);
+  -moz-box-shadow: var(--box-shadowGlass);
+  box-shadow: var(--box-shadowGlass);
+  z-index: 100; 
   border-radius: 1rem;
-  padding: 0.8rem;
+  padding: 1rem;
   font-size: 2.7rem;
   cursor: pointer;
   z-index: 100;
@@ -504,8 +511,9 @@ transform: translate(100%, -50%);
   width: 2rem;
   font-size: 3rem;
   height: fit-content;
-  color: var(--spotifyColor);
+  color: #fff;
   pointer-events: none;
+  padding-left: 1rem;
 }
 
 .descriptionNumber::after {
@@ -601,6 +609,7 @@ transform: translate(100%, -50%);
   justify-content: center;
   align-items: center;
   gap: clamp(10rem, 17rem, 20rem);
+
   margin-bottom: 3rem;
   transform: all 1s ease-in-out;
 }
@@ -610,9 +619,11 @@ transform: translate(100%, -50%);
   height: 300px;
   border: 1px solid rgba(255, 255, 255, 0.4);
   object-fit: cover;
-  -webkit-box-shadow: var(--box-shadow1), 0px -3px 15px 3px rgba(255, 255, 255, 0.2), 0 0 10px rgba(255, 255, 255, 0.1);
-  -moz-box-shadow: var(--box-shadow1), 0px -3px 15px 3px rgba(255, 255, 255, 0.2), 0 0 10px rgba(255, 255, 255, 0.1);
-  box-shadow: var(--box-shadow1), 0px -3px 15px 3px rgba(255, 255, 255, 0.2), 0 0 10px rgba(255, 255, 255, 0.1);
+  border: none;
+
+  -webkit-box-shadow: var(--box-shadow1), var(--box-shadowGlass), var(--box-shadowItem);
+  -moz-box-shadow: var(--box-shadow1), var(--box-shadowGlass), var(--box-shadowItem);
+  box-shadow: var(--box-shadow1), var(--box-shadowGlass), var(--box-shadowItem);
 }
 
 .vs_text {
@@ -657,6 +668,7 @@ transform: translate(100%, -50%);
   align-items: center;
   width: 100%;
   height: 100%;
+  padding-top: 2rem;
 }
 
 .metadata_artistBattle {

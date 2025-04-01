@@ -47,6 +47,9 @@ auth_bytes = auth_str.encode("utf-8")                       # Convert to bytes
 auth_base64 = base64.b64encode(auth_bytes).decode("utf-8")  # Base64 encode and decode to string
 
 
+
+
+
 # Set headers to prevent caching
 @app.after_request
 def add_no_cache_headers(response):
@@ -122,13 +125,29 @@ def get_user_playlist():
     playlists = []
     while url:
         response = requests.get(url, headers=headers)
-        if response.status_code != 200:
+        if response.status_code != 200: 
             return {"error": "Failed to fetch playlists", "details": response.text}
 
         data = response.json()  
         playlists.extend(data.get("items", []))  # Add playlists from the current page
         url = data.get("next")  # Get the URL for the next page
     return playlists
+
+
+def get_playlists_tracks():
+    """ Get all tracks from all playlists of the user """
+    
+    playlists = get_user_playlist()
+    if isinstance(playlists, tuple):
+        return playlists
+    
+    tracks = playlists.get("tracks", {}).get("href")
+    if not tracks:
+        return {"error": "No tracks found"}
+    
+
+
+    
 
 # def get_user_likedTitle():
 
