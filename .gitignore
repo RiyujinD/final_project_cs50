@@ -5,4 +5,4 @@ __pycache__
 flask_session
 static/videos/
 backup-repo/
-
+*.db
