@@ -1,4 +1,5 @@
 import os
+import sqlite3
 import secrets
 import string
 import base64
@@ -8,31 +9,29 @@ from flask import Flask, url_for, redirect, request, jsonify, session, render_te
 from flask_session import Session
 from dotenv import load_dotenv
 from urllib.parse import urlencode
-
-# from flask_cors import CORS  # Import Flask-CORS
 from googleapiclient.discovery import build
     
+
+# from flask_cors import CORS  # Import Flask-CORS
 
 load_dotenv()
 
 
 app = Flask(__name__)
+Session(app) 
 # CORS(app)
-
 
 # Configure session
 app.config["SESSION_TYPE"] = "filesystem"  # Store session data in a folder on the server  
 app.config["SESSION_PERMANENT"] = False  # Session data expire when browser is closed
 app.config["SESSION_FILE_DIR"] = "./.flask_session/"  # Folder to store session datas
-app.permanent_session_lifetime = 0 # Force browser to delete cache when browser is closed
-app.secret_key = os.getenv("APP_STATE", secrets.token_hex(32))  
 app.config["SESSION_COOKIE_SAMESITE"] = "Lax" # Handle CSRF attacks
-
-Session(app) 
-
+app.permanent_session_lifetime = 0 # Force browser to delete cache when browser is closed
+app.secret_key = os.getenv("APP_STATE")  
 app.config.update({
     "TEMPLATES_AUTO_RELOAD": True,  # Refresh page on changes *dev*
 })
+
 
 # Load Spotify credentials 
 CLIENT_ID = os.getenv("CLIENT_ID") 
@@ -46,8 +45,10 @@ auth_str = f"{CLIENT_ID}:{CLIENT_SECRET}"
 auth_bytes = auth_str.encode("utf-8")                       # Convert to bytes
 auth_base64 = base64.b64encode(auth_bytes).decode("utf-8")  # Base64 encode and decode to string
 
+# Load YouTube API Key from environment variables
+YOUTUBE_API_KEY = os.getenv("YOUTUBE_API_KEY")
 
-
+youtube = build("youtube", "v3", developerKey=YOUTUBE_API_KEY) # Initialize YouTube API client
 
 
 # Set headers to prevent caching
@@ -60,30 +61,25 @@ def add_no_cache_headers(response):
 
 
 def generate_secure_secret(length=16):
-    """ Generate a random state string for security """
-
     characters = string.ascii_letters + string.digits    
     return ''.join(secrets.choice(characters) for _ in range(length))
 
 
-def refresh_access_token():
-    """ Refresh the access token when it has expired """
-
-    refresh_token = session.get("refresh_token")
+def refresh_access_token(refresh_token):
     if not refresh_token:
         return {"error": "No refresh token found", "status": 401}
-
-    auth_headers = {
+    headers = {
         "Authorization": "Basic " + auth_base64,
         "Content-Type": "application/x-www-form-urlencoded"
     }
-
-    auth_data = {
+    data = {
         "grant_type": "refresh_token",
         "refresh_token": refresh_token
     }
-
-    response = requests.post(TOKEN_URL, data=auth_data, headers=auth_headers)
+    try: 
+        response = requests.post(TOKEN_URL, data=data, headers=headers)
+    except requests.RequestException as e:
+            return {"error": "Request exception", "details": str(e), "status": 500}
     if response.status_code != 200:
         return {"error": "Failed to refresh token", "details": response.json(), "status": 500}
     
@@ -91,31 +87,31 @@ def refresh_access_token():
     session["access_token"] = token_data.get("access_token")
     session["expires_in"] = token_data.get("expires_in")
     session["token_expiry"] = time.time() + token_data.get("expires_in")
-    return {"access_token": session["access_token"], "expires_in": session["expires_in"], "refreshed": True}
-
-        
+    return {
+        "access_token": session["access_token"],
+        "expires_in": session["expires_in"],
+        "refreshed": True
+    }
 
 def get_auth_headers():
-    """ Build the headers for API calls (spotify)"""
 
-    # Check if token need to be refresh before making the call
-    if time.time() > session.get("token_expiry", 0) - 5:  # Refresh 5 seconds early
-        token_data = refresh_access_token() 
-        if "error" in token_data:
-            raise RuntimeError("Failed to refresh access token.")
-        
+    # Build the headers for API calls spotify
     access_token = session.get("access_token")
     if not access_token:
         raise RuntimeError("Access token not available.")
 
-    return {
-        "Authorization": f"Bearer {access_token}"
-    }
+    if time.time() > session.get("token_expiry", 0) - 5:  # Check if token need to be refresh
+        token_data = refresh_access_token(session.get("refresh_token")) 
+        if "error" in token_data:
+            raise RuntimeError("Failed to refresh access token.")
+        access_token = session.get("access_token")
+
+    return {"Authorization": f"Bearer {access_token}"}
 
 
 def get_user_playlist():
-    """ Get users playlists (in multiple 'page' if user has many)"""
-    
+
+    # Get users playlists (in multiple 'page' if user has many)
     url = "https://api.spotify.com/v1/me/playlists"
     try:
         headers = get_auth_headers()
@@ -127,7 +123,6 @@ def get_user_playlist():
         response = requests.get(url, headers=headers)
         if response.status_code != 200: 
             return {"error": "Failed to fetch playlists", "details": response.text}
-
         data = response.json()  
         playlists.extend(data.get("items", []))  # Add playlists from the current page
         url = data.get("next")  # Get the URL for the next page
@@ -135,35 +130,40 @@ def get_user_playlist():
 
 
 def get_playlists_tracks():
-    """ Get all tracks from all playlists of the user """
-    
+
+    # Get all tracks from all playlists of the user
     playlists = get_user_playlist()
     if isinstance(playlists, tuple):
         return playlists
     
-    tracks = playlists.get("tracks", {}).get("href")
-    if not tracks:
-        return {"error": "No tracks found"}
-    
+    try:
+        headers = get_auth_headers()
+    except RuntimeError as e:
+        return {"error": str(e)}, 401
 
-
+    all_tracks = []
+    for playlist in playlists:
+        tracks_url = playlist.get("tracks", {}).get("href") 
+        if not tracks_url:
+            continue  
+        
+        while tracks_url:
+            response = requests.get(tracks_url, headers=headers)
+            if response.status_code != 200:
+                return {"error": "Failed to fetch tracks", "details": response.text}
+            
+            data = response.json()
+            all_tracks.extend(data.get("items", []))
+            tracks_url = data.get("next")
     
+    print(all_tracks)
+    return all_tracks
 
 # def get_user_likedTitle():
-
 #     headers = get_auth_headers();
     
-    
-# Load YouTube API Key from environment variables
-YOUTUBE_API_KEY = os.getenv("YOUTUBE_API_KEY")
-
-# Initialize YouTube API client
-youtube = build("youtube", "v3", developerKey=YOUTUBE_API_KEY)
-
-
 @app.route("/")
 def main():    
-    # Check  if user is authenticated if so redirect to selection page directly
     if session.get("is_authenticated", False): 
         return redirect(url_for("selection"))
     else:
@@ -175,18 +175,18 @@ def index():
 
 @app.route("/logout")
 def logout():
-    """ Clear session """
-    session.clear()  # Clear the entire session
-    session["is_authenticated"] = False # Set the user as not authenticated
-    return redirect(url_for("index"))  # Redirect to the homepage
+        
+    session["is_authenticated"] = False 
+    session.clear()  
+    return redirect(url_for("index")) 
 
 
 @app.route("/login")
 def login():
-    """Initiate Spotify OAuth flow."""
-    
+
+    # Initiate Spotify OAuth flow
     state = generate_secure_secret() 
-    session["oauth_state"] = state # Store the state generate above in the session 
+    session["oauth_state"] = state 
     scope = " ".join([
         "user-read-private",
         "playlist-read-private",
@@ -196,7 +196,6 @@ def login():
         "user-library-read",
         "streaming"
     ])
-
     auth_url = AUTHORIZATION_URL + "?" + urlencode({
         "response_type": "code",
         "client_id": CLIENT_ID,
@@ -207,60 +206,50 @@ def login():
     })
     return redirect(auth_url)
 
-
-
 @app.route("/callback")
 def callback():
-    """Handle the Spotify OAuth callback."""
 
-    # Get the auth code and state from uri
-    code = request.args.get("code")
+    # Handle the Spotify OAuth callback
+    code = request.args.get("code")         
     state = request.args.get("state")
     stored_state = session.get("oauth_state")
 
-    # Check if state match stored one and if state not NULL
     if not state or state != stored_state:
         return redirect(url_for("index", error="state_mismatch"))
 
-    # Clear the stored state from the session
-    session.pop("oauth_state", None)
+    session.pop("oauth_state", None) # Clear the stored state from the session
     
-    auth_headers = {
+    headers = {
         "Authorization": "Basic " + auth_base64,
         "Content-Type": "application/x-www-form-urlencoded"
     }
-
-    auth_data = {
+    data = {
         "grant_type": "authorization_code",
         "code": code,
         "redirect_uri": REDIRECT_URI
     }
 
-    # Make the request for a token to spotify's token endpoint
-    response = requests.post(TOKEN_URL, data=auth_data, headers=auth_headers)
+    response = requests.post(TOKEN_URL, data=data, headers=headers)
     if response.status_code != 200:
         return jsonify({"error": "Failed to fetch tokens", "details": response.json()})
     
     token_data = response.json()
+
     session["access_token"] = token_data.get("access_token")
     session["refresh_token"] = token_data.get("refresh_token")
     session["expires_in"] = token_data.get("expires_in")
     session["token_expiry"] = time.time() + token_data.get("expires_in") # Current time + expiry token time
-
-    # Set the user as authenticated
     session["is_authenticated"] = True
 
     return redirect(url_for("selection"))
 
-
 @app.route("/selection")
 def selection():
-    """ Return playlists/songs of the user for selection """
 
+    # Return playlists/songs of the user for selection
     playlists = get_user_playlist()
     if isinstance(playlists, tuple):  
         return playlists
-
     if not playlists:
         return {"error": "No playlists found"}
     
@@ -278,29 +267,23 @@ def selection():
     # Pass all playlist images to the template
     return render_template("selection.html", playlist_images=playlist_images)
 
+@app.route("/api/playlist-images")
+def get_playlist_images():
 
-
-# @app.route("/api/playlist-images")
-# def get_playlist_images():
-
-#     refresh_access_token()
-#     playlists = get_user_playlist()
-#     if isinstance(playlists, tuple):
-#         return playlists  
-    
-#     if not playlists:
-#         return jsonify({"error": "No playlists found"}), 404  
-
-#     playlists_img = [
-#         playlist.get("images", [{}])[0].get("url", "")  # Store first img of playlists and the url for it
-#         for playlist in playlists
-#         if playlist.get("images")  # Filter out playlists with no images
-#     ]
-
-#     if not playlists_img:
-#         return jsonify({"error": "No playlist images available"}), 404
-
-#     return jsonify({"images": playlists_img})
+    refresh_access_token()
+    playlists = get_user_playlist()
+    if isinstance(playlists, tuple):
+        return playlists  
+    if not playlists:
+        return jsonify({"error": "No playlists found"}), 404  
+    playlists_img = [
+        playlist.get("images", [{}])[0].get("url", "")  # Store first img of playlists and the url for it
+        for playlist in playlists
+        if playlist.get("images")  # Filter out playlists with no images
+    ]
+    if not playlists_img:
+        return jsonify({"error": "No playlist images available"}), 404
+    return jsonify({"images": playlists_img})
 
 
 youtube.close()
