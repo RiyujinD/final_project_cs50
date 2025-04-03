@@ -28,7 +28,7 @@
       <nav id="navbar">
           <ul id="navbar-nav">
               
-              {% if session.get("is_authenticated", True) %}
+              {% if "is_authenticated" in session %}
 
                   <!-- Login User connected Icon -->
                   <li class="nav-item"> 

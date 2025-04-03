@@ -20,6 +20,7 @@
   --box-shadowItem: inset 0px 0px 20px 8px rgba(0,0,0,0.74), inset 8px 5px 13px 2px rgba(255,255,255,0.2);
   --box-shadowGlass: 0 2px 6px rgba(0, 0, 0, 0.5), 0 1px 0px rgba(0, 0, 0, 0.7), inset 0 2px 3px rgba(255, 255, 255, 1), inset 0 -1px 4px 0px rgba(255, 255, 255, 1);
   --carrousel-boxShadow: none;
+  --border1: rgba(255, 255, 255, 0.5); 
 
   /* Theme toggle button */
   --button-bg: linear-gradient(to bottom, hsl(240, 5%, 6%) 0%, hsl(240, 5%, 4%) 50%, hsl(240, 5%, 2%) 100%);
@@ -43,6 +44,9 @@
                 5px 3px 6px -2px rgba(0, 0, 0, 0.5),
                 inset 4px 15px 13px -14px rgba(255, 255, 255, 1),
                 0px 25px 25px -35px rgba(40, 197, 66, 0.575);
+
+  --border1: rgba(0, 0, 0, 0.5); 
+                
 
   --box-shadow: 13px 13px 10px -4px rgba(0, 0, 0, 0.4),
                 5px 3px 6px -2px rgba(0, 0, 0, 0.5),
@@ -159,8 +163,8 @@ body::-webkit-scrollbar-thumb {
 }
 
 .nav-icon {
-  font-size: 3rem; /* svg size */
-  height: 3rem;
+  font-size: 2.6rem; /* svg size */
+  height: 2.6rem;
 }
 
 .nav-item:last-child {
@@ -177,6 +181,7 @@ body::-webkit-scrollbar-thumb {
 /* Display the text only after hover */
 .link-text {
   display: none;
+  padding-top: .5rem;
 }
 
 .nav-item:hover .link-text {
