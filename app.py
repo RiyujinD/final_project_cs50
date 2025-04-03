@@ -170,7 +170,6 @@ def get_user_playlist():
 
 
 def get_all_tracks():
-
     url = "https://api.spotify.com/v1/me/tracks"
     try:
         headers = get_auth_headers()
@@ -178,59 +177,90 @@ def get_all_tracks():
         raise RuntimeError(f"Authentication error: {str(e)}")
     
     all_tracks = [] 
+    tracksTotal = 0
+    first_page = True
+
     while url:
         response = requests.get(url, headers=headers)
-
         if response.status_code != 200:
-            return Exception(f"Error when fetching response tracks: {response.status_code} - {response.text}")
-        
+            raise Exception(f"Error when fetching response tracks: {response.status_code} - {response.text}")
         tracksData = response.json()
+        tracksData = response.json()
+        if first_page:
+            tracksTotal = tracksData.get('total', 0)
+            first_page = False
+            
         all_tracks.extend(tracksData.get("items", []))
         url = tracksData.get("next")
     
-    print(f"ALLLLLLL TRACKSSSSSSS: {all_tracks}")
-    return all_tracks
+    print(f"ALL TRACKS: {all_tracks}")
+    return all_tracks, tracksTotal
+
 
 def get_playlists_tracks():
-
     # Get all tracks from all playlists of the user
     playlists = get_user_playlist()
-    if isinstance(playlists, tuple):
-        return playlists
-    
+
+
     try:
         headers = get_auth_headers()
     except RuntimeError as e:
-        return {"error": str(e)}, 401
+        raise RuntimeError(f"Authentication error: {str(e)}")
 
-    all_tracks = []
+    all_PLtracks = []
+    total_PLtracks = 0
+    first_page = True
+
     for playlist in playlists:
-        tracks_url = playlist.get("tracks", {}).get("href") 
+        tracks_url = playlist.get("tracks", {}).get("href")  # Get track endpoint
         if not tracks_url:
             continue  
         
         while tracks_url:
             response = requests.get(tracks_url, headers=headers)
             if response.status_code != 200:
-                return {"error": "Failed to fetch tracks", "details": response.text}
-            
-            data = response.json()
-            all_tracks.extend(data.get("items", []))
-            tracks_url = data.get("next")
-    
-    print(all_tracks)
-    return all_tracks
+                raise Exception(f"Error fetching tracks: {response.status_code} - {response.text}")
 
-# def get_user_likedTitle():
-#     headers = get_auth_headers();
-    
-# @app.route("/")
-# def main():    
-#     if session.get("is_authenticated", False): 
-#         return redirect(url_for("selection"))
-#     else:
-#         return redirect(url_for("index"))
-    
+            data = response.json()
+            if first_page:
+                total_PLtracks = data.get("total", 0)
+                first_page = False
+
+            all_PLtracks.extend(data.get("items", []))  
+            tracks_url = data.get("next")  
+
+    print(f"total of tracks in playlist OOOO: {total_PLtracks}")
+
+    return all_PLtracks, total_PLtracks
+
+
+def get_saved_albums_tracks():
+    url = "https://api.spotify.com/v1/me/albums"
+    try:
+        headers = get_auth_headers()
+    except RuntimeError as e:
+        raise RuntimeError(f"Authentication error: {str(e)}")
+
+    all_album_tracks = []
+    total_album_tracks = 0
+
+    while url:
+        response = requests.get(url, headers=headers)
+        if response.status_code != 200:
+            raise Exception(f"Error fetching albums: {response.status_code} - {response.text}")
+
+        data = response.json()
+        albums = data.get("items", [])
+
+        for album in albums:
+            album_tracks = album.get("album", {}).get("tracks", {}).get("items", [])
+            all_album_tracks.extend(album_tracks)
+            total_album_tracks += len(album_tracks)
+
+        url = data.get("next")  # Pagination
+
+    return all_album_tracks, total_album_tracks
+
 @app.route("/")
 def index():
     return render_template("index.html")
@@ -307,34 +337,92 @@ def callback():
 @app.route("/selection")
 @login_required
 def selection():
-
+    # Fetch user metadata
     profileUser = get_user_spotifyMD()
+    if not profileUser or "error" in profileUser:
+        return {"error": "User metadata couldn't be fetched"}, 500
 
-    if profileUser is None:
-        return {"error": "MD couldnt be fetch"}
-
-    # Return playlists/songs of the user for selection
+    # Fetch playlists and check for errors
     playlists = get_user_playlist()
-    if isinstance(playlists, tuple):  
-        return playlists
+    if isinstance(playlists, dict) and playlists.get("error"):
+        return playlists, 500
     if not playlists:
-        return {"error": "No playlists found"}
-    
+        return {"error": "No playlists found"}, 404
     totalPlaylists = len(playlists)
-    
-    # Extract all playlist images
-    playlist_images = []
-    for playlist in playlists:
-        images = playlist.get("images", [])
-        if images:
-            # Append the URL of the first image for each playlist
-            playlist_images.append(images[0].get("url", ""))
 
-    if not playlist_images:
-        return {"error": "No playlist images available"}
+    # Fetch liked songs (saved tracks)
+    likedSongs, total_likedSongs = get_all_tracks()
 
-    # Pass all playlist images to the template
-    return render_template("selection.html", playlist_images=playlist_images, profile=profileUser, totalPlaylists=totalPlaylists) 
+    # Fetch tracks from playlists
+    playlistTracks, total_PLtracks = get_playlists_tracks()
+
+    # Fetch tracks from saved albums
+    albumTracks, total_albumTracks = get_saved_albums_tracks()
+
+    # Calculate total unique songs by de-duplicating based on track ID.
+    unique_track_ids = set()
+
+    # Also build a set of unique artist IDs.
+    unique_artist_ids = set()
+
+    # Process liked songs (each item contains a "track" object)
+    for item in likedSongs:
+        track = item.get("track", {})
+        track_id = track.get("id")
+        if track_id:
+            unique_track_ids.add(track_id)
+        # Add all artist IDs from the track
+        for artist in track.get("artists", []):
+            artist_id = artist.get("id")
+            if artist_id:
+                unique_artist_ids.add(artist_id)
+
+    # Process playlist tracks (each item contains a "track" object)
+    for item in playlistTracks:
+        track = item.get("track", {})
+        track_id = track.get("id")
+        if track_id:
+            unique_track_ids.add(track_id)
+        # Add all artist IDs
+        for artist in track.get("artists", []):
+            artist_id = artist.get("id")
+            if artist_id:
+                unique_artist_ids.add(artist_id)
+
+    # Process album tracks (each item is a track object)
+    for track in albumTracks:
+        track_id = track.get("id")
+        if track_id:
+            unique_track_ids.add(track_id)
+        # Add all artist IDs
+        for artist in track.get("artists", []):
+            artist_id = artist.get("id")
+            if artist_id:
+                unique_artist_ids.add(artist_id)
+
+    # Total unique songs and artists
+    TOTAL_SONGS = len(unique_track_ids)
+    TOTAL_ARTISTS = len(unique_artist_ids)
+
+    # Print log messages
+    print(f"Total Liked Songs: {total_likedSongs}")
+    print(f"Total Playlist Tracks: {total_PLtracks}")
+    print(f"Total Album Tracks: {total_albumTracks}")
+    print(f"Total Unique Songs (TOTAL_SONGS): {TOTAL_SONGS}")
+    print(f"Total Unique Artists (TOTAL_ARTISTS): {TOTAL_ARTISTS}")
+
+    return render_template(
+        "selection.html",
+        profile=profileUser,
+        totalPlaylists=totalPlaylists,
+        total_likedSongs=total_likedSongs,
+        total_PLtracks=total_PLtracks,
+        total_albumTracks=total_albumTracks,
+        TOTAL_SONGS=TOTAL_SONGS,
+        TOTAL_ARTISTS=TOTAL_ARTISTS
+    )
+
+
 
 @app.route("/api/playlist-images")
 def get_playlist_images():
