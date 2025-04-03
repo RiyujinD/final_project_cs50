@@ -16,10 +16,17 @@
                 <div id="userProfilData">
                         <div id="profilDataAlign">
 
-                                <p>Song guessed: <span id="songGuessed">0/100</span></p>
-                                <p>Artist guessed: <span id="artistGuessed">0/100</span></p>
-                                <p>Playlists: <span id="totalPlaylist">103</span></p>
-                                <p>Songs: <span id="totalLikedSongs">1004</span></p>
+                                <div id="dataTab">
+                                        <div class="lineDT"></div>
+                                        <div class="lineDT"></div>
+                                        <div class="lineDT"></div>
+                                </div>
+
+                                <p>Song guessed: <span id="songGuessed">0/<span class="TotalSongs">{{ TOTAL_SONGS }}</span></span></span></p>
+                                <p>Artist guessed: <span id="artistGuessed">0/<span class="TotalSongs">{{ TOTAL_ARTISTS }}</span></span></p>
+                                <p>Playlists: <span id="totalPlaylist">{{ totalPlaylists }}</span></p>
+                                <p>Liked Title: <span id="totalLikedSongs">{{ total_likedSongs }}</span></p>
+                                <p>Total Songs: <span class="TotalSongs">{{ TOTAL_SONGS }}</span></p>
                                 <br>
                                 <p>Rank: <span id="rank">S++</span></p>
                         </div>
@@ -27,13 +34,18 @@
                 
                 <!-- Profile picture -->
                 <div class="spotify_pp_wrapper">
-                        <img src="https://images.unsplash.com/photo-1735809491847-1af1c3025b92?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Spotify Profile Picture">
+                        {% if profile.images %}
+                                <img src="{{ profile.images[0].url }}" alt="Spotify Profile Picture">
+                        {% else %}
+                                <img src="https://images.unsplash.com/photo-1735809491847-1af1c3025b92?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Spotify Profile Picture">
+                        {% endif %}
                 </div>
                 
                 <!-- Greetin user -->
                 <div class="greetings_user">
                         <h2>Hello,</h2>
-                        <h1>USER</h1>
+                        <h1>{{ profile.display_name }}</h1>
+                        
                 </div>
 
 
@@ -43,31 +55,31 @@
 
 
 
+        
+        <hr style="margin-bottom: 5rem; margin-top: 3rem; width: 70%;"> 
 
-        <hr style="margin-bottom: 5rem; margin-top: 5rem; width: 70%"> 
-
-        <h1 id="selectMod">Choose game-mod 🚀</h1>
+        <h1 id="selectMod">SELECT <span style="color: #1DB954">MOD</span></h1>
 
         <div class="wrapper_containerPas">
                 <div class="grid_pas">
                         
                         <div class="music_box card1">
                                 <img src="https://images.unsplash.com/photo-1616356607338-fd87169ecf1a?q=80&w=2070&auto=format&fit=crop" alt="Playlist">
-                                <div class="text">Battle</div>
+                                <div class="text">Battle <br> vs</div>
                         </div>
                         
                         <div class="music_box card2">
                                 <img src="https://images.unsplash.com/photo-1595177663993-4849619ab1f8?q=80&w=1974&auto=format&fit=crop" alt="Liked Title">
-                                <div class="text">Guess Artist</div> 
+                                <div class="text">Guess <br> Artist</div> 
                         </div>
                         
                         <div class="music_box card3">
                                 <img src="https://images.unsplash.com/photo-1595177663993-4849619ab1f8?q=80&w=1974&auto=format&fit=crop" alt="Artist">
-                                <div class="text">Fav' song</div>
+                                <div class="text">Fav' <br> song</div>
                         </div>
                         <div class="music_box card4">
                                 <img src="https://images.unsplash.com/photo-1616356607338-fd87169ecf1a?q=80&w=2070&auto=format&fit=crop" alt="Album">
-                                <div class="text">Coming soon</div>
+                                <div class="text">Coming <br> soon</div>
                         </div>
                 </div> <!-- End of grid_pas-->
         </div> <!-- End of wrapper_containerPas-->

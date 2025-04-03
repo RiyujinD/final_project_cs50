@@ -12,20 +12,22 @@
   position: relative;
   display: flex;
   align-items: center;
-  justify-content: center;
-  padding-top: 5rem;
+  justify-content: flex-start;
+  padding-top: 3rem;
+  width: 100%;
+
 }
 
 /* Image section */
 .spotify_pp_wrapper {
-  width: 13rem; 
-  height: 13rem;
+  width: 12rem; 
+  height: 12rem;
   aspect-ratio: 1 / 1; 
   border-radius: 50%; 
   outline: 0.233rem solid #1DB954; /* Need too find better outline*/
   overflow: hidden;
   pointer-events: none;
-
+  margin-left: 17rem;
 }
 
 .spotify_pp_wrapper img {
@@ -37,7 +39,7 @@
 }
 
 .greetings_user {
-  transform: translateY(30%);
+  transform: translateY(20%);
   font-family: "Gill Sans", sans-serif;
   text-align: left;
   padding-left: 2rem;
@@ -45,7 +47,7 @@
 }
 
 .greetings_user h1 {
-  font-size: 4rem;
+  font-size: 3rem;
   color: #1DB954; /* Spotify green color to store */
 }
 
@@ -70,26 +72,74 @@
   }
 }
 
+
+
 #userProfilData {
   position: absolute;
   top: 20%;
   left: 0%;
   width: auto;
   height: auto;
-  width: 25rem;
+  width: 20rem;
   border-right: 1px solid var(--border1);
   border-bottom: 1px solid var(--border1);
   border-top: 1px solid var(--border1);
-  padding-block: 1rem;
-  padding-left: 2rem;
-  padding-right: 1rem;
+  padding: 2rem 1rem 1rem 2rem;
   line-height: 2.2rem;
   text-transform: capitalize;
   text-transform: uppercase;
   background-color: var(--bg-color);
+
+  font-weight: 400;
+  z-index: 100;
+  transition: all 1s ease-in-out;
 }
 
+#userProfilData span {
+  font-weight: 700;
+}
+
+#dataTab {
+  position: absolute;
+  top: 0%;
+  right: 0%;
+  transform: translate(70%, -120%);
+  width: 60px;
+  height: 50px;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  background-color: var(--bg-color);
+  outline: solid 2px var(--border1);
+  padding: 13px;
+  opacity: .5;
+  z-index: 100;
+  transition: all 1.5s ease-in-out;
+}
+
+
+#dataTab:hover {
+  opacity: 1;
+  transition: all .5s ease-in-out;
+}
+
+
+.lineDT {
+  width: 60%;
+  height: 2px;
+  border-radius: 2px;
+  background-color: var(--border1);
+}
+
+#dataTab .lineDT:nth-child(2) {
+  width: 50%;
+}
+
+
 #profilDataAlign {
+  position: relative;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -158,7 +208,7 @@
   border-radius: .7rem;
   align-self: center;
   border: none;
-  outline: .3rem solid var(--spotifyColor);
+  outline: .2rem solid var(--spotifyColor);
   box-shadow: var(--box-shadow);
   cursor: pointer;
   
@@ -188,6 +238,9 @@
   text-transform: uppercase;
   text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
   pointer-events: none;
+  background: #000000b0;
+  padding-block: autofit;
+  padding-inline: 2rem;
 }
 
 /* Grid Positioning */
@@ -235,3 +288,19 @@
   gap: 1rem;
   justify-content: center;
 } /* ? */ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

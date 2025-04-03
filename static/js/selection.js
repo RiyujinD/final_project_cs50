@@ -59,3 +59,32 @@ document.addEventListener('DOMContentLoaded', () => {
     event.stopPropagation();
   });
 });
+
+
+
+document.addEventListener('DOMContentLoaded', () => {
+  const userMetaData = document.getElementById('userProfilData');
+  const dataTab = document.getElementById('dataTab');
+  if (!userMetaData || !dataTab) return
+
+  const UMD_width = userMetaData.getBoundingClientRect().width
+  const UMDoffset = -UMD_width;
+
+  let isHidden = false
+  
+  dataTab.addEventListener('click', () => {
+
+    isHidden = !isHidden
+
+    if (!isHidden) {
+      userMetaData.style.transform = `translateX(${UMDoffset}px)`;
+      dataTab.style.transform = "translate(100%, -120%)";
+    }
+    else {
+      userMetaData.style.transform = `translateX(0)`;
+      dataTab.style.transform = "translate(70%, -120%)";
+    }
+
+  });
+
+});

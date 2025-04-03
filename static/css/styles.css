@@ -1,9 +1,9 @@
 /* Variable and preset to use around the all app */
 :root {
   font-family: 'Montserrat', sans-serif;
-  --width_button: 100px;
+  --width_button: 90px;
   --height_button: 40px;
-  --svg_size: 60px;
+  --svg_size: 50px;
   --spotifyColor: #1DB954;
   --niceBlue: rgba(0, 255, 255, 0.8);
   --text-secondary-dark: rgb(139, 148, 158);

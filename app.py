@@ -121,6 +121,34 @@ def get_auth_headers():
     return {"Authorization": f"Bearer {access_token}"}
 
 
+def get_user_spotifyMD():
+
+    url = "https://api.spotify.com/v1/me"
+
+    try:
+        headers = get_auth_headers()
+    except RuntimeError as e:
+        return {"error": str(e)}, 401
+    
+    
+    response = requests.get(url, headers=headers)
+    profile = response.json()
+
+    if not profile: 
+        return profile
+    
+
+    image = profile.get("images", [])
+    if image:
+        print(str(image[0]))
+    else:
+        print("Images not found")
+
+    return profile
+
+
+
+
 def get_user_playlist():  
 
     # Get users playlists (in multiple 'page' if user has many)
@@ -140,6 +168,28 @@ def get_user_playlist():
         url = data.get("next")  # Get the URL for the next page
     return playlists
 
+
+def get_all_tracks():
+
+    url = "https://api.spotify.com/v1/me/tracks"
+    try:
+        headers = get_auth_headers()
+    except RuntimeError as e:
+        raise RuntimeError(f"Authentication error: {str(e)}")
+    
+    all_tracks = [] 
+    while url:
+        response = requests.get(url, headers=headers)
+
+        if response.status_code != 200:
+            return Exception(f"Error when fetching response tracks: {response.status_code} - {response.text}")
+        
+        tracksData = response.json()
+        all_tracks.extend(tracksData.get("items", []))
+        url = tracksData.get("next")
+    
+    print(f"ALLLLLLL TRACKSSSSSSS: {all_tracks}")
+    return all_tracks
 
 def get_playlists_tracks():
 
@@ -252,12 +302,16 @@ def callback():
     session["expires_in"] = token_data.get("expires_in")
     session["token_expiry"] = time.time() + token_data.get("expires_in") # Current time + expiry token time
 
-
     return redirect(url_for("selection"))
 
 @app.route("/selection")
 @login_required
 def selection():
+
+    profileUser = get_user_spotifyMD()
+
+    if profileUser is None:
+        return {"error": "MD couldnt be fetch"}
 
     # Return playlists/songs of the user for selection
     playlists = get_user_playlist()
@@ -265,6 +319,8 @@ def selection():
         return playlists
     if not playlists:
         return {"error": "No playlists found"}
+    
+    totalPlaylists = len(playlists)
     
     # Extract all playlist images
     playlist_images = []
@@ -278,7 +334,7 @@ def selection():
         return {"error": "No playlist images available"}
 
     # Pass all playlist images to the template
-    return render_template("selection.html", playlist_images=playlist_images)
+    return render_template("selection.html", playlist_images=playlist_images, profile=profileUser, totalPlaylists=totalPlaylists) 
 
 @app.route("/api/playlist-images")
 def get_playlist_images():
