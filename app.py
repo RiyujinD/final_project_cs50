@@ -150,7 +150,6 @@ def selection():
     if profileUser is None:
         return {"error": "Error fetching user profile"}, 500    
 
-
     playlists = get_user_playlist()
     if isinstance(playlists, dict) and playlists.get("error"):
         return playlists, 500
