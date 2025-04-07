@@ -93,7 +93,7 @@ def get_user_playlist():
         return {"error": str(e)}, 401
 
     # Build parameters that gets query 
-    fields = "total,items(tracks(items(track(name,duration_ms,artists(name),images)))) ,next"
+    fields = "total,items(tracks(items(track(id,name,duration_ms,artists(id,name),images)))),next"
     params = {
         "fields": fields
     }
@@ -125,7 +125,7 @@ def _liked_title():
         return {"error": str(e)}, 401
     
     # Query parameters 
-    fields = "items(track(id,name,duration_ms,artist(id,name),album(images(url)))), next"
+    fields = "items(track(id,name,duration_ms,artist(id,name),album(images(url)))),next"
     params = {
         "fields": fields
     }
@@ -176,37 +176,66 @@ def get_saved_albums_tracks():
     return all_album_tracks
 
 
-    # # Prepare lists for bulk insert in db
 
 
-    # user_id = session.get('spotify_user_id')
-    # tracks_values = []
-    # artist_values = []
-    # user_tracks_values = []
+def unique_tracks_artists(playlists, liked_title, albums):
+    unique_items = {
+        "T": {},  # Using a dictionary for unique tracks (track_id -> track_item)
+        "A": {}   # Using a dictionary for unique artists (artist_id -> artist_item)
+    }
 
-    # for object in all_tracks:
+    for playlist in playlists:
+        for item in playlist.get("items", []):
+            track = item.get("track")
+            if track:
+                track_id = track.get("id")
+                track_artists = track.get("artists", [])
+                if track_id not in unique_items["T"]:
+                    unique_items["T"][track_id] = item  
+
+                for artist in track_artists:
+                    artist_id = artist.get("id")
+                    if artist_id not in unique_items["A"]:
+                        unique_items["A"][artist_id] = artist  
+
+    for item in liked_title:
+        track = item.get("track")
+        if track:
+            track_id = track.get("id")
+            track_artists = track.get("artists", [])
+            if track_id not in unique_items["T"]:
+                unique_items["T"][track_id] = item
+
+            for artist in track_artists:
+                artist_id = artist.get("id")
+                if artist_id not in unique_items["A"]:
+                    unique_items["A"][artist_id] = artist
+
+
+    for item in albums:
+        for track in item.get("tracks", []):  
+            track_id = track.get("id")
+            track_artists = track.get("artists", [])
+            if track_id not in unique_items["T"]:
+                unique_items["T"][track_id] = item 
+
+            for artist in track_artists:
+                artist_id = artist.get("id")
+                if artist_id not in unique_items["A"]:
+                    unique_items["A"][artist_id] = artist
+
+    return {
+        "T": list(unique_items["T"].values()), 
+        "A": list(unique_items["A"].values())   
+    }
+
+
         
-    #     track_id = object.get("id")
-    #     track_name = object.get("name")
-    #     artists = object.get("artists", [])
-    #     for item in artists: 
-    #         artists = ["id": artitst.get("id")name": artists.get("name")] 
-
-        
-
-
-
-
-
-
-
-
-
 
 
 # def get_playlists_tracks():
 #     # Get all tracks from all playlists of the user
-#     playlists = get_user_playlist()
+#     playlists = 
 
 #     try:
 #         headers = get_auth_headers()
@@ -239,67 +268,6 @@ def get_saved_albums_tracks():
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-def add_unique_track(track, unique_tracks, unique_artists):
-
-    if track and track.get("id") and track.get("name"):
-        track_id = track["id"]
-        # Add the track if it's not already in unique_tracks.
-        if track_id not in unique_tracks:
-            unique_tracks[track_id] = track
-        
-        # Process each artist in the track.
-        for artist in track.get("artists", []):
-            if artist and artist.get("id") and artist.get("name"):
-                artist_id = artist["id"]
-                # Add the artist to unique_artists if not already present.
-                if artist_id not in unique_artists:
-                    unique_artists[artist_id] = artist
-
-def deduplicate_tracks_and_artists(playlists, liked_tracks, albums):
-
-    unique_tracks = {}
-    unique_artists = {}
-    
-    # Process tracks from playlists.
-    for playlist in playlists:
-        for track_item in playlist.get("tracks", {}).get("items", []):
-            add_unique_track(track_item.get("track"), unique_tracks, unique_artists)
-    
-    # Process liked tracks.
-    for item in liked_tracks:
-        add_unique_track(item.get("track"), unique_tracks, unique_artists)
-    
-    # Process tracks from saved albums.
-    for album in albums:
-        for track in album.get("tracks", {}).get("items", []):
-            add_unique_track(track, unique_tracks, unique_artists)
-    
-    return unique_tracks, unique_artists
-
-
-
-
-
-
-
 # def store_tracks_in_db(db, tracks_data):
 #     cursor = db.cursor()
 
@@ -313,17 +281,3 @@ def deduplicate_tracks_and_artists(playlists, liked_tracks, albums):
 
 #     db.commit()
 
-
-
-
-# def store_user_tracks_in_db(db, spotify_user_id, tracks_data):
-#     cursor = db.cursor()
-
-#     for track in tracks_data:
-#         track_id = track.get('track', {}).get('id')
-
-#         # Insert the relationship between user and track into the 'user_tracks' table
-#         cursor.execute("INSERT OR IGNORE INTO user_tracks (spotify_user_id, track_id) VALUES (?, ?)",
-#                        (spotify_user_id, track_id))
-
-#     db.commit()
