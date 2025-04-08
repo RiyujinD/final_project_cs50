@@ -116,7 +116,7 @@ def get_user_playlist():
     return all_playlists_tracks
 
 
-def _liked_title():
+def get_liked_title():
     # Get users playlists (in multiple 'page' if user has many)
     url = "https://api.spotify.com/v1/me/tracks"
     try:
@@ -145,8 +145,6 @@ def _liked_title():
     print(f"ALL TRACKS IIIIIII: {all_liked_title}")
     return all_liked_title
 
-
-
 def get_saved_albums_tracks():
     url = "https://api.spotify.com/v1/me/albums"
     try:
@@ -155,7 +153,7 @@ def get_saved_albums_tracks():
         return {"error": str(e)}, 401
     
     # Query parameters
-    fields = "items(name,tracks(items(track(id,name,duration_ms,artists(id,name)))),images(url)),next"
+    fields = "items(name, tracks(items(id, name, duration_ms, artists(id, name))), images(url)),next"
     params = {
         "fields": fields
     }
@@ -167,62 +165,47 @@ def get_saved_albums_tracks():
             raise Exception(f"Error fetching albums: {response.status_code} - {response.text}")
         albumData = response.json()
         if 'error' in albumData:
-            return {"error": "Error in liked song response", "details": albumData.error}
+            return {"error": "Error in liked song response", "details": albumData['error']}
 
         all_album_tracks.extend(albumData.get("items", []))
-        url = all_album_tracks.get("next")  # Pagination
+        url = albumData.get("next")  # Pagination
 
     print(f"ALL ALBUM TRACKS OOOOO: {all_album_tracks}")
     return all_album_tracks
 
 
+# Helper to remove duplicate logic on next function 
+def uniqueTA_insertion(unique_dict, query):
+    for track in query:
+        track_id = track.get("id")
+        if track_id and track_id not in unique_dict['T']:
+            unique_dict.get("T")[track_id] = track
+
+        track_artists = track.get('artists', [])
+        for artist in track_artists:
+            artist_id = artist.get('id')
+            if artist_id and artist_id not in unique_dict['A']:
+                unique_dict.get("A")[artist_id] = artist
 
 
 def unique_tracks_artists(playlists, liked_title, albums):
-    unique_items = {
-        "T": {},  # Using a dictionary for unique tracks (track_id -> track_item)
-        "A": {}   # Using a dictionary for unique artists (artist_id -> artist_item)
-    }
+    unique_items = {"T": {},  "A": {}}
 
+    # Liked title inserstion ps: field="items(track(id,name,duration_ms,artist(id,name),album(images(url)))),next"
+    uniqueTA_insertion(unique_items, liked_title)
+
+    # Playlists inserstion ps: field= "total,items(tracks(items(track(id,name,duration_ms,artists(id,name),images)))),next"
     for playlist in playlists:
-        for item in playlist.get("items", []):
-            track = item.get("track")
-            if track:
-                track_id = track.get("id")
-                track_artists = track.get("artists", [])
-                if track_id not in unique_items["T"]:
-                    unique_items["T"][track_id] = item  
+        playlist_items = []
+        for t in playlist.get('tracks', {}).get('items'):
+            playlist_items.append(t.get('track'))
+        uniqueTA_insertion(unique_items, playlist_items)
+        
 
-                for artist in track_artists:
-                    artist_id = artist.get("id")
-                    if artist_id not in unique_items["A"]:
-                        unique_items["A"][artist_id] = artist  
-
-    for item in liked_title:
-        track = item.get("track")
-        if track:
-            track_id = track.get("id")
-            track_artists = track.get("artists", [])
-            if track_id not in unique_items["T"]:
-                unique_items["T"][track_id] = item
-
-            for artist in track_artists:
-                artist_id = artist.get("id")
-                if artist_id not in unique_items["A"]:
-                    unique_items["A"][artist_id] = artist
-
-
-    for item in albums:
-        for track in item.get("tracks", []):  
-            track_id = track.get("id")
-            track_artists = track.get("artists", [])
-            if track_id not in unique_items["T"]:
-                unique_items["T"][track_id] = item 
-
-            for artist in track_artists:
-                artist_id = artist.get("id")
-                if artist_id not in unique_items["A"]:
-                    unique_items["A"][artist_id] = artist
+    # Album insertion ps:  field="items(name, tracks(items(id, name, duration_ms, artists(id, name))), images(url))"
+    for album in albums:
+        album_items = album.get('tracks', []).get('items')
+        uniqueTA_insertion(unique_items, album_items)
 
     return {
         "T": list(unique_items["T"].values()), 
@@ -230,7 +213,55 @@ def unique_tracks_artists(playlists, liked_title, albums):
     }
 
 
-        
+
+
+
+
+
+
+
+
+
+
+    # print(f"Total items: {len(items)}")
+    # print(f"Unique tracks: {len(unique_items.get('T', {}))}")
+    # print(f"Unique artists: {len(unique_items.get('A', {}))}")   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 # def get_playlists_tracks():
