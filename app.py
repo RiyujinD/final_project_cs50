@@ -1,29 +1,24 @@
 import os
-import sqlite3
 import time
 import requests
-from flask import Flask, url_for, redirect, request, jsonify, session, render_template, g 
+from flask import Flask, url_for, redirect, request, jsonify, session, render_template # g 
 from flask_session import Session
 from urllib.parse import urlencode
 
 from config import CLIENT_ID, REDIRECT_URI, SPOTIFY_TOKEN_HEADERS, TOKEN_URL, AUTHORIZATION_URL, youtube
-from helpers import login_required, generate_secure_secret, refresh_access_token, get_user_playlist, get_all_tracks, get_playlists_tracks, get_saved_albums_tracks, store_user_profile
+from helpers import login_required, generate_secure_secret, refresh_access_token, get_playlist_tracks, get_user_spotifyMD
+from helpersDB import insert_userID_database
 
 app = Flask(__name__)
-
-
-
-
-
 
 # Configure session
 app.config["SESSION_TYPE"] = "filesystem"  # Store session data in a folder on the server  
 app.config["SESSION_PERMANENT"] = False  # Session data expire when browser is closed
 app.config["SESSION_FILE_DIR"] = "./.flask_session/"  # Folder to store session datas
+app.config.update({"TEMPLATES_AUTO_RELOAD": True}) # Refresh page on changes *dev*
 app.config["SESSION_COOKIE_SAMESITE"] = "Lax" # Handle CSRF attacks
 app.permanent_session_lifetime = 0 # Force browser to delete cache when browser is closed 
 app.secret_key = os.getenv("APP_STATE")  
-app.config.update({"TEMPLATES_AUTO_RELOAD": True}) # Refresh page on changes *dev*
 
 # Set headers to prevent caching
 @app.after_request
@@ -35,23 +30,6 @@ def add_no_cache_headers(response):
 
 Session(app) 
 
-
-# Path to database, abs-path for app join with /db file
-DATABASE = os.path.join(os.path.abspath(os.path.dirname(__file__)) , 'database.db') 
-
-# Connect database and link it to g flask flag
-def get_db():
-    if "db" not in g:
-        g.db = sqlite3.connect(DATABASE)
-        g.db.row_factory = sqlite3.Row
-    return g.db
-
-# Close db after each request auto
-@app.teardown_appcontext
-def close_db(error):
-    db = g.pop('db', None) 
-    if db is not None:
-        db.close()
 
 @app.route("/")
 def index():
@@ -122,17 +100,12 @@ def callback():
     session["is_authenticated"] = True
 
     # Fetch user metadata once and store the required fields in the session
-    profile = store_user_profile()
+    profile = get_user_spotifyMD()
     if profile is None:
         return {"error": "Error fetching user profile"}, 500    
-
+    
     spotify_id = profile.get("id")
-    db = get_db()
-    cursor = db.cursor()
-    cursor.execute("INSERT OR IGNORE INTO users (spotify_user_id) VALUES (?)", (spotify_id,))
-
-    # Db close auto after each request with @app.teardown_appcontext
-    db.commit()
+    insert_userID_database(spotify_id)
 
     return redirect(url_for("selection"))
 
@@ -146,87 +119,70 @@ def selection():
         "images": [{"url": session.get("profile_image")}] if session.get("profile_image") else []
     }
     if not profileUser.get("id"):
-        profileUser = store_user_profile()
+        profileUser = get_user_spotifyMD()
     if profileUser is None:
         return {"error": "Error fetching user profile"}, 500    
 
-    playlists = get_user_playlist()
+    playlists = get_playlist_tracks()
     if isinstance(playlists, dict) and playlists.get("error"):
         return playlists, 500
     if not playlists:
         return {"error": "No playlists found"}, 404
-    totalPlaylists = len(playlists)
+    
+    # totalPlaylists = len(playlists)
+    # total_likedSongs = get_likedTitle_tracks()
+    # total_PLtracks = get_playlist_tracks()
+    # total_albumTracks = get_albums_tracks()
 
-    likedSongs, total_likedSongs = get_all_tracks()
-    playlistTracks, total_PLtracks = get_playlists_tracks()
-    albumTracks, total_albumTracks = get_saved_albums_tracks()
+    # # Calculate total unique songs/artist 
+    # unique_track_ids = set()
+    # unique_artist_ids = set()
 
-    # Calculate total unique songs/artist 
-    unique_track_ids = set()
-    unique_artist_ids = set()
+    # # Process liked songs
+    # for item in likedSongs:
+    #     track = item.get("track", {})
+    #     track_id = track.get("id")
+    #     if track_id:
+    #         unique_track_ids.add(track_id)
+    #     for artist in track.get("artists", []):
+    #         artist_id = artist.get("id")
+    #         if artist_id:
+    #             unique_artist_ids.add(artist_id)
 
-    # Process liked songs
-    for item in likedSongs:
-        track = item.get("track", {})
-        track_id = track.get("id")
-        if track_id:
-            unique_track_ids.add(track_id)
-        for artist in track.get("artists", []):
-            artist_id = artist.get("id")
-            if artist_id:
-                unique_artist_ids.add(artist_id)
+    # # Process playlist tracks
+    # for item in playlistTracks:
+    #     track = item.get("track", {})
+    #     track_id = track.get("id")
+    #     if track_id:
+    #         unique_track_ids.add(track_id)
+    #     for artist in track.get("artists", []):
+    #         artist_id = artist.get("id")
+    #         if artist_id:
+    #             unique_artist_ids.add(artist_id)
 
-    # Process playlist tracks
-    for item in playlistTracks:
-        track = item.get("track", {})
-        track_id = track.get("id")
-        if track_id:
-            unique_track_ids.add(track_id)
-        for artist in track.get("artists", []):
-            artist_id = artist.get("id")
-            if artist_id:
-                unique_artist_ids.add(artist_id)
+    # # Process album tracks
+    # for track in albumTracks:
+    #     track_id = track.get("id")
+    #     if track_id:
+    #         unique_track_ids.add(track_id)
+    #     for artist in track.get("artists", []):
+    #         artist_id = artist.get("id")
+    #         if artist_id:
+    #             unique_artist_ids.add(artist_id)
 
-    # Process album tracks
-    for track in albumTracks:
-        track_id = track.get("id")
-        if track_id:
-            unique_track_ids.add(track_id)
-        for artist in track.get("artists", []):
-            artist_id = artist.get("id")
-            if artist_id:
-                unique_artist_ids.add(artist_id)
-
-    TOTAL_SONGS = len(unique_track_ids)
-    TOTAL_ARTISTS = len(unique_artist_ids)
+    # TOTAL_SONGS = len(unique_track_ids)
+    # TOTAL_ARTISTS = len(unique_artist_ids)
 
     return render_template(
         "selection.html",
         profile=profileUser,
-        totalPlaylists=totalPlaylists,
-        total_likedSongs=total_likedSongs,
-        total_PLtracks=total_PLtracks,
-        total_albumTracks=total_albumTracks,
-        TOTAL_SONGS=TOTAL_SONGS,
-        TOTAL_ARTISTS=TOTAL_ARTISTS
+        # totalPlaylists=totalPlaylists,
+        # total_likedSongs=total_likedSongs,
+        # total_PLtracks=total_PLtracks,
+        # total_albumTracks=total_albumTracks,
+        # TOTAL_SONGS=TOTAL_SONGS,
+        # TOTAL_ARTISTS=TOTAL_ARTISTS
     )
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 @app.route("/api/playlist-images")
@@ -234,7 +190,7 @@ def get_playlist_images():
     if "refresh_token" in session:
         refresh_access_token()
 
-    playlists = get_user_playlist()
+    playlists = get_playlist_tracks()
     if isinstance(playlists, tuple):
         return playlists  
     if not playlists:
@@ -251,3 +207,4 @@ def get_playlist_images():
 
 if __name__ == "__main__":
     app.run(debug=True)
+

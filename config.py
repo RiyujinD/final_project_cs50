@@ -5,6 +5,11 @@ from googleapiclient.discovery import build
 
 load_dotenv()
 
+
+# Absolute path to database
+APP_DIR = os.path.abspath(os.path.dirname(__file__))
+DATABASE = os.path.join(APP_DIR, "database.db")
+
 # Load Spotify credentials 
 CLIENT_ID = os.getenv("CLIENT_ID") 
 CLIENT_SECRET = os.getenv("CLIENT_SECRET")  
