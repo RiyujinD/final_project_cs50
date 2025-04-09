@@ -73,18 +73,65 @@ def get_user_spotifyMD():
         return {"error": str(e)}, 401
     
     response = requests.get(url, headers=headers)
+    if response.status_code != 200:
+        return {f"error fetching user meta data: profile {response.status_code} - {response.text}"}
+    
     profile = response.json()
     if not profile: 
-        return f"error: {response.status_code} - {response.text}"
+        return "No profile Meta Data found"
+    
 
-    if profile and not profile.get("error"):
-        session["spotify_id"] = profile.get("id")
-        session["username"] = profile.get("display_name", "Unknown")
-        images = profile.get("images", [])
-        session["profile_image"] = images[0]["url"] if images else None
+    session["spotify_id"] = profile.get("id")
+    if session["spotify_id"] is None:
+        raise ValueError("Spotify Id not found in profile MD response")
+
+    session["username"] = profile.get("display_name", "Unknown")
+    images = profile.get("images", [])
+    if images:
+        session["profile_image"] = images[0]["url"]
+    else:
+         session["profile_image"] = None # Too change with a set of default img 
 
     return profile
 
+def get_likedTitle_tracks():
+    
+    url = "https://api.spotify.com/v1/me/tracks"
+    try:
+        headers = get_auth_headers()
+    except RuntimeError as e:
+        return {"error": str(e)}, 401
+    
+    # Query parameters 
+    fields = "total, next, items(track(id,name,duration_ms,artists(id,name),album(images(url))))"
+    params = {
+        "fields": fields
+    }
+    
+    all_liked_title = []
+    total_liked_title = None
+
+    while url:
+        response = requests.get(url, headers=headers, params=params)
+        if response.status_code != 200:
+            print("error fetching liked title")
+            raise Exception(f"Error fetching liked title: {response.status_code} - {response.text}")
+        
+        tracksData = response.json()
+
+        if total_liked_title is None:
+            total_liked_title = tracksData.get('total', 0)
+
+        track_item = tracksData.get("items", [])
+        if track_item:
+            all_liked_title.extend(track_item)
+
+        url = tracksData.get("next")  # next page if any
+    
+    return all_liked_title, total_liked_title
+
+
+    
 def get_playlist_tracks():
 
     url = "https://api.spotify.com/v1/me/playlists"
@@ -98,7 +145,7 @@ def get_playlist_tracks():
     params = {"fields": fields}
 
     # Fields for playlists items endpoint  
-    fs = "next, total, items(track(id, name duration_ms, artists(id, name)))"
+    fs = "next, total, items(id, name, track(id, name, duration_ms, artists(id, name)))"    
     par = {"fields": fs}
 
     all_playlists_tracks = []
@@ -140,48 +187,8 @@ def get_playlist_tracks():
                 all_playlists_tracks.extend(track_items)
 
             track_url = track_data_json.get('next') # Next page page of tracks if any
-        
     
     return all_playlists_tracks, total_playlists
-
-
-def get_likedTitle_tracks():
-    # Get users playlists (in multiple 'page' if user has many)
-    url = "https://api.spotify.com/v1/me/tracks"
-    try:
-        headers = get_auth_headers()
-    except RuntimeError as e:
-        return {"error": str(e)}, 401
-    
-    # Query parameters 
-    fields = "total, next, items(track(id,name,duration_ms,artist(id,name),album(images(url))))"
-    params = {
-        "fields": fields
-    }
-    
-    all_liked_title = []
-    total_liked_title = None
-
-    while url:
-        response = requests.get(url, headers=headers, params=params)
-        if response.status_code != 200:
-            print("error fetching liked title")
-            raise Exception(f"Error fetching liked title: {response.status_code} - {response.text}")
-        
-        tracksData = response.json()
-
-        if total_liked_title is None:
-            total_liked_title = tracksData.get('total', 0)
-
-        tracksData.get("items", [])
-        if tracksData:
-            all_liked_title.extend(tracksData)
-
-        url = tracksData.get("next")  # next page if any
-    
-    print(f"ALL LIKED TITLE IIIIIII: {all_liked_title} - TOTAL LIKED TITLE VVVVVVVV: {total_liked_title}")
-
-    return all_liked_title, total_liked_title
 
 
 
@@ -193,12 +200,11 @@ def get_albums_tracks():
     except RuntimeError as e:
         return {"error": str(e)}, 401
     
-    # Query parameters
-    fields = "total, next, items(name, tracks(href,next,previous, items(id, name, duration_ms, artists(id, name))), images(url))"
+    fields = "total,next,items(album(id,name,tracks(href,next,previous,items(id,name,duration_ms,artists(id,name))),images(url)))"
     params = {"fields": fields}
 
     all_album_tracks = []
-    total_albums 
+    total_albums = 0
 
     # Album URL
     while url:
@@ -208,55 +214,58 @@ def get_albums_tracks():
             raise Exception(f"Error fetching albums: {response.status_code} - {response.text}")
         
         album_data = response.json()
+        album_items = album_data.get('items', [])
 
-        for album in album_data.get('items'):
-            tracks = album.get('tracks')
-            if tracks:
-                all_album_tracks.extend(tracks.get('items'))
+
+        for album in album_items:
+            album = album.get("album", {})  
+            tracks = album.get("tracks", {})
+            track_items = tracks.get("items", [])
+            if track_items:
+                all_album_tracks.extend(track_items)
 
                 tracks_url = tracks.get('next')
                 while tracks_url:
-
                     track_response = requests.get(tracks_url, headers=headers)
                     if track_response.status_code != 200:
                         print("error in spotify album response")
                         raise Exception(f"Error fetching albums: {track_response.status_code} - {track_response.text}")
                     
                     json_tracks = track_response.json()
+                    tracks_i = json_tracks.get('items', [])
+                    if tracks_i:
+                        all_album_tracks.extend(tracks_i)
 
-                    all_album_tracks.extend(json_tracks.get('items'))
                     tracks_url = json_tracks.get('next')
 
         url = album_data.get('next') # Next page 
-
-    total_albums = album_data.get('total')
-
-    return all_album_tracks, total_albums
+    total_albums = album_data.get('total', 0)
 
 
 
-
-
-
-
-
+#   fields = "total,next,items(album(id,name,tracks(href,next,previous,items(id,name,duration_ms,artists(id,name))),images(url)))"
 
 # Helper to remove duplicate logic on next function 
 def uniqueTA_insertion(unique_dict, query):
     for item in query:
 
         # Check for correct type: Dict || List
-        track = item.get("track") if "track" in item else item
-        if track: 
-            track_id = track.get("id")
-            if track_id and track_id not in unique_dict['T']:
-                unique_dict.get("T")[track_id] = track
+        track = None
 
-            track_artists = track.get('artists', [])
-            for artist in track_artists:
-                artist_id = artist.get('id')
-                if artist_id and artist_id not in unique_dict['A']:
-                    unique_dict.get("A")[artist_id] = artist
+        if "track" in item:
+            track = item.get('track')
+        else:
+            track = item
+
+        track_id = track.get("id")
+        if track_id and track_id not in unique_dict['T']:
+            unique_dict.get("T")[track_id] = track
+
+        track_artists = track.get('artists', [])
+        for artist in track_artists:
+            artist_id = artist.get('id')
+            if artist_id and artist_id not in unique_dict['A']:
+                unique_dict.get("A")[artist_id] = artist
 
 
 def unique_tracks_artists(playlists, liked_title, albums):
@@ -266,22 +275,18 @@ def unique_tracks_artists(playlists, liked_title, albums):
     uniqueTA_insertion(unique_items, liked_title)
 
     # Album insertion: 
-    for album in albums:
-        album_tracks = album.get('tracks', {})  
-        album_items = album_tracks.get('items', [])
-        uniqueTA_insertion(unique_items, album_items)
+    uniqueTA_insertion(unique_items, albums)
 
     # Playlists insertion: 
-    for playlist in playlists:
-        playlist_items = []
-        for t in playlist.get('tracks', {}).get('items', []):
-            playlist_items.append(t.get('track'))
-        uniqueTA_insertion(unique_items, playlist_items)
+    uniqueTA_insertion(unique_items, playlists)
         
     return {
         "T": list(unique_items["T"].values()), 
         "A": list(unique_items["A"].values())   
     }
+
+
+#  fields = items(id,name,duration_ms,artists(id,name))),images(url)))"
 
 
 # def database_TA_insertion(unique_dict):
@@ -295,77 +300,6 @@ def unique_tracks_artists(playlists, liked_title, albums):
     # print(f"Total items: {len(items)}")
     # print(f"Unique tracks: {len(unique_items.get('T', {}))}")
     # print(f"Unique artists: {len(unique_items.get('A', {}))}")   
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# def get_playlists_tracks():
-#     # Get all tracks from all playlists of the user
-#     playlists = 
-
-#     try:
-#         headers = get_auth_headers()
-#     except RuntimeError as e:
-#         raise RuntimeError(f"Authentication error: {str(e)}")
-
-
-
-#     all_PLtracks = []
-#     for playlist in playlists:
-#         tracks_url = playlist.get("tracks", {}).get("href")  # Get track endpoint
-#         if not tracks_url:
-#             continue  
-        
-#         while tracks_url:
-#             response = requests.get(tracks_url, headers=headers)
-#             if response.status_code != 200:
-#                 raise Exception(f"Error fetching tracks: {response.status_code} - {response.text}")
-
-#             data = response.json()
-
-
-#             all_PLtracks.extend(data.get("items", []))  
-#             tracks_url = data.get("next")  
-
-
-#   #  cursor.execute("INSERT INTO user_tracks (spotify_user_id, track_id) VALUES ")
-
-#     return all_PLtracks
-
 
 
 # def store_tracks_in_db(db, tracks_data):
