@@ -85,7 +85,12 @@ def get_user_spotifyMD():
     if session["spotify_id"] is None:
         raise ValueError("Spotify Id not found in profile MD response")
 
-    session["username"] = profile.get("display_name", "Unknown")
+    username = profile.get("display_name")
+    if username:
+        session["username"] = profile.get("display_name")
+    else:
+        session["username"] = "Unknown"
+
     images = profile.get("images", [])
     if images:
         session["profile_image"] = images[0]["url"]
@@ -93,6 +98,7 @@ def get_user_spotifyMD():
          session["profile_image"] = None # Too change with a set of default img 
 
     return profile
+
 
 def get_likedTitle_tracks():
     
@@ -131,7 +137,6 @@ def get_likedTitle_tracks():
     return all_liked_title, total_liked_title
 
 
-    
 def get_playlist_tracks():
 
     url = "https://api.spotify.com/v1/me/playlists"
@@ -191,8 +196,6 @@ def get_playlist_tracks():
     return all_playlists_tracks, total_playlists
 
 
-
-
 def get_albums_tracks():
     url = "https://api.spotify.com/v1/me/albums"
     try:
@@ -239,7 +242,10 @@ def get_albums_tracks():
                     tracks_url = json_tracks.get('next')
 
         url = album_data.get('next') # Next page 
+
     total_albums = album_data.get('total', 0)
+    return all_album_tracks, total_albums
+
 
 
 
