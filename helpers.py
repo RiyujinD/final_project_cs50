@@ -85,36 +85,64 @@ def get_user_spotifyMD():
 
     return profile
 
-def get_playlist_tracks():  
-    # Get users playlists (in multiple 'page' if user has many)
+def get_playlist_tracks():
+
     url = "https://api.spotify.com/v1/me/playlists"
     try:
         headers = get_auth_headers()
     except RuntimeError as e:
         return {"error": str(e)}, 401
-
-    # Build parameters that gets query 
-    fields = "total,items(tracks(items(track(id,name,duration_ms,artists(id,name),images)))),next"
-    params = {
-        "fields": fields
-    }
     
-    all_playlists_tracks = []
-    first_page = True
-    while url:
-        response = requests.get(url, headers=headers, params=params)
-        if response.status_code != 200:
-            raise Exception(f"Error when fetching response tracks: {response.status_code} - {response.text}")
-        
-        playlistsData = response.json()
-        if first_page:
-            session["total_playlist"] = playlistsData.get("total", 0)
-            first_page = False
-        all_playlists_tracks.extend(playlistsData.get("items", []))  # Add playlists from the current page
-        url = playlistsData.get("next")  # Get the URL for the next page
+    # Fields for playlist endpoint
+    fields = "total, next, items(tracks(href,total))"
+    params = {"fields": fields}
 
-    print(f"ALL PLAYLIST TRACKS AAAAAA: {all_playlists_tracks}")
-    return all_playlists_tracks
+    # Fields for playlists items endpoint  
+    fs = "next, total, items(track(id, name duration_ms, artists(id, name)))"
+    par = {"fields": fs}
+
+    all_playlists_tracks = []
+    all_tracks_url = []
+    total_playlists = None
+
+    # Paginate of playlists
+    while url:
+        response = requests.get(url=url, headers=headers, params=params)
+        if response.status_code != 200:
+#           print("error in fetching playlists")
+            raise Exception(f"Error fetching playlists: {response.status_code} - {response.text}")
+        
+        playlists_data = response.json()
+
+        if total_playlists is None:
+            total_playlists = playlists_data.get('total', 0)
+
+        for playlist in playlists_data.get('items', []):
+            tracks_url = playlist.get('tracks', {}).get('href')
+            if tracks_url:
+                all_tracks_url.append(tracks_url)
+
+        url = playlists_data.get('next') # Next page of playlist
+
+    # Loop all tracks_url playlists and store track data
+    for track_url in all_tracks_url:
+
+        # Loop for track pages
+        while track_url: 
+            resp = requests.get(track_url, headers=headers, params=par)
+            if resp.status_code != 200:
+                print("Error fetching tracks")
+                raise Exception(f"Error fetching tracks: {resp.status_code} - {resp.text}")
+
+            track_data_json = resp.json()
+            track_items = track_data_json.get('items', [])
+            if track_items:
+                all_playlists_tracks.extend(track_items)
+
+            track_url = track_data_json.get('next') # Next page page of tracks if any
+        
+    
+    return all_playlists_tracks, total_playlists
 
 
 def get_likedTitle_tracks():
@@ -126,25 +154,37 @@ def get_likedTitle_tracks():
         return {"error": str(e)}, 401
     
     # Query parameters 
-    fields = "items(track(id,name,duration_ms,artist(id,name),album(images(url)))),next"
+    fields = "total, next, items(track(id,name,duration_ms,artist(id,name),album(images(url))))"
     params = {
         "fields": fields
     }
     
-    all_liked_title = [] 
+    all_liked_title = []
+    total_liked_title = None
+
     while url:
         response = requests.get(url, headers=headers, params=params)
         if response.status_code != 200:
-            raise Exception(f"Error when fetching response tracks: {response.status_code} - {response.text}")
+            print("error fetching liked title")
+            raise Exception(f"Error fetching liked title: {response.status_code} - {response.text}")
+        
         tracksData = response.json()
-        if 'error' in tracksData:
-            return {"error": "Error in liked song response", "details": tracksData.error}
 
-        all_liked_title.extend(tracksData.get("items", []))
+        if total_liked_title is None:
+            total_liked_title = tracksData.get('total', 0)
+
+        tracksData.get("items", [])
+        if tracksData:
+            all_liked_title.extend(tracksData)
+
         url = tracksData.get("next")  # next page if any
     
-    print(f"ALL TRACKS IIIIIII: {all_liked_title}")
-    return all_liked_title
+    print(f"ALL LIKED TITLE IIIIIII: {all_liked_title} - TOTAL LIKED TITLE VVVVVVVV: {total_liked_title}")
+
+    return all_liked_title, total_liked_title
+
+
+
 
 def get_albums_tracks():
     url = "https://api.spotify.com/v1/me/albums"
@@ -154,25 +194,51 @@ def get_albums_tracks():
         return {"error": str(e)}, 401
     
     # Query parameters
-    fields = "items(name, tracks(items(id, name, duration_ms, artists(id, name))), images(url)),next"
-    params = {
-        "fields": fields
-    }
+    fields = "total, next, items(name, tracks(href,next,previous, items(id, name, duration_ms, artists(id, name))), images(url))"
+    params = {"fields": fields}
 
     all_album_tracks = []
+    total_albums 
+
+    # Album URL
     while url:
-        response = requests.get(url, headers=headers, params=params)
+        response = requests.get(url=url, headers=headers, params=params)
         if response.status_code != 200:
+            print("error in spotify album response")
             raise Exception(f"Error fetching albums: {response.status_code} - {response.text}")
-        albumData = response.json()
-        if 'error' in albumData:
-            return {"error": "Error in liked song response", "details": albumData['error']}
+        
+        album_data = response.json()
 
-        all_album_tracks.extend(albumData.get("items", []))
-        url = albumData.get("next")  # Pagination
+        for album in album_data.get('items'):
+            tracks = album.get('tracks')
+            if tracks:
+                all_album_tracks.extend(tracks.get('items'))
 
-    print(f"ALL ALBUM TRACKS OOOOO: {all_album_tracks}")
-    return all_album_tracks
+                tracks_url = tracks.get('next')
+                while tracks_url:
+
+                    track_response = requests.get(tracks_url, headers=headers)
+                    if track_response.status_code != 200:
+                        print("error in spotify album response")
+                        raise Exception(f"Error fetching albums: {track_response.status_code} - {track_response.text}")
+                    
+                    json_tracks = track_response.json()
+
+                    all_album_tracks.extend(json_tracks.get('items'))
+                    tracks_url = json_tracks.get('next')
+
+        url = album_data.get('next') # Next page 
+
+    total_albums = album_data.get('total')
+
+    return all_album_tracks, total_albums
+
+
+
+
+
+
+
 
 
 # Helper to remove duplicate logic on next function 
@@ -225,17 +291,6 @@ def unique_tracks_artists(playlists, liked_title, albums):
 
 #     db = get_db()
 #     cursor = db.cursor()
-
-
-
-
-
-
-
-
-
-
-
 
     # print(f"Total items: {len(items)}")
     # print(f"Unique tracks: {len(unique_items.get('T', {}))}")
