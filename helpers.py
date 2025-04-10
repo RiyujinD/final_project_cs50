@@ -8,7 +8,6 @@ import requests
 from config import SPOTIFY_TOKEN_HEADERS, TOKEN_URL
 
 
-
 # Decorator function to check if user login
 def login_required(f):
   @wraps(f)                                         # Preserve original function metadata (name, docstrings ext..)
@@ -17,7 +16,6 @@ def login_required(f):
       return redirect(url_for("login"))      
     return f(*args, **kwargs)                       # if already login primary function is being call with it arguments if any
   return decorated_function
-
 
 
 ### SPOTIFY API ###
@@ -45,6 +43,7 @@ def refresh_access_token(refresh_token):
         "expires_in": session["expires_in"],
         "refreshed": True
     }
+
 
 # Spotify headers for API calls
 def get_auth_headers():
@@ -117,7 +116,6 @@ def spotify_requests_get(url, api_error, headers=None, params=None, rate_info=No
         raise callError(f"{api_error}: {response.status_code} - {response.text}", response.status_code)
 
     return response
-
 
 
 def get_user_spotifyMD():
@@ -331,17 +329,7 @@ def generate_secure_secret(length=16):
 
 
 
-
-# def database_TA_insertion(unique_dict):
-
-#     """ Insert the unique track / artist into database  """
-
-
-#     db = get_db()
-#     cursor = db.cursor()
-
-
-
+# To do in helpersDB 
 
 # def store_tracks_in_db(db, tracks_data):
 #     cursor = db.cursor()
