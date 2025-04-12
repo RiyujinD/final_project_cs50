@@ -166,7 +166,6 @@ def get_likedTitle_tracks():
     # Query parameters 
     fields = "total, next, items(track(id,name,duration_ms,artists(id,name),album(images(url))))"
     params = {"fields": fields}
-
  
     all_liked_title = []
     total_liked_title = None
@@ -180,7 +179,10 @@ def get_likedTitle_tracks():
 
         track_item = tracksData.get("items", [])
         if track_item:
-            all_liked_title.extend(track_item)
+            for i in track_item:
+                if 'track' in i:
+                    i['track']['category'] = 'liked title'
+                all_liked_title.append(i)
 
         url = tracksData.get("next")  # next page if any
     
@@ -188,26 +190,25 @@ def get_likedTitle_tracks():
 
 
 def get_playlist_tracks():
-
     url = "https://api.spotify.com/v1/me/playlists"
     try:
         headers = get_auth_headers()
     except RuntimeError as e:
         return {"error": str(e)}, 401
-    
+
     # Fields for playlist endpoint
     fields = "total, next, items(tracks(href,total))"
     params = {"fields": fields}
 
     # Fields for playlists items endpoint  
-    fs = "next, total, items(id, name, track(id, name, duration_ms, artists(id, name)))"    
+    fs = "next, total, items(id, name, track(id, name, duration_ms, artists(id, name)))"
     par = {"fields": fs}
 
     all_playlists_tracks = []
     all_tracks_url = []
     total_playlists = None
 
-    # Paginate of playlists
+    # Pagination track url
     while url:
         response = spotify_requests_get(url, "Error fetching playlists", headers=headers, params=params)
         playlists_data = response.json()
@@ -220,23 +221,25 @@ def get_playlist_tracks():
             if tracks_url:
                 all_tracks_url.append(tracks_url)
 
-        url = playlists_data.get('next') # Next page of playlist
+        url = playlists_data.get('next')  # Next page of playlists
 
-    # Loop all tracks_url playlists and store track data
+    # Fetch tracks from each playlist URL
     for track_url in all_tracks_url:
-
-        # Loop for track pages
-        while track_url: 
-
-            resp = spotify_requests_get(track_url, "Error fetching playlists tracks ", headers=headers, params=par)
+        while track_url:
+            resp = spotify_requests_get(track_url, "Error fetching playlists tracks", headers=headers, params=par)
             track_data_json = resp.json()
             track_items = track_data_json.get('items', [])
-            if track_items:
-                all_playlists_tracks.extend(track_items)
 
-            track_url = track_data_json.get('next') # Next page page of tracks if any
-    
+            for item in track_items:
+                track = item.get('track')
+                if track:
+                    track['category'] = 'Playlists'
+                    all_playlists_tracks.append(track)
+
+            track_url = track_data_json.get('next')  # Next page of tracks, if any
+
     return all_playlists_tracks, total_playlists
+
 
 
 def get_albums_tracks():
@@ -245,42 +248,46 @@ def get_albums_tracks():
         headers = get_auth_headers()
     except RuntimeError as e:
         return {"error": str(e)}, 401
-    
+
     fields = "total,next,items(album(id,name,tracks(href,next,previous,items(id,name,duration_ms,artists(id,name))),images(url)))"
     params = {"fields": fields}
 
     all_album_tracks = []
     total_albums = 0
 
-    # Album URL
+    # Paginate through albums
     while url:
         response = spotify_requests_get(url, "Error fetching albums", headers=headers, params=params)
         album_data = response.json()
         album_items = album_data.get('items', [])
 
-        for album in album_items:
-            album = album.get("album", {})  
+        for album_item in album_items:
+            album = album_item.get("album", {})
             tracks = album.get("tracks", {})
             track_items = tracks.get("items", [])
-            if track_items:
-                all_album_tracks.extend(track_items)
 
-                tracks_url = tracks.get('next')
-                while tracks_url:
-                    track_response = spotify_requests_get(tracks_url, "Error fetching albums", headers=headers, params=None)
+            # Ensure the category key is set for each track in the first page
+            for track in track_items:
+                track['category'] = "Albums"
+            all_album_tracks.extend(track_items)
 
-                    json_tracks = track_response.json()
-                    tracks_i = json_tracks.get('items', [])
-                    if tracks_i:
-                        all_album_tracks.extend(tracks_i)
+            # Fetch additional tracks for this album if available.
+            tracks_url = tracks.get('next')
+            while tracks_url:
+                track_response = spotify_requests_get(tracks_url, "Error fetching albums", headers=headers, params=None)
+                json_tracks = track_response.json()
+                tracks_i = json_tracks.get('items', [])
+                if tracks_i:
+                    for track in tracks_i:
+                        track['category'] = "Albums"
+                        all_album_tracks.append(track)
+                tracks_url = json_tracks.get('next')
 
-                    tracks_url = json_tracks.get('next')
-
-        url = album_data.get('next') # Next page 
+        url = album_data.get('next')  # Next page of albums
 
     total_albums = album_data.get('total', 0)
-
     return all_album_tracks, total_albums
+
 
 
 # Helper to remove duplicate logic on next function 
