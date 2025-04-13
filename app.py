@@ -6,8 +6,8 @@ from flask_session import Session
 from urllib.parse import urlencode
 
 from config import CLIENT_ID, REDIRECT_URI, SPOTIFY_TOKEN_HEADERS, TOKEN_URL, AUTHORIZATION_URL, youtube
-from helpers import login_required, generate_secure_secret, refresh_access_token, get_playlist_tracks, get_user_spotifyMD
-from helpersDB import insert_userID_database
+from helpers import login_required, generate_secure_secret, refresh_access_token, get_user_spotifyMD, get_playlist_tracks, get_albums_tracks, get_likedTitle_tracks
+from helpersDB import insert_userID
 
 app = Flask(__name__)
 
@@ -100,12 +100,10 @@ def callback():
     session["is_authenticated"] = True
 
     # Fetch user metadata once and store the required fields in the session
-    profile = get_user_spotifyMD()
-    if profile is None:
-        return {"error": "Error fetching user profile"}, 500    
+    get_user_spotifyMD()
     
-    spotify_id = profile.get("id")
-    insert_userID_database(spotify_id)
+    spotify_id = session["spotify_id"]
+    insert_userID(spotify_id)
 
     return redirect(url_for("selection"))
 
@@ -119,15 +117,16 @@ def selection():
         "images": [{"url": session.get("profile_image")}] if session.get("profile_image") else []
     }
     if not profileUser.get("id"):
-        profileUser = get_user_spotifyMD()
-    if profileUser is None:
-        return {"error": "Error fetching user profile"}, 500    
+        return {"error:" "error getting user meta data in callback"}
 
-    playlists = get_playlist_tracks()
-    if isinstance(playlists, dict) and playlists.get("error"):
-        return playlists, 500
-    if not playlists:
-        return {"error": "No playlists found"}, 404
+    playlists_tracks = get_playlist_tracks()
+    albums_tracks = get_albums_tracks()
+    likedTitle_tracks = get_likedTitle_tracks()
+
+
+
+    print(likedTitle_tracks)
+
     
     # totalPlaylists = len(playlists)
     # total_likedSongs = get_likedTitle_tracks()

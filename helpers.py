@@ -19,20 +19,31 @@ def login_required(f):
 
 
 ### SPOTIFY API ###
+class NotAuthenticated(Exception):
+    """Raised when the user is not authenticated (missing access token)."""
+    pass
+
+class TokenRefreshFailed(Exception):
+    """Raised when the access token refresh process fails."""
+    pass
+
+
 def refresh_access_token(refresh_token):
     if not refresh_token:
-        return {"error": "No refresh token found", "status": 401}
+        raise NotAuthenticated("User not authenticated, error on refresh_access_token")
 
     data = {
         "grant_type": "refresh_token",
         "refresh_token": refresh_token
     }
+
     try: 
         response = requests.post(TOKEN_URL, data=data, headers=SPOTIFY_TOKEN_HEADERS)
     except requests.RequestException as e:
         return {"error": "Request exception", "details": str(e), "status": 500}
     if response.status_code != 200:
-        return {"error": "Failed to refresh token", "details": response.json(), "status": 500}
+        raise TokenRefreshFailed("Failed to refresh token")
+
     
     token_data = response.json()
     session["access_token"] = token_data.get("access_token")
@@ -45,14 +56,15 @@ def refresh_access_token(refresh_token):
     }
 
 
+
 # Spotify headers for API calls
 def get_auth_headers():
     if "access_token" not in session:
-        return {"error": "User not authenticated", "status": 401}
+        raise NotAuthenticated("User not authenticated, error on refresh_access_token")
     
     access_token = session.get("access_token")
 
-    if time.time() > session.get("token_expiry", 0) - 5:  # Check if token need to be refresh
+    if time.time() > session.get("token_expiry", 0) - 20:  # Check if token need to be refresh
         token_data = refresh_access_token(session.get("refresh_token")) 
         if "error" in token_data:
             raise RuntimeError("Failed to refresh access token.")
@@ -61,57 +73,77 @@ def get_auth_headers():
     return {"Authorization": f"Bearer {access_token}"}
 
 
-# Custom exception class with retry api calls 
+
 class callError(Exception):
 
-    # Initialize with message, status code, and retry time
+    # Custom exception for handling API errors with retries
     def __init__(self, message, status_code, retry_after=None):
-        super().__init__(message)   # Call parent (Exception) __init__ with the message
+        super().__init__(message)
         self.status_code = status_code
-        self.retry_after = retry_after  
+        self.retry_after = retry_after
 
 
-# Api call with error and limit handling
-def spotify_requests_get(url, api_error, headers=None, params=None, rate_info=None):
-     
+# Helper function to retry the requests after sleep
+def requests_method(url, headers, method, params):
+    """
+    Makes a request with the given HTTP method (GET or POST)
+    """
+    if method == 'get':
+        return requests.get(url, headers=headers, params=params)
+    elif method == 'post':
+        return requests.post(url, headers=headers, data=params)
+    else:
+        raise ValueError(f"Unsupported HTTP method: {method}")
+
+
+def spotify_requests(url, api_error, method, headers=None, params=None, rate_info=None):
+    """
+    Handles Spotify API requests with error and rate-limit handling.
+    Retries the request after a delay if rate-limited (status code 429).
+    """
     if rate_info is None:
         rate_info = {}
 
-    response = requests.get(url, headers=headers, params=params)
+    # Normalize the HTTP method (GET or POST)
+    method = method.strip().lower()
 
+    # First request attempt
+    response = requests_method(url, headers, method, params)
+
+    # Handle rate limit (status code 429)
     if response.status_code == 429:
-        retry_after = int(response.headers.get("Retry-After", 10))  
+        retry_after = int(response.headers.get("Retry-After", 10))  # Default to 10 seconds if not provided
         print(f"Rate limit reached. Retrying after {retry_after} seconds...")
         time.sleep(retry_after)
         
-        # Make the request again after waiting for the retry time
-        response = requests.get(url, headers=headers, params=params)
+        # Retry the request after the specified delay
+        response = requests_method(url, headers, method, params)
+        
+        # If still rate-limited after retry, raise an error
         if response.status_code == 429:
             raise callError("Spotify rate limit reached again", response.status_code, retry_after)
-    
+
+    # Handle rate limit information (X-RateLimit headers)
     if 'X-RateLimit-Limit' in response.headers:
         try:
-
-            # Handling rate limit info
             rate_info['limit_calls'] = int(response.headers.get("X-RateLimit-Limit", 0))
             rate_info['remaining_calls'] = int(response.headers.get("X-RateLimit-Remaining", 0))
             rate_info['reset'] = int(response.headers.get("X-RateLimit-Reset", 0))
 
-            # Check if remaining calls is close to limit and warn if so
             remaining = rate_info['remaining_calls']
             limit = rate_info['limit_calls']
-            warning_threshold = (remaining / limit) * 100   
-
+            warning_threshold = (remaining / limit) * 100
             current_time = time.time()
-            reset_time = int(rate_info['reset'] - current_time)  # Time until reset in seconds
+            reset_time = int(rate_info['reset'] - current_time)
 
-            # If less than 15% remaining
+            # Warning if remaining calls are less than 15% of limit
             if warning_threshold < 15:
                 print(f"Warning: Only {remaining} requests remaining. Rate limit will reset in {reset_time}s.")
 
         except (ValueError, TypeError) as e:
-                    print(f"Rate limit header parse error: {e}")
+            print(f"Rate limit header parse error: {e}")
 
+    # Handle non-200 status codes
     if response.status_code != 200:
         raise callError(f"{api_error}: {response.status_code} - {response.text}", response.status_code)
 
@@ -129,7 +161,7 @@ def get_user_spotifyMD():
     except RuntimeError as e:
         return {"error": str(e)}, 401
     
-    response = spotify_requests_get(url, "error fetching user meta data: profile" , headers=headers, params=None)
+    response = spotify_requests(url, "error fetching user meta data: profile" , headers=headers, params=None)
 
     profile = response.json()
     if not profile: 
@@ -164,24 +196,24 @@ def get_likedTitle_tracks():
         return {"error": str(e)}, 401
     
     # Query parameters 
-    fields = "total, next, items(track(id,name,duration_ms,artists(id,name),album(images(url))))"
+    fields = "total, next, items(track(id,name,duration_ms,artists,album(images(url))))"
     params = {"fields": fields}
  
     all_liked_title = []
     total_liked_title = None
 
     while url:
-        response = spotify_requests_get(url, "error fetching liked title tracks" , headers=headers, params=params)
+        response = spotify_requests(url, "error fetching liked title tracks" , headers=headers, params=params)
         tracksData = response.json()
 
         if total_liked_title is None:
             total_liked_title = tracksData.get('total', 0)
 
-        track_item = tracksData.get("items", [])
-        if track_item:
-            for i in track_item:
+        track_items = tracksData.get("items", [])
+        if track_items:
+            for i in track_items:
                 if 'track' in i:
-                    i['track']['category'] = 'liked title'
+                    i['track']['category'] = ('liked title',)
                 all_liked_title.append(i)
 
         url = tracksData.get("next")  # next page if any
@@ -201,7 +233,7 @@ def get_playlist_tracks():
     params = {"fields": fields}
 
     # Fields for playlists items endpoint  
-    fs = "next, total, items(id, name, track(id, name, duration_ms, artists(id, name)))"
+    fs = "next, total, items(id, name, track(id, name, duration_ms, artists))"
     par = {"fields": fs}
 
     all_playlists_tracks = []
@@ -210,7 +242,7 @@ def get_playlist_tracks():
 
     # Pagination track url
     while url:
-        response = spotify_requests_get(url, "Error fetching playlists", headers=headers, params=params)
+        response = spotify_requests(url, "Error fetching playlists", headers=headers, params=params)
         playlists_data = response.json()
 
         if total_playlists is None:
@@ -226,14 +258,14 @@ def get_playlist_tracks():
     # Fetch tracks from each playlist URL
     for track_url in all_tracks_url:
         while track_url:
-            resp = spotify_requests_get(track_url, "Error fetching playlists tracks", headers=headers, params=par)
+            resp = spotify_requests(track_url, "Error fetching playlists tracks", headers=headers, params=par)
             track_data_json = resp.json()
             track_items = track_data_json.get('items', [])
 
             for item in track_items:
                 track = item.get('track')
                 if track:
-                    track['category'] = 'Playlists'
+                    track['category'] = ('Playlists',)
                     all_playlists_tracks.append(track)
 
             track_url = track_data_json.get('next')  # Next page of tracks, if any
@@ -249,7 +281,7 @@ def get_albums_tracks():
     except RuntimeError as e:
         return {"error": str(e)}, 401
 
-    fields = "total,next,items(album(id,name,tracks(href,next,previous,items(id,name,duration_ms,artists(id,name))),images(url)))"
+    fields = "total,next,items(album(id,name,tracks(href,next,previous,items(id,name,duration_ms,artists)),images(url)))"
     params = {"fields": fields}
 
     all_album_tracks = []
@@ -257,29 +289,30 @@ def get_albums_tracks():
 
     # Paginate through albums
     while url:
-        response = spotify_requests_get(url, "Error fetching albums", headers=headers, params=params)
+        response = spotify_requests(url, "Error fetching albums", headers=headers, params=params)
         album_data = response.json()
         album_items = album_data.get('items', [])
 
+        # Loop all albums
         for album_item in album_items:
             album = album_item.get("album", {})
             tracks = album.get("tracks", {})
             track_items = tracks.get("items", [])
 
-            # Ensure the category key is set for each track in the first page
+            # Loop all tracks of albums
             for track in track_items:
-                track['category'] = "Albums"
+                track['category'] = ('Albums',)
             all_album_tracks.extend(track_items)
 
-            # Fetch additional tracks for this album if available.
+            # Handleling pagination if any
             tracks_url = tracks.get('next')
             while tracks_url:
-                track_response = spotify_requests_get(tracks_url, "Error fetching albums", headers=headers, params=None)
+                track_response = spotify_requests(tracks_url, "Error fetching albums", headers=headers, params=None) # new request on new page
                 json_tracks = track_response.json()
                 tracks_i = json_tracks.get('items', [])
                 if tracks_i:
                     for track in tracks_i:
-                        track['category'] = "Albums"
+                        track['category'] = ('Albums',)
                         all_album_tracks.append(track)
                 tracks_url = json_tracks.get('next')
 
@@ -288,28 +321,38 @@ def get_albums_tracks():
     total_albums = album_data.get('total', 0)
     return all_album_tracks, total_albums
 
-
-
 # Helper to remove duplicate logic on next function 
 def uniqueTA_insertion(unique_dict, query):
     for item in query:
 
-        # If item object has key track item 
-        track = None
-        if "track" in item:
+        # Check struct, object -> list of dict items or object -> list of track 
+        if 'track' in item:
             track = item.get('track')
         else:
             track = item
 
+        # Get the category and track ID
+        track_category = track.get('category', ())
         track_id = track.get("id")
-        if track_id and track_id not in unique_dict['T']:
-            unique_dict.get("T")[track_id] = track
 
+        if track_id:
+            if track_id not in unique_dict['T']:
+                unique_dict["T"][track_id] = track
+            else:
+                # Track exists, check if the category is already present
+                existing_category = unique_dict['T'][track_id].get('category', ())
+
+                if track_category not in existing_category:
+                    unique_dict['T'][track_id]['category'] = existing_category + track_category # Add the new category to the existing categories tuple
+
+        # Handle artists for this track
         track_artists = track.get('artists', [])
         for artist in track_artists:
             artist_id = artist.get('id')
             if artist_id and artist_id not in unique_dict['A']:
-                unique_dict.get("A")[artist_id] = artist
+                # Add artist to the 'A' dict if not already present
+                unique_dict["A"][artist_id] = artist
+
 
 
 def unique_tracks_artists(playlists, liked_title, albums):
@@ -323,11 +366,8 @@ def unique_tracks_artists(playlists, liked_title, albums):
 
     # Playlists insertion: 
     uniqueTA_insertion(unique_items, playlists)
-        
-    return {
-        "T": list(unique_items["T"].values()), 
-        "A": list(unique_items["A"].values())   
-    }
+
+    return unique_items
 
 
 def generate_secure_secret(length=16):
@@ -337,7 +377,6 @@ def generate_secure_secret(length=16):
 
 
 # To do in helpersDB 
-
 # def store_tracks_in_db(db, tracks_data):
 #     cursor = db.cursor()
 
@@ -350,3 +389,5 @@ def generate_secure_secret(length=16):
 #                        (track_id, track_name, artist_name))
 
 #     db.commit()
+
+ 
