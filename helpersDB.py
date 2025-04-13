@@ -9,7 +9,7 @@ def link_db():
   return db
 
 
-def insert_userID_database(spotify_id):
+def insert_userID(spotify_id):
     db = link_db()
     cursor = db.cursor()
 
@@ -24,4 +24,22 @@ def insert_userID_database(spotify_id):
 
     finally:
        db.close()
+
+
+def insert_tracks_artists(unique_items):
+   try:
+    db = link_db()
+    cursor = db.cursor()
+
+    for track_id, track in unique_items['T'].items():
+        id = track_id
+        name = track['name']
+
+   except Exception as e:
+      db.rollback()
+      print(f"rollback for track insertion insertion {e}")
+
+
+
+
 
