@@ -6,7 +6,7 @@ from flask_session import Session
 from urllib.parse import urlencode
 
 from config import CLIENT_ID, REDIRECT_URI, SPOTIFY_TOKEN_HEADERS, TOKEN_URL, AUTHORIZATION_URL, youtube
-from helpers import login_required, generate_secure_secret, refresh_access_token, get_user_spotifyMD, get_playlist_tracks, get_albums_tracks, get_likedTitle_tracks
+from helpers import login_required, generate_secure_secret, refresh_access_token, get_user_spotifyMD, get_playlist_tracks, get_albums_tracks, get_likedTitle_tracks, spotify_requests
 from helpersDB import insert_userID
 
 app = Flask(__name__)
@@ -87,11 +87,16 @@ def callback():
         "redirect_uri": REDIRECT_URI
     }
 
-    response = requests.post(TOKEN_URL, data=data, headers=SPOTIFY_TOKEN_HEADERS)
-    if response.status_code != 200:
-        return jsonify({"error": "Failed to fetch tokens", "details": response.json()})
-    
+    response = spotify_requests(TOKEN_URL, "Error in callback response", 'post', data, headers=SPOTIFY_TOKEN_HEADERS)
+
     token_data = response.json()
+
+    access_token = token_data.get("access_token")
+    refresh_token = token_data.get("refresh_token")
+    expire_in = token_data.get("expires_in")
+
+    if not access_token or not refresh_token or not expire_in:
+        return {"error": "token data not found in callback"}, 400
 
     session["access_token"] = token_data.get("access_token")
     session["refresh_token"] = token_data.get("refresh_token")

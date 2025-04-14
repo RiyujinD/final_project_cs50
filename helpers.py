@@ -85,9 +85,8 @@ class callError(Exception):
 
 # Helper function to retry the requests after sleep
 def requests_method(url, headers, method, params):
-    """
-    Makes a request with the given HTTP method (GET or POST)
-    """
+    
+    # Check if method pass is format get or post 
     if method == 'get':
         return requests.get(url, headers=headers, params=params)
     elif method == 'post':
@@ -96,18 +95,13 @@ def requests_method(url, headers, method, params):
         raise ValueError(f"Unsupported HTTP method: {method}")
 
 
-def spotify_requests(url, api_error, method, headers=None, params=None, rate_info=None):
-    """
-    Handles Spotify API requests with error and rate-limit handling.
-    Retries the request after a delay if rate-limited (status code 429).
-    """
+def spotify_requests(url, api_error, method, params, headers=None, rate_info=None):
     if rate_info is None:
         rate_info = {}
 
-    # Normalize the HTTP method (GET or POST)
     method = method.strip().lower()
 
-    # First request attempt
+    # First request attempt, now using the passed params!
     response = requests_method(url, headers, method, params)
 
     # Handle rate limit (status code 429)
@@ -132,7 +126,7 @@ def spotify_requests(url, api_error, method, headers=None, params=None, rate_inf
 
             remaining = rate_info['remaining_calls']
             limit = rate_info['limit_calls']
-            warning_threshold = (remaining / limit) * 100
+            warning_threshold = (remaining / limit) * 100 if limit else 100
             current_time = time.time()
             reset_time = int(rate_info['reset'] - current_time)
 
@@ -150,6 +144,7 @@ def spotify_requests(url, api_error, method, headers=None, params=None, rate_inf
     return response
 
 
+
 def get_user_spotifyMD():
 
     if "spotify_id" in session:
@@ -161,7 +156,13 @@ def get_user_spotifyMD():
     except RuntimeError as e:
         return {"error": str(e)}, 401
     
-    response = spotify_requests(url, "error fetching user meta data: profile" , headers=headers, params=None)
+    response = spotify_requests(
+        url,
+        "error fetching user meta data: profile",
+        'get',
+        params=None,
+        headers=headers
+    )
 
     profile = response.json()
     if not profile: 
@@ -203,7 +204,14 @@ def get_likedTitle_tracks():
     total_liked_title = None
 
     while url:
-        response = spotify_requests(url, "error fetching liked title tracks" , headers=headers, params=params)
+        response = spotify_requests(
+            url,
+            "error fetching liked title tracks",
+            'get',
+            params=params,
+            headers=headers
+        )
+
         tracksData = response.json()
 
         if total_liked_title is None:
@@ -242,7 +250,15 @@ def get_playlist_tracks():
 
     # Pagination track url
     while url:
-        response = spotify_requests(url, "Error fetching playlists", headers=headers, params=params)
+
+        response = spotify_requests(
+            url,
+            "Error fetching playlists",
+            'get',
+            params=params,
+            headers=headers
+        )
+
         playlists_data = response.json()
 
         if total_playlists is None:
@@ -258,7 +274,14 @@ def get_playlist_tracks():
     # Fetch tracks from each playlist URL
     for track_url in all_tracks_url:
         while track_url:
-            resp = spotify_requests(track_url, "Error fetching playlists tracks", headers=headers, params=par)
+            resp = spotify_requests(
+                track_url,
+                "Error fetching playlists tracks",
+                'get',
+                params=par,
+                headers=headers
+            )
+
             track_data_json = resp.json()
             track_items = track_data_json.get('items', [])
 
@@ -289,7 +312,7 @@ def get_albums_tracks():
 
     # Paginate through albums
     while url:
-        response = spotify_requests(url, "Error fetching albums", headers=headers, params=params)
+        response = spotify_requests(url, "Error fetching albums", 'get', params=params, headers=headers)
         album_data = response.json()
         album_items = album_data.get('items', [])
 
@@ -307,7 +330,14 @@ def get_albums_tracks():
             # Handleling pagination if any
             tracks_url = tracks.get('next')
             while tracks_url:
-                track_response = spotify_requests(tracks_url, "Error fetching albums", headers=headers, params=None) # new request on new page
+                track_response = spotify_requests(
+                    tracks_url,
+                    "Error fetching albums",
+                    'get', 
+                    params=None,
+                    headers=headers,
+                ) # new request on new page
+
                 json_tracks = track_response.json()
                 tracks_i = json_tracks.get('items', [])
                 if tracks_i:
@@ -349,7 +379,7 @@ def uniqueTA_insertion(unique_dict, query):
         track_artists = track.get('artists', [])
         for artist in track_artists:
             artist_id = artist.get('id')
-            if artist_id and artist_id not in unique_dict['A']:
+            if artist_id and artist_id not in unique_dict['A'][track_id]:
                 # Add artist to the 'A' dict if not already present
                 unique_dict["A"][artist_id] = artist
 
