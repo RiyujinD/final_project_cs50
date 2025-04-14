@@ -22,12 +22,13 @@
                                         <div class="lineDT"></div>
                                 </div>
 
-                                <p>Song guessed: <span id="songGuessed">0/<span class="TotalSongs">{{ TOTAL_SONGS }}</span></span></span></p>
-                                <p>Artist guessed: <span id="artistGuessed">0/<span class="TotalSongs">{{ TOTAL_ARTISTS }}</span></span></p>
-                                <p>Playlists: <span id="totalPlaylist">{{ totalPlaylists }}</span></p>
-                                <p>Liked Title: <span id="totalLikedSongs">{{ total_likedSongs }}</span></p>
-                                <p>Total Songs: <span class="TotalSongs">{{ TOTAL_SONGS }}</span></p>
+                                <p>Song guessed: <span id="songGuessed">0 / <span class="TotalSongs">{{ TOTAL_SONGS }}</span></span></span></p>
+                                <p>Artist guessed: <span id="artistGuessed">0 / <span class="TotalSongs">{{ TOTAL_ARTISTS }}</span></span></p>
+                                <p>Playlists: <span id="totalPlaylist">{{ totalPlaylists or "MISSING"  }}</span></p>
+                                <p>Liked Title: <span id="totalLikedSongs">{{ total_likedSongs or "MISSING" }}</span></p>
+                                
                                 <br>
+                                <p>Score: </p>
                                 <p>Rank: <span id="rank">F</span></p>
                         </div>
                 </div>
@@ -64,7 +65,7 @@
                         
                         <div class="music_box card2">
                                 <img src="https://images.unsplash.com/photo-1595177663993-4849619ab1f8?q=80&w=1974&auto=format&fit=crop" alt="Liked Title">
-                                <div class="text">Guess <br> Artist</div> 
+                                <div class="text">Guess <br> Song / Artist</div> 
                         </div>
                         
                         <div class="music_box card3">

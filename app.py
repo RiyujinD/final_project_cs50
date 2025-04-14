@@ -6,7 +6,7 @@ from flask_session import Session
 from urllib.parse import urlencode
 
 from config import CLIENT_ID, REDIRECT_URI, SPOTIFY_TOKEN_HEADERS, TOKEN_URL, AUTHORIZATION_URL, youtube
-from helpers import login_required, generate_secure_secret, refresh_access_token, get_user_spotifyMD, get_playlist_tracks, get_albums_tracks, get_likedTitle_tracks, spotify_requests
+from helpers import login_required, generate_secure_secret, refresh_access_token, get_user_spotifyMD, get_playlist_tracks, get_likedTitle_tracks, spotify_requests, tracks_and_artists, get_albums_tracks
 from helpersDB import insert_userID
 
 app = Flask(__name__)
@@ -124,68 +124,22 @@ def selection():
     if not profileUser.get("id"):
         return {"error:" "error getting user meta data in callback"}
 
-    playlists_tracks = get_playlist_tracks()
-    albums_tracks = get_albums_tracks()
-    likedTitle_tracks = get_likedTitle_tracks()
+    playlists = get_playlist_tracks()
+    likedTitle = get_likedTitle_tracks()
+    albums = get_albums_tracks()
 
+    total_playlists = playlists[1]
+    total_likedTitle = likedTitle[1]
 
-
-    print(likedTitle_tracks)
-
-    
-    # totalPlaylists = len(playlists)
-    # total_likedSongs = get_likedTitle_tracks()
-    # total_PLtracks = get_playlist_tracks()
-    # total_albumTracks = get_albums_tracks()
-
-    # # Calculate total unique songs/artist 
-    # unique_track_ids = set()
-    # unique_artist_ids = set()
-
-    # # Process liked songs
-    # for item in likedSongs:
-    #     track = item.get("track", {})
-    #     track_id = track.get("id")
-    #     if track_id:
-    #         unique_track_ids.add(track_id)
-    #     for artist in track.get("artists", []):
-    #         artist_id = artist.get("id")
-    #         if artist_id:
-    #             unique_artist_ids.add(artist_id)
-
-    # # Process playlist tracks
-    # for item in playlistTracks:
-    #     track = item.get("track", {})
-    #     track_id = track.get("id")
-    #     if track_id:
-    #         unique_track_ids.add(track_id)
-    #     for artist in track.get("artists", []):
-    #         artist_id = artist.get("id")
-    #         if artist_id:
-    #             unique_artist_ids.add(artist_id)
-
-    # # Process album tracks
-    # for track in albumTracks:
-    #     track_id = track.get("id")
-    #     if track_id:
-    #         unique_track_ids.add(track_id)
-    #     for artist in track.get("artists", []):
-    #         artist_id = artist.get("id")
-    #         if artist_id:
-    #             unique_artist_ids.add(artist_id)
-
-    # TOTAL_SONGS = len(unique_track_ids)
-    # TOTAL_ARTISTS = len(unique_artist_ids)
+    unique_items, total_tracks, total_artists = tracks_and_artists(playlists[0], likedTitle[0], albums[0])
 
     return render_template(
         "selection.html",
         profile=profileUser,
-        # totalPlaylists=totalPlaylists,
-        # total_likedSongs=total_likedSongs,
-        # total_PLtracks=total_PLtracks,
-        # total_albumTracks=total_albumTracks,
-        # TOTAL_SONGS=TOTAL_SONGS,
-        # TOTAL_ARTISTS=TOTAL_ARTISTS
+        totalPlaylists=total_playlists,
+        total_likedSongs=total_likedTitle,
+        TOTAL_SONGS=total_tracks,
+        TOTAL_ARTISTS=total_artists
     )
 
 
