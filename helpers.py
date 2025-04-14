@@ -29,7 +29,7 @@ class TokenRefreshFailed(Exception):
 
 
 def refresh_access_token(refresh_token):
-    if not refresh_token:
+    if refresh_token != session['refresh_token']:
         raise NotAuthenticated("User not authenticated, error on refresh_access_token")
 
     data = {
@@ -314,6 +314,10 @@ def get_albums_tracks():
     while url:
         response = spotify_requests(url, "Error fetching albums", 'get', params=params, headers=headers)
         album_data = response.json()
+
+        if total_albums is None:
+            total_albums = album_data.get('total', 0)
+
         album_items = album_data.get('items', [])
 
         # Loop all albums
@@ -369,7 +373,6 @@ def uniqueTA_insertion(unique_dict, query):
             if track_id not in unique_dict['T']:
                 unique_dict["T"][track_id] = track
             else:
-                # Track exists, check if the category is already present
                 existing_category = unique_dict['T'][track_id].get('category', ())
 
                 if track_category not in existing_category:
@@ -379,13 +382,13 @@ def uniqueTA_insertion(unique_dict, query):
         track_artists = track.get('artists', [])
         for artist in track_artists:
             artist_id = artist.get('id')
-            if artist_id and artist_id not in unique_dict['A'][track_id]:
+            if artist_id and artist_id not in unique_dict['A']:
                 # Add artist to the 'A' dict if not already present
                 unique_dict["A"][artist_id] = artist
 
 
 
-def unique_tracks_artists(playlists, liked_title, albums):
+def tracks_and_artists(playlists, liked_title, albums):
     unique_items = {"T": {}, "A": {}}
 
     # Liked title insertion
@@ -397,7 +400,10 @@ def unique_tracks_artists(playlists, liked_title, albums):
     # Playlists insertion: 
     uniqueTA_insertion(unique_items, playlists)
 
-    return unique_items
+    total_tracks = len(unique_items['T'])
+    total_artists = len(unique_items['A'])
+
+    return unique_items, total_tracks, total_artists
 
 
 def generate_secure_secret(length=16):
