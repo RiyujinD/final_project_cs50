@@ -620,7 +620,7 @@ transform: translate(100%, -50%);
   border: 1px solid rgba(255, 255, 255, 0.4);
   object-fit: cover;
   border: none;
-  outline: .3rem solid var(--spotifyColor);
+  outline: .15rem solid rgba(255, 255, 255, 092);
   -webkit-box-shadow: var(--box-shadow1), var(--box-shadowGlass), var(--box-shadowItem);
   -moz-box-shadow: var(--box-shadow1), var(--box-shadowGlass), var(--box-shadowItem);
   box-shadow: var(--box-shadow1), var(--box-shadowGlass), var(--box-shadowItem);
@@ -724,7 +724,7 @@ transform: translate(100%, -50%);
   -webkit-box-shadow: 1px 2px 5px rgba(255, 255, 255, 0.2), var(--box-shadowItem);
   -moz-box-shadow: 1px 2px 5px rgba(255, 255, 255, 0.2), var(--box-shadowItem);
   box-shadow: 1px 2px 5px rgba(255, 255, 255, 0.2), var(--box-shadowItem);
-  outline: .2rem solid var(--spotifyColor);
+
 }
 
 .half {

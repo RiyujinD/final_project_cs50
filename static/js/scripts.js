@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const svgs = [svgDay, svgNight];
     const html = document.documentElement;
   
-    // Function to handle opacity animations
+    // Function to handle opacity 
     const opacityAnimation = (fadeOutSvg, fadeInSvg) => {
       requestAnimationFrame(() => {
         fadeOutSvg.classList.remove('fadeIn', 'fadeOut');

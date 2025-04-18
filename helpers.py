@@ -226,7 +226,8 @@ def get_likedTitle_tracks():
 
         url = tracksData.get("next")  # next page if any
     
-    return all_liked_title, total_liked_title
+    session['total_liked_tracks'] = total_liked_title
+    return all_liked_title
 
 
 def get_playlist_tracks():
@@ -293,7 +294,8 @@ def get_playlist_tracks():
 
             track_url = track_data_json.get('next')  # Next page of tracks, if any
 
-    return all_playlists_tracks, total_playlists
+    session['total_playlists'] = total_playlists
+    return all_playlists_tracks
 
 
 
@@ -308,7 +310,7 @@ def get_albums_tracks():
     params = {"fields": fields}
 
     all_album_tracks = []
-    total_albums = 0
+    total_albums = None
 
     # Paginate through albums
     while url:
@@ -352,8 +354,9 @@ def get_albums_tracks():
 
         url = album_data.get('next')  # Next page of albums
 
-    total_albums = album_data.get('total', 0)
-    return all_album_tracks, total_albums
+    session['total_albums'] = total_albums
+
+    return all_album_tracks
 
 # Helper to remove duplicate logic on next function 
 def uniqueTA_insertion(unique_dict, query):

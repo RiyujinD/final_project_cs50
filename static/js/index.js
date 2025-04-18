@@ -1,12 +1,14 @@
-// Scroll and auto scroll for the slider carousel
+
 document.addEventListener('DOMContentLoaded', () => {
+
+    // Scroll and auto scroll for the slider carousel
     const slider = document.querySelector('#slider'),
           slides = document.querySelectorAll('#slider img'),
           navLinks = document.querySelectorAll('#slider-nav a');
 
     const sliderExist = slider && slides.length > 0 && navLinks.length > 0;
-    
 
+    if (!sliderExist) return;   
 
     let currentIndex = 0;
     let autoScrollTimer, scrollEndTimer;
@@ -145,7 +147,7 @@ document.addEventListener('DOMContentLoaded', () => {
       let resultPTag = document.createElement('p');
       resultPTag.classList.add('ResultTagAG');
   
-      let formInput = searchInput.value.replace(/\s+/g, '').toLowerCase(); // Regex to remove all whitespace
+      let formInput = searchInput.value.replace(/\s+/g, '').toLowerCase(); // Regex to remove all whitespace /s
       if (formInput === 'radiohead') {
         resultPTag.classList.add('SuccessResultAG');
         resultPTag.innerHTML = '🎉 Success 🎉';
