@@ -6,7 +6,7 @@ from flask_session import Session
 from urllib.parse import urlencode
 
 from config import CLIENT_ID, REDIRECT_URI, SPOTIFY_TOKEN_HEADERS, TOKEN_URL, AUTHORIZATION_URL, youtube
-from helpers import login_required, generate_secure_secret, refresh_access_token, get_user_spotifyMD, get_playlist_tracks, get_likedTitle_tracks, spotify_requests, tracks_and_artists, get_albums_tracks
+from helpers import login_required, generate_secure_secret, refresh_access_token, get_user_spotifyMD, get_playlist_tracks, get_likedTitle_tracks, spotify_requests, tracks_and_artists, get_albums_tracks 
 from helpersDB import insert_userID
 
 app = Flask(__name__)
@@ -125,42 +125,64 @@ def selection():
         return {"error:" "error getting user meta data in callback"}
 
     playlists = get_playlist_tracks()
-    likedTitle = get_likedTitle_tracks()
+    liked_title = get_likedTitle_tracks()
     albums = get_albums_tracks()
 
-    total_playlists = playlists[1]
-    total_likedTitle = likedTitle[1]
+    all_tracks = tracks_and_artists(playlists, liked_title, albums)
 
-    unique_items, total_tracks, total_artists = tracks_and_artists(playlists[0], likedTitle[0], albums[0])
+    total_playlists = session['total_playlists']
+    total_albums = session['total_albums']
+    total_likedTracks = session['total_liked_tracks']
+
 
     return render_template(
         "selection.html",
         profile=profileUser,
         totalPlaylists=total_playlists,
-        total_likedSongs=total_likedTitle,
-        TOTAL_SONGS=total_tracks,
-        TOTAL_ARTISTS=total_artists
+        total_likedSongs=total_likedTracks,
+        total_albums=total_albums,
+        # TOTAL_SONGS=total_tracks,
+        # TOTAL_ARTISTS=total_artists
     )
 
+# Dynamic url pass in selection.html
+@app.route("/selection/<mode>")
+    #@login_required
+def selection_mode(mode):
 
-@app.route("/api/playlist-images")
-def get_playlist_images():
-    if "refresh_token" in session:
-        refresh_access_token()
+    # Mods are: Fav, Battle, and guess
+    if mode == 'fav':
+        return render_template('fav.html')
+    
+    elif mode == 'battle':
+        return render_template('battle.html') 
 
-    playlists = get_playlist_tracks()
-    if isinstance(playlists, tuple):
-        return playlists  
-    if not playlists:
-        return jsonify({"error": "No playlists found"}), 404  
-    playlists_img = [
-        playlist.get("images", [{}])[0].get("url", "")
-        for playlist in playlists
-        if playlist.get("images")
-    ]
-    if not playlists_img:
-        return jsonify({"error": "No playlist images available"}), 404
-    return jsonify({"images": playlists_img})
+    elif mode == 'guess':
+        return render_template('guess.html')
+
+    else:
+        return redirect('selection.html')  
+
+
+
+# @app.route("/api/playlist-images")
+# def get_playlist_images():
+#     if "refresh_token" in session:
+#         refresh_access_token()
+
+#     playlists = get_playlist_tracks()
+#     if isinstance(playlists, tuple):
+#         return playlists  
+#     if not playlists:
+#         return jsonify({"error": "No playlists found"}), 404  
+#     playlists_img = [
+#         playlist.get("images", [{}])[0].get("url", "")
+#         for playlist in playlists
+#         if playlist.get("images")
+#     ]
+#     if not playlists_img:
+#         return jsonify({"error": "No playlist images available"}), 404
+#     return jsonify({"images": playlists_img})
 
 
 if __name__ == "__main__":
