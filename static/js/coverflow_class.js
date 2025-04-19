@@ -54,7 +54,7 @@ class CoverFlow {
     // Render items / Covers
     this.populateImages();
 
-    // Now that items render we can store them in the constructor/blueprint
+    // Now that items render we can store it in the constructor
     this.items = document.querySelectorAll(itemSelector);
     this.totalItems = this.items.length;
 
@@ -347,12 +347,12 @@ class CoverFlow {
 
 
 // Initialize CoverFlow instance on DOMContentLoaded
-document.addEventListener("DOMContentLoaded", () => {
-  // Initialize CoverFlow instance
-  const coverflow = new CoverFlow(
-    "#wrapper_sliderCoverflow",
-    "#slider_trackCoverflow",
-    ".itemCoverflow",
-    images_playlist
-  );
-});
+// document.addEventListener("DOMContentLoaded", () => {
+//   // Initialize CoverFlow instance
+//   const coverflow = new CoverFlow(
+//     "#wrapper_sliderCoverflow",
+//     "#slider_trackCoverflow",
+//     ".itemCoverflow",
+//     images_playlist
+//   );
+// });

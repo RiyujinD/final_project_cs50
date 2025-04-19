@@ -11,31 +11,31 @@
 
 {% block main %}
 
-        <div class="user_profile_section">
+        <div id="userProfilData">
+                <div id="profilDataAlign">
 
-                <div id="userProfilData">
-                        <div id="profilDataAlign">
-
-                                <div id="dataTab">
-                                        <div class="lineDT"></div>
-                                        <div class="lineDT"></div>
-                                        <div class="lineDT"></div>
-                                </div>
-
-
-                                <p>Playlists: <span>{{ totalPlaylists or "MISSING" }}</span></p>
-                                <p>Albums: <span>{{ total_albums if total_albums is not none else "Missing" }}</span></p> 
-                                <p>Liked Titles: <span>{{ total_likedSongs or "MISSING" }}</span></p>
-                                
-                                <hr style="width: 70%; color:  white; opacity: 60%; margin-block: 2rem">
-
-                               <!-- <p>Song guessed: <span id="songGuessed">0 / <span class="TotalSongs">{{ TOTAL_SONGS }}</span></span></span></p>
-                                <p>Artist guessed: <span id="artistGuessed">0 / <span class="TotalSongs">{{ TOTAL_ARTISTS }}</span></span></p> -->
-                                
-                                <p>Score: <span>0</p>
-                                <p>Rank: <span>F</p>
+                        <div id="dataTab">
+                                <div class="lineDT"></div>
+                                <div class="lineDT"></div>
+                                <div class="lineDT"></div>
                         </div>
+
+
+                        <p>Playlists: <span>{{ totalPlaylists or "MISSING" }}</span></p>
+                        <p>Albums: <span>{{ total_albums if total_albums is not none else "Missing" }}</span></p> 
+                        <p>Liked Titles: <span> {{ total_likedSongs or "MISSING" }}</span></p>
+                        
+                        <hr style="width: 70%; color:  white; opacity: 60%; margin-block: 3rem">
+
+                        <p>Song guessed: <span class="dataTotal">1143 / <span>{{ TOTAL_SONGS or "1143"}}</span></span></span></p>
+                        <p>Artist guessed: <span class="dataTotal">788 / <span>{{ TOTAL_ARTISTS or "788" }}</span></span></p>
+                        
+                        <!--<p>Score: <span>0</p>
+                        <p>Rank: <span>F</p> -->
                 </div>
+        </div>
+
+        <div class="user_profile_section">
                 
                 <!-- Profile picture -->
                 <div class="spotify_pp_wrapper">
@@ -54,35 +54,36 @@
                         
                 </div>
 
+                <div id="rank">Rank:<span> S+</span></div>
+
         </div> <!-- End of user_profile_section -->
 
-        <hr style="margin-bottom: 5rem; margin-top: 3rem; width: 70%;"> 
-
-        <h1 id="selectMod">SELECT <span style="color: #1DB954">MOD</span></h1>
-
-        <div class="wrapper_containerPas">
-                <div class="grid_pas">
-                        
-                        <a href="{{ url_for('selection_mode', mode='battle') }}" class="music_box card1">
-                                <img src="https://images.unsplash.com/photo-1616356607338-fd87169ecf1a?q=80&w=2070&auto=format&fit=crop" alt="Playlist">
-                                <div class="text">Battle <br> vs</div>
-                        </a>
-                        
-                        <a href="{{ url_for('selection_mode', mode='guess') }}" class="music_box card2">
-                                <img src="https://images.unsplash.com/photo-1595177663993-4849619ab1f8?q=80&w=1974&auto=format&fit=crop" alt="Liked Title">
-                                <div class="text">Guess <br> Song / Artist</div> 
-                        </a>
-                        
-                        <a href="{{ url_for('selection_mode', mode='fav') }}" class="music_box card3">
-                                <img src="https://images.unsplash.com/photo-1595177663993-4849619ab1f8?q=80&w=1974&auto=format&fit=crop" alt="Artist">
-                                <div class="text">Fav' <br> song</div>
-                        </a>
-                        <div class="music_box card4">
-                                <img src="https://images.unsplash.com/photo-1616356607338-fd87169ecf1a?q=80&w=2070&auto=format&fit=crop" alt="Album">
-                                <div class="text">Coming <br> soon</div>
-                        </div>
-                </div> <!-- End of grid_pas-->
-        </div> <!-- End of wrapper_containerPas-->
+        <div id="mods_select">
+                <h1 id="selectTitle">SELECT <span style="color: #1DB954">MOD</span></h1>
+                <div class="wrapper_containerPas">
+                        <div class="grid_pas">
+                                
+                                <a href="{{ url_for('selection_mode', mode='battle') }}" class="music_box card1">
+                                        <img src="https://images.unsplash.com/photo-1616356607338-fd87169ecf1a?q=80&w=2070&auto=format&fit=crop" alt="Playlist">
+                                        <div class="text">Battle <br> vs</div>
+                                </a>
+                                
+                                <a href="{{ url_for('selection_mode', mode='guess') }}" class="music_box card2">
+                                        <img src="https://images.unsplash.com/photo-1595177663993-4849619ab1f8?q=80&w=1974&auto=format&fit=crop" alt="Liked Title">
+                                        <div class="text">Guess <br> Song / Artist</div> 
+                                </a>
+                                
+                                <a href="{{ url_for('selection_mode', mode='fav') }}" class="music_box card3">
+                                        <img src="https://images.unsplash.com/photo-1595177663993-4849619ab1f8?q=80&w=1974&auto=format&fit=crop" alt="Artist">
+                                        <div class="text">Fav' <br> song</div>
+                                </a>
+                                <div class="music_box card4">
+                                        <img src="https://images.unsplash.com/photo-1616356607338-fd87169ecf1a?q=80&w=2070&auto=format&fit=crop" alt="Album">
+                                        <div class="text">Coming <br> soon</div>
+                                </div>
+                        </div> <!-- End of grid_pas-->
+                </div> <!-- End of wrapper_containerPas-->
+        </div>
 
         <div class="coverflow_playlist">
                 {% for image_url in playlist_images %}

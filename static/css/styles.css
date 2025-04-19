@@ -92,6 +92,9 @@ html {
   transition: background 1s ease, color 1s ease;
 }
 
+body {
+  overflow-x: hidden;
+}
 
 hr {
   margin-inline: auto; 
@@ -123,74 +126,114 @@ body::-webkit-scrollbar-thumb {
   }
 }
 
-/* nav Navbar > ul navbar_nav > li nav_item > a nav_link > items inside link logo / infotext*/
+
 #navbar {
-  position: relative;
+  position: sticky;
+  top: 0;
   height: 6rem;
   width: 100%;
-  top: 0;
-  background-color: hsl(240, 5%, 4%);
   display: flex; 
-  align-items: flex-start; 
-  padding-top: 0.9rem;
-  transition: opacity 2s ease-in-out;
-  z-index: 100;
+  align-items: center; 
+  justify-content: space-between;
+  background: hsl(240, 5%, 4%);
 }
 
-#navbar-nav {
-  list-style: none;
-  width: 100%;
+.nav-section {
   display: flex;
-  flex-direction: row-reverse;  
-}
-
-.nav-item {
-  height: 100%;
-  width: max-content;
-  margin: 0 1%;
-}
-
-
-.nav-link {
-  text-decoration: none;
-  width: 5.5rem;
-  color: rgba(0, 255, 255, 0.8);
-  display: flex;
-  flex-direction: column; 
   align-items: center;
   justify-content: center;
+  height: 100%;
+  width: auto;
+}
+
+.nav-left,
+.nav-right {
+  flex-shrink: 0;
+  min-width: 7%;
+  max-width: 7%;
+}
+
+.nav-logs {
+  position: relative;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding-top: 1.2rem;
+  text-align: center;
+  text-decoration: none;
+  color: var(--niceBlue);
 }
 
 .nav-icon {
-  font-size: 2.6rem; /* svg size */
-  height: 2.6rem;
-}
-
-.nav-item:last-child {
-  margin-right: auto;
-}
-
-.nav-item:nth-child(2) {
-  position: absolute;
-  left: 5px;
-  top: 50%;
-  transform: translateY(calc(-50% + 1.6rem));
-}
-
-/* Display the text only after hover */
-.link-text {
-  display: none;
-  padding-top: .5rem;
-}
-
-.nav-item:hover .link-text {
   display: block;
-}      
+  height: 2.7rem;
+  width: 2.7rem;
+}
 
-/* Night/light Mod button */  
-/* Removing the default check input */
+i.nav-icon {
+  font-size: 2.5rem;
+  line-height: 1;
+}
+
+.link-text {
+  position: absolute;
+  top: 70%;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 1rem; 
+  display: none;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.navText-separator {
+  height: 2.5rem;
+  width: 1px;
+  color: #1DB954;
+  background-color: var(--niceBlue);
+  opacity: .5;
+}
+
+.nav-right:hover .link-text {
+  display: block;
+}
+
+/* center links */
+.nav-center {
+  flex-grow: 1;
+  justify-content: center;
+  gap: 5rem;
+  list-style: none;
+  color: var(--niceBlue);
+}
+
+.nav-center p {
+  opacity: .4;
+}
+
+.nav-text {
+  font-size: 1.5rem;
+  color: var(--niceBlue);
+  text-transform: uppercase;
+  text-decoration: none;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+}
+.nav-text:hover {
+  opacity: 1;
+}
+
+.navText-active {
+  opacity: 1;
+}
+
+
+
+/* Night/light Mod button left side navbar*/  
 input[type="checkbox"]#theme_toggle {
-  opacity: 0;
+  opacity: 0; /* Removing the default check input */
   position: absolute;
   left: -9999px;
   top: -9999px;
@@ -231,13 +274,7 @@ label svg {
   filter: drop-shadow(.2px .2px 5px rgba(0, 120, 200, .5));
   transform: translateY(-50%);
   transition: transform 2s ease;
-
-
-  /* outline: 1px solid var(--niceBlue);
-  border-radius: 50%;
-  padding: 1px; */
 }
-
 
 /* ANIMATIONS: dynamically add in js scripts/js depending on checkbox state */
 .offsetCheck {
@@ -268,3 +305,19 @@ label svg {
   animation: fadeIn 2s ease-in-out forwards;
 }
 /* END OF ANIMATIONS */
+
+
+
+
+#navbar::after {
+  content: "";
+  position: absolute;
+  bottom: 0;               
+  left: 50%;              
+  width: 85%;
+  transform: translateX(-50%);             
+  height: 1px;           
+  background: var(--niceBlue);
+  transition: left 300ms ease, width 300ms ease;
+  opacity: .2;
+}

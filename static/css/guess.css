@@ -1,6 +1,4 @@
-body {
-  overflow-x: hidden;
-}
+
 
 .top_hr_wrapper {
   margin-top: 2rem;
@@ -355,24 +353,4 @@ body {
     -moz-box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 1); 
     box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 1); 
   }
-}
-
-.ResultTagAG {
-  color: white;
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  margin-top: 2.3rem;
-  font-size: 1.5rem;
-  white-space: nowrap;
-}
-
-
-.failResultAG {
-  color: rgba(211, 108, 104, 0.5);
-}
-
-.SuccessResultAG {
-  color: var(--spotifyColor);
 }

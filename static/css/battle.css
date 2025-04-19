@@ -1,0 +1,274 @@
+.wrapper_titleDescription {
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: auto;
+  padding-top: 13rem;
+  align-items: center;
+  text-align: center;
+}
+
+.wrapper_titleDescription h1.main_title {
+  position: relative;
+  width: auto;
+  font-weight: 600;
+  line-height: 64px;
+  font-size: 4rem;
+  overflow-wrap: break-word;
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+}
+
+.wrapper_titleDescription .game_description {
+  position: relative;
+  width: 60%;
+  max-width: 600px;
+  margin-top: 3rem;
+  color: var(--text-secondary);
+  opacity: .8;
+  font-size: 20px;
+  font-weight: 455;
+  line-height: 27px;
+  overflow-wrap: break-word;
+}
+
+@media (max-width: 768px) {
+  .wrapper_titleDescription {
+    padding-top: 10rem;
+  }
+  
+  h1.main_title {
+    font-size: 3rem;
+  }
+  
+  .game_description {
+    width: 85%;
+  }
+  
+  .main_title > span#blur_text {
+    filter: blur(4px);
+    -webkit-filter: blur(4px);
+  }
+}
+
+@media (max-width: 400px) {
+  
+  .wrapper_titleDescription {
+    padding-top: 9rem;
+  }
+  
+  h1.main_title {
+    font-size: 2.5rem;
+  }
+  
+  .game_description {
+    margin-top: 2.3rem;
+  }
+}
+
+
+.wrapper_titleDescription_two {
+  margin: 0;
+  padding-top: 5rem;
+}
+
+.container_videoBattle {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  margin-top: 7rem;
+}
+
+.wrapper_videoBattle {
+  position: relative;
+  width: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: clamp(10rem, 17rem, 20rem);
+  margin-bottom: 3rem;
+  overflow: hidden; 
+  transition: all 1s ease-in-out;
+}
+
+.videos {
+  width: 400px;
+  height: 300px;
+  border-radius: 20px;
+  border: .15rem solid rgba(255, 255, 255, 092);
+  object-fit: cover;
+  -webkit-box-shadow: var(--box-shadow1), var(--box-shadowGlass), var(--box-shadowItem);
+  -moz-box-shadow: var(--box-shadow1), var(--box-shadowGlass), var(--box-shadowItem);
+  box-shadow: var(--box-shadow1), var(--box-shadowGlass), var(--box-shadowItem);
+}
+
+.vs_text {
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-5deg);
+  font-size: 2.4rem;
+  font-weight: 600;
+  color: var(--spotifyColor);
+}
+
+@media screen and (max-width: 1000px) {
+  .videos {
+    width: 290px;
+    height: 250px;
+  }
+}
+
+@media screen and (max-width: 820px) {
+  
+  .wrapper_videoBattle{
+    flex-direction: column;
+  }
+  
+  .vs_text {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-5deg);
+  }
+  
+  .videos {
+    width: 340px;
+    height: 300px;
+  }
+}
+
+.video_description {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  padding-top: 2rem;
+}
+
+.metadata_artistBattle {
+  margin-top: 0.5rem;
+  font-size: 1.2rem;
+  color: var(--text-secondary); 
+}
+
+.metadata_songBattle {
+  padding-top: 0.7rem;
+  font-weight: bold;
+  font-size: 1.8rem; 
+}
+
+.video_item {
+  position: relative;
+  width: 100%; 
+  height: auto;
+}
+
+.video_index {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;  
+  height: 3rem;
+  width: 3rem;
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--spotifyColor);
+  background: var(--glass-color);
+  padding: 0.5rem;
+  border-radius: 50%;
+  z-index: 1;
+}
+
+#containerSplitButtonNResult {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 20rem;
+  flex-direction: column;
+
+}
+
+.split-button {
+  display: flex;
+  width: 30rem;
+  height: 5rem;
+  border: none;
+  border-radius: 5rem;
+  -webkit-box-shadow: 1px 2px 5px rgba(255, 255, 255, 0.2), var(--box-shadowItem);
+  -moz-box-shadow: 1px 2px 5px rgba(255, 255, 255, 0.2), var(--box-shadowItem);
+  box-shadow: 1px 2px 5px rgba(255, 255, 255, 0.2), var(--box-shadowItem);
+
+}
+
+.half {
+  flex: 1;
+  background: hsla(240, 5%, 10%, 0.8);
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.left {
+  border-top-left-radius: 5rem;
+  border-bottom-left-radius: 5rem;
+}
+
+.right {
+  border-top-right-radius: 5rem;
+  border-bottom-right-radius: 5rem;
+}
+
+.half:hover {
+  background: hsla(240, 5%, 20%, 0.8);
+}
+
+.Aclicked, .Bclicked {
+  text-align: center;
+  margin-top: 4rem;
+  font-size: 1.7rem;
+}
+
+.Aclicked {
+  color: var(--spotifyColor);
+}
+
+.Bclicked {
+  color: rgba(211, 108, 104, 0.5);
+}
+
+.LogoResult {
+  /* text-align: center; */
+  font-size: 2rem;
+  margin-bottom: 4rem;
+}
+
+.Aclicked::after {
+  content: 'The Notorious B.I.G. - Juicy 🎉';
+  color: var(--text-secondary);
+  font-size: 1.5rem;
+}
+
+@media screen and (max-width: 700px) {
+  .split-button {
+    display: flex;
+    width: 20rem;
+    height: 4rem;
+  }
+  
+  .left {
+    border-top-left-radius: 4rem;
+    border-bottom-left-radius: 4rem;
+  }
+  
+  .right {
+    border-top-right-radius: 4rem;
+    border-bottom-right-radius: 4rem;
+  }
+}

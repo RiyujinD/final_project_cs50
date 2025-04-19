@@ -13,6 +13,8 @@
 {% block main %}
   
     <div id="carrousel">
+      
+      <!-- Slider wrap use to have overflow hidden everywhere expect on glass box-->
       <div id="slider-wrap">
         <div id="slider">
           <img id="slide1" src="{{ url_for('static', filename='images/spotify_lyrics.jpg') }}" alt="Lyrics Spotify">
@@ -162,6 +164,14 @@
       <div id="mediaContainer">
 
         <div id="coverSongGuessing">
+
+          <div id="svg-container">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z" />
+            </svg>
+          </div> <!-- End of svg-container-->
+
+          
           <div class="metadata_wrapper">
           <h3 class="metadata_songTitle">Karma Police</h3> 
           <p class="metadata_artist">Artist: <span style="text-transform: uppercase;">Radiohead</span></p>
@@ -170,13 +180,6 @@
 
         <div id="songGuessing_pp">
           <img class="cdImage" src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fstatic.vecteezy.com%2Fsystem%2Fresources%2Fpreviews%2F013%2F442%2F219%2Foriginal%2Fblank-cd-or-dvd-disc-png.png&f=1&nofb=1&ipt=26e72fd1228fa534526ac44655cdde3b8128a517cb8f97cd4ba7ed787a5aeb33&ipo=images" alt="CD Image">
-
-          <div id="svg-container">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z" />
-            </svg>
-          </div> <!-- End of svg-container-->
-
         </div> <!-- End of songGuessing_pp-->
       </div> <!-- End of mediaContainer-->
 

@@ -72,11 +72,13 @@ def callback():
 
     code = request.args.get("code")
     if not code:
+        session["is_authenticated"] = None
         return redirect(url_for("index", error="user_cancelled")) # If user has cancel code it's null
           
     state = request.args.get("state")
     stored_state = session.get("oauth_state")
     if not state or state != stored_state:
+        session["is_authenticated"] = None
         return redirect(url_for("index", error="state_mismatch"))
 
     session.pop("oauth_state", None) # Clear the stored state from the session
@@ -102,13 +104,21 @@ def callback():
     session["refresh_token"] = token_data.get("refresh_token")
     session["expires_in"] = token_data.get("expires_in")
     session["token_expiry"] = time.time() + token_data.get("expires_in") # Current time + expiry token time
-    session["is_authenticated"] = True
+    
 
     # Fetch user metadata once and store the required fields in the session
     get_user_spotifyMD()
-    
     spotify_id = session["spotify_id"]
+
+
     insert_userID(spotify_id)
+    
+    # This function store totals datas in session to display in selection route
+    get_playlist_tracks() 
+    get_likedTitle_tracks()
+    get_albums_tracks()
+
+    session["is_authenticated"] = True
 
     return redirect(url_for("selection"))
 
@@ -124,11 +134,7 @@ def selection():
     if not profileUser.get("id"):
         return {"error:" "error getting user meta data in callback"}
 
-    playlists = get_playlist_tracks()
-    liked_title = get_likedTitle_tracks()
-    albums = get_albums_tracks()
-
-    all_tracks = tracks_and_artists(playlists, liked_title, albums)
+    # all_tracks = tracks_and_artists(playlists, liked_title, albums)
 
     total_playlists = session['total_playlists']
     total_albums = session['total_albums']

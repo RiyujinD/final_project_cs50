@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const audio = document.getElementById('audioExtract');
   const cdImage = document.querySelector('.cdImage');
   const svgContainer =document.getElementById('svg-container');
-  const buttonCTA = document.querySelector('.btn_callToAction');
+  // const buttonCTA = document.querySelector('.btn_callToAction');
 
   let isMissing = !clearButton || !searchInput || !searchForm || !metaData || !searchIcon || !playButton || !audio || !cdImage || !svgContainer;
   if (isMissing) return;
@@ -29,18 +29,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
   searchForm.addEventListener('submit', (event) => {
     event.preventDefault();
-    const oldResult = searchForm.querySelector('.ResultTagAG');
-    if (oldResult) oldResult.remove();
+    // const oldResult = searchForm.querySelector('.ResultTagAG');
+    // if (oldResult) oldResult.remove();
 
-    let resultPTag = document.createElement('p');
-    resultPTag.classList.add('ResultTagAG');
+    // let resultPTag = document.createElement('p');
+    // resultPTag.classList.add('ResultTagAG');
 
     let formInput = searchInput.value.replace(/\s+/g, '').toLowerCase(); // Regex to remove all whitespace /s
     if (formInput === 'radiohead') {
-      resultPTag.classList.add('SuccessResultAG');
-      resultPTag.innerHTML = '🎉 Success 🎉';
-      metaData.style.display = "flex";
-      buttonCTA.style.display = "flex";
+      // resultPTag.classList.add('SuccessResultAG');
+      // resultPTag.innerHTML = '🎉 Success 🎉';
+      // metaData.style.display = "flex";
+      // buttonCTA.style.display = "flex";
       
       // Red or Green outline on search Icon
       searchInput.classList.add('success');
@@ -51,25 +51,24 @@ document.addEventListener('DOMContentLoaded', () => {
         searchInput.classList.remove('success');
       }, 3000);
     } 
-    else {
-      failCount += 1 % 3;
+    // else {
+    //   failCount += 1 % 3;
 
-      if (failCount === 3) {
-          buttonCTA.style.display = "flex";
-      }
-      resultPTag.classList.add('failResultAG');
-      resultPTag.innerHTML = '❌ Failure ❌';
-      metaData.style.display = "none";
+    //   if (failCount === 3) {
+    //       buttonCTA.style.display = "flex";
+    //   }
+    //   resultPTag.classList.add('failResultAG');
+    //   resultPTag.innerHTML = '❌ Failure ❌';
+    //   metaData.style.display = "none";
       
-      searchInput.classList.add('fail');
-      searchInput.classList.remove('success');
+    //   searchInput.classList.add('fail');
+    //   searchInput.classList.remove('success');
       
-      setTimeout(() => {
-        searchInput.classList.remove('fail');
-      }, 3000);
-    }
-
-    searchForm.appendChild(resultPTag);
+    //   setTimeout(() => {
+    //     searchInput.classList.remove('fail');
+    //   }, 3000);
+    // }
+    // searchForm.appendChild(resultPTag);
   });
 
   // Audio and play button functionality
@@ -116,7 +115,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const maxSpeed = 0.5;
   const accelerationRate = 0.010;
   const decelerationRate = 0.005;
-  let rotationInterval = null;
 
   function updateRotation() {
     if (!audio) return;
@@ -137,7 +135,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Sound fade functionality
   audio.currentTime = 153;
   audio.volume = 0;
-  const maxVolume = 0.2;
+  const maxVolume = 0.15;
   const fadeStep = 0.005;
   let isFading = false;
   let fadeFrameId;

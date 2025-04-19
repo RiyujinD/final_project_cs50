@@ -13,9 +13,8 @@
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  padding-top: 3rem;
+  padding-top: 5rem;
   width: 100%;
-
 }
 
 /* Image section */
@@ -76,11 +75,11 @@
 
 #userProfilData {
   position: absolute;
-  top: 20%;
+  top: 15%;
   left: 0%;
   width: auto;
   height: auto;
-  width: 20rem;
+  width: fit-content;
   border-right: 1px solid var(--border1);
   border-bottom: 1px solid var(--border1);
   border-top: 1px solid var(--border1);
@@ -89,14 +88,33 @@
   text-transform: capitalize;
   text-transform: uppercase;
   background-color: var(--bg-color);
-
+  opacity: .9;
   font-weight: 400;
   z-index: 100;
   transition: all 1s ease-in-out;
 }
 
-#userProfilData span {
+#profilDataAlign {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 100%;
+}
+
+#userProfilData p {
+  display: flex;
+  justify-content: space-between; 
+  align-items: center; 
+  white-space: nowrap;
+}
+
+#userProfilData p span {
   font-weight: 700;
+}
+
+.dataTotal {
+  margin-left: 4rem;
 }
 
 #dataTab {
@@ -119,12 +137,10 @@
   transition: all 1.5s ease-in-out;
 }
 
-
 #dataTab:hover {
   opacity: 1;
   transition: all .5s ease-in-out;
 }
-
 
 .lineDT {
   width: 60%;
@@ -138,57 +154,41 @@
 }
 
 
-#profilDataAlign {
-  position: relative;
+#mods_select {
+  margin-inline: auto;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  width: 100%;
+  justify-content: center;
+  align-items: center;
+  width: 80%;
+  height: fit-content;
+  padding-top: 4rem;
+  border-top: solid rgba(255, 255, 255, 0.077);
+  margin-top: 5rem;
+  margin-bottom: 3rem;
 }
 
-#userProfilData p {
-  display: flex;
-  justify-content: space-between; /* Push span to the far right */
-  align-items: center; /* Optional: align text vertically centered */
-}
-
-#userProfilData span {
-  margin-left: auto; /* Ensure span stays aligned to the right */
-}
-
-
-
-#selectMod {
+/* Page title */ 
+#selectTitle {
   font-size: 4rem;
   text-align: center;
   text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.5);
   color: var(--text-color);
   font-family: 'Montserrat', sans-serif;
-  margin-bottom: 4rem;
+  margin-bottom: 7rem;
 
-}
-
-
-
-/* Set the style of the music box grid */
-.centered_wrapper_musicBox {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 /* music box section Section */
 .wrapper_containerPas {
   height: 30rem;
-  width: 100%;
-  
+  width: 80%;
+  margin-inline: auto;
 }
 
 /* Grid Layout */
 .grid_pas {
-  margin-inline: auto;
-  width: 65%;
+  width: 100%;
   height: 80%;
   display: grid;
   column-gap: 3rem;
@@ -255,8 +255,6 @@
 .card3 { grid-column: 1 / 2; grid-row: 2 / 3; }
 .card4 { grid-column: 2 / 3; grid-row: 2 / 3; }
 
-
-
 /* Responsive Design */
 @media (max-width: 850px) {
   .grid_pas {
@@ -288,24 +286,29 @@
 }
 
 /* Set the style playlist */
-.coverflow_playlist {
+/* .coverflow_playlist {
   display: none;
   margin-top: 10rem;
   max-width: 100%;
   max-height: 25rem;
   gap: 1rem;
   justify-content: center;
-} /* ? */ 
+} /* ? */  
+
+#rank {
+  position: absolute;
+  top: 100%;
+  right: 10%;
+  font-size: 3rem;
+  text-align: left;
+  color: var(--text-color);
+  font-family: monospace;
+}
 
 
-
-
-
-
-
-
-
-
+#rank span {
+  color: var(--spotifyColor);
+}
 
 
 
