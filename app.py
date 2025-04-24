@@ -153,21 +153,21 @@ def selection():
 
 # Dynamic url pass in selection.html
 @app.route("/selection/<mode>")
-    #@login_required
+@login_required
 def selection_mode(mode):
 
-    # Mods are: Fav, Battle, and guess
-    if mode == 'fav':
-        return render_template('fav.html')
-    
-    elif mode == 'battle':
-        return render_template('battle.html') 
+    valid_mods = ['favorite_song', 'song_battle', 'guess_song_info']
 
-    elif mode == 'guess':
-        return render_template('guess.html')
+    if mode not in valid_mods:
+        return redirect(url_for('index.html'), error="Incorrect mode pass")
 
-    else:
-        return redirect('selection.html')  
+    return render_template('parameter.html', mode=mode)
+
+@app.route('/selection/play')
+@login_required
+def play():
+
+    render_template('index.html')
 
 
 

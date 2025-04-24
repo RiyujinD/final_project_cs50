@@ -47,7 +47,7 @@
 
 .greetings_user h1 {
   font-size: 3rem;
-  color: #1DB954; /* Spotify green color to store */
+  color: var(--spotifyColor);
 }
 
 .greetings_user h2 {
@@ -245,6 +245,7 @@
   text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
   pointer-events: none;
   background: #000000b0;
+  border-radius: 10px;
   padding-block: autofit;
   padding-inline: 2rem;
 }
