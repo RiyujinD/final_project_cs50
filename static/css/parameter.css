@@ -1,0 +1,179 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+main {
+  --labelWidth: 25rem;
+  --labelHeight: 15rem;
+}
+
+#modTitle {
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 1rem;  
+  width: fit-content;
+  border-top: 3px solid var(--niceBlue);
+  border-bottom: 3px solid var(--niceBlue);
+  color: var(--niceBlue);
+  font-weight: 500;
+  font-size: 3rem;
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+  margin-top: 5rem;
+}
+
+#modTitle span {
+  color: var(--niceBlue);
+}
+
+#paramTitle {
+  font-weight: 600;
+  line-height: 64px;
+  font-size: 5rem;
+  overflow-wrap: break-word;
+  text-align: center;
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+  margin-top: 5rem;
+  margin-bottom: 12rem;
+}
+
+@media screen and (max-width: 900px) {
+  #paramTitle {
+    font-size: 3rem;
+  }
+}
+
+.wrapper {
+  width: 100%;
+  height: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+form {
+  width: 80%;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+/* Removing the default check input */
+input[type="checkbox"] {
+  visibility: hidden;
+  position: absolute;
+}
+
+#contentOption {
+  position: relative;
+  width: fit-content;
+  height: fit-content;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4rem;
+}
+
+#infoCategory {
+  position: absolute;
+  top: -20%;
+  left: 1%;
+  color: var(--text-secondary);
+  font-size: 2.5rem;
+  font-weight: 400;
+  line-height: 27px;
+  letter-spacing: 0.1cap;
+  overflow-wrap: break-word;
+}
+
+input[type="checkbox"] + label.visiblePart {
+  width: var(--labelWidth);
+  max-width: var(--labelWidth);
+  height: var(--labelHeight);
+  max-height: 20rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: .7rem solid var(--text-color);
+  border-radius: 10px;
+  cursor: pointer;
+  text-transform: uppercase;
+  font-family: 'Poppins', sans-serif;
+  overflow: hidden;
+  font-size: 3rem;
+  box-shadow: var(--box-shadow);
+}
+
+#playlistInput + label.visiblePart {
+  background-color: #0FF4C6;
+}
+
+#albumInput + label.visiblePart {
+  background-color: #89D2DC;
+}
+
+#likedTitleInput + label.visiblePart {
+  background-color: #F5DFBB;
+}
+
+label.visiblePart p {
+  width: 100%;
+  background: #000000b0;
+  padding-block: autofit;
+  padding-inline: 2rem;
+  text-align: center;
+  outline: 9px solid black;
+}
+
+#totalOption {
+  position: absolute;
+  bottom: -12rem;
+  left: 20%;
+  color: var(--text-secondary);
+  font-size: 2.2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 3rem;
+}
+
+
+
+/* Removing the default check input */
+input[type="radio"] {
+  visibility: hidden;
+  position: absolute;
+}
+
+/* Removing the default check input */
+input[type="radio"] + label {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  border: .2rem solid var(--text-color);
+  font-size: 2rem;
+  height: 5rem;
+  width: 5rem;
+  border-radius: 10px;
+  cursor: grab;
+}
+
+input[type="radio"]:checked + label {
+  border: .5rem solid var(--spotifyColor); 
+  border-radius: 20px;
+  transition: all 0.1s ease-out;
+}
+
+#submit {
+  border-radius: 13px;
+  font-size: 3rem;
+  font-weight: 500;
+  margin-top: 21rem;
+  margin-bottom: 7rem;
+  padding: 1rem;
+  text-transform: uppercase;
+  background-color: var(--spotifyColor);
+  font-family: 'Poppins', sans-serif;
+  box-shadow: inset -2px -2px 12px  rgb(255, 255, 255);
+}
