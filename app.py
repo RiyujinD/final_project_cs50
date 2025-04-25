@@ -157,17 +157,32 @@ def selection():
 def selection_mode(mode):
 
     valid_mods = ['favorite_song', 'song_battle', 'guess_song_info']
-
     if mode not in valid_mods:
         return redirect(url_for('index.html'), error="Incorrect mode pass")
 
-    return render_template('parameter.html', mode=mode)
+    return render_template('parameter.html', mode=mode, validMods=valid_mods)
 
 @app.route('/selection/play')
 @login_required
 def play():
 
-    render_template('index.html')
+    mode = request.args.get('m')
+    valid_mods = request.args.get('vM', '').split(',')
+    categories = request.args.getlist('c')
+    total_of_tracks = request.args.get('t', type=int)
+
+    if not mode or not categories or total_of_tracks is None:
+        return redirect(url_for('selection_mode', mode=mode or valid_mods[0]))
+
+    if mode in valid_mods:
+        return render_template(f"{mode}.html", mode=mode, categories=categories,total=total_of_tracks)
+
+
+    return redirect(url_for('selection'))
+
+
+
+
 
 
 
