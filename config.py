@@ -3,12 +3,12 @@ from dotenv import load_dotenv
 import base64
 from googleapiclient.discovery import build
 
-load_dotenv()
-
 
 # Absolute path to database
-APP_DIR = os.path.abspath(os.path.dirname(__file__))
+APP_DIR = os.path.abspath(os.path.dirname(__file__)) # Absulute path for app
 DATABASE = os.path.join(APP_DIR, "database.db")
+
+load_dotenv()
 
 # Load Spotify credentials 
 CLIENT_ID = os.getenv("CLIENT_ID") 

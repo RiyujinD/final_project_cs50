@@ -1,12 +1,11 @@
 import os
 import time
-import requests
-from flask import Flask, url_for, redirect, request, jsonify, session, render_template # g 
+from flask import Flask, flash, url_for, redirect, request, jsonify, session, render_template # g 
 from flask_session import Session
 from urllib.parse import urlencode
 
 from config import CLIENT_ID, REDIRECT_URI, SPOTIFY_TOKEN_HEADERS, TOKEN_URL, AUTHORIZATION_URL, youtube
-from helpers import login_required, generate_secure_secret, refresh_access_token, get_user_spotifyMD, get_playlist_tracks, get_likedTitle_tracks, spotify_requests, tracks_and_artists, get_albums_tracks 
+from helpers import login_required, spotify_requests, generate_secure_secret, get_user_spotifyMD, unique_tracks
 from helpersDB import insert_userID
 
 app = Flask(__name__)
@@ -68,12 +67,12 @@ def login():
 
 @app.route("/callback")
 def callback():
-    # Handle the Spotify OAuth callback
 
+    # Handle the Spotify OAuth callback
     code = request.args.get("code")
     if not code:
         session["is_authenticated"] = None
-        return redirect(url_for("index", error="user_cancelled")) # If user has cancel code it's null
+        return redirect(url_for("index", error="cancelled_login")) # If user has cancel code it's null
           
     state = request.args.get("state")
     stored_state = session.get("oauth_state")
@@ -88,9 +87,7 @@ def callback():
         "code": code,
         "redirect_uri": REDIRECT_URI
     }
-
     response = spotify_requests(TOKEN_URL, "Error in callback response", 'post', data, headers=SPOTIFY_TOKEN_HEADERS)
-
     token_data = response.json()
 
     access_token = token_data.get("access_token")
@@ -98,25 +95,20 @@ def callback():
     expire_in = token_data.get("expires_in")
 
     if not access_token or not refresh_token or not expire_in:
-        return {"error": "token data not found in callback"}, 400
+        return redirect(url_for("index", error="token data not found in callback"))
 
     session["access_token"] = token_data.get("access_token")
     session["refresh_token"] = token_data.get("refresh_token")
     session["expires_in"] = token_data.get("expires_in")
     session["token_expiry"] = time.time() + token_data.get("expires_in") # Current time + expiry token time
     
-
-    # Fetch user metadata once and store the required fields in the session
-    get_user_spotifyMD()
+    # Fetch user metadata and store it
+    get_user_spotifyMD() # Store id and others fields in session
     spotify_id = session["spotify_id"]
-
-
     insert_userID(spotify_id)
     
-    # This function store totals datas in session to display in selection route
-    get_playlist_tracks() 
-    get_likedTitle_tracks()
-    get_albums_tracks()
+    # Dict of track key by track_id
+    unique_tracks()
 
     session["is_authenticated"] = True
 
@@ -134,7 +126,7 @@ def selection():
     if not profileUser.get("id"):
         return {"error:" "error getting user meta data in callback"}
 
-    # all_tracks = tracks_and_artists(playlists, liked_title, albums)
+    total_tracks = session["total_tracks"]
 
     total_playlists = session['total_playlists']
     total_albums = session['total_albums']
@@ -147,8 +139,7 @@ def selection():
         totalPlaylists=total_playlists,
         total_likedSongs=total_likedTracks,
         total_albums=total_albums,
-        # TOTAL_SONGS=total_tracks,
-        # TOTAL_ARTISTS=total_artists
+        TOTAL_TRACKS=total_tracks,
     )
 
 # Dynamic url pass in selection.html
@@ -174,8 +165,13 @@ def play():
     if not mode or not categories or total_of_tracks is None:
         return redirect(url_for('selection_mode', mode=mode or valid_mods[0]))
 
-    if mode in valid_mods:
-        return render_template(f"{mode}.html", mode=mode, categories=categories,total=total_of_tracks)
+    # if mode in valid_mods:
+
+    #     # fetch tracks data from db base on categories user selected
+
+
+
+        # return render_template(f"{mode}.html", mode=mode, categories=categories,total=total_of_tracks)
 
 
     return redirect(url_for('selection'))

@@ -7,7 +7,6 @@ import requests
 
 from config import SPOTIFY_TOKEN_HEADERS, TOKEN_URL
 
-
 # Decorator function to check if user login
 def login_required(f):
   @wraps(f)                                         # Preserve original function metadata (name, docstrings ext..)
@@ -18,16 +17,20 @@ def login_required(f):
   return decorated_function
 
 
-### SPOTIFY API ###
+# Custom exception for handling API errors with retries
+class callError(Exception):
+    def __init__(self, message, status_code, retry_after=None):
+        super().__init__(message)
+        self.status_code = status_code
+        self.retry_after = retry_after
+
+# inheritance exception class to handle auhentification and token refresh status
 class NotAuthenticated(Exception):
-    """Raised when the user is not authenticated (missing access token)."""
     pass
-
 class TokenRefreshFailed(Exception):
-    """Raised when the access token refresh process fails."""
     pass
 
-
+# Handle spotify refresh tokens
 def refresh_access_token(refresh_token):
     if refresh_token != session["refresh_token"]:
         raise NotAuthenticated("User not authenticated, error on refresh_access_token")
@@ -55,8 +58,6 @@ def refresh_access_token(refresh_token):
         "refreshed": True
     }
 
-
-
 # Spotify headers for API calls
 def get_auth_headers():
     if "access_token" not in session:
@@ -72,21 +73,8 @@ def get_auth_headers():
 
     return {"Authorization": f"Bearer {access_token}"}
 
-
-
-class callError(Exception):
-
-    # Custom exception for handling API errors with retries
-    def __init__(self, message, status_code, retry_after=None):
-        super().__init__(message)
-        self.status_code = status_code
-        self.retry_after = retry_after
-
-
-# Helper function to retry the requests after sleep
+# Helper for next function to check method value
 def requests_method(url, headers, method, params):
-    
-    # Check if method pass is format get or post 
     if method == "get":
         return requests.get(url, headers=headers, params=params)
     elif method == "post":
@@ -95,14 +83,17 @@ def requests_method(url, headers, method, params):
         raise ValueError(f"Unsupported HTTP method: {method}")
 
 
+# Handle spotify api calls
 def spotify_requests(url, api_error, method, params, headers=None, rate_info=None):
     if rate_info is None:
         rate_info = {}
 
     method = method.strip().lower()
 
-    # First request attempt, now using the passed params!
-    response = requests_method(url, headers, method, params)
+    try:
+        response = requests_method(url, headers, method, params)
+    except requests.RequestException as network_error:
+        raise callError(f"{api_error}: network error: {network_error}", status_code=503) from network_error # Converting into my own error handler but keeping it in network_code class
 
     # Handle rate limit (status code 429)
     if response.status_code == 429:
@@ -110,8 +101,11 @@ def spotify_requests(url, api_error, method, params, headers=None, rate_info=Non
         print(f"Rate limit reached. Retrying after {retry_after} seconds...")
         time.sleep(retry_after)
         
-        # Retry the request after the specified delay
-        response = requests_method(url, headers, method, params)
+
+        try:
+            response = requests_method(url, headers, method, params)
+        except requests.RequestException as network_error:
+            raise callError(f"{api_error}: network error: {network_error}", status_code=503) from network_error # Converting into my own error handler but keeping it in network_code class
         
         # If still rate-limited after retry, raise an error
         if response.status_code == 429:
@@ -135,7 +129,7 @@ def spotify_requests(url, api_error, method, params, headers=None, rate_info=Non
                 print(f"Warning: Only {remaining} requests remaining. Rate limit will reset in {reset_time}s.")
 
         except (ValueError, TypeError) as e:
-            print(f"Rate limit header parse error: {e}")
+            print(f"Rate limit header error: {e}")
 
     # Handle non-200 status codes
     if response.status_code != 200:
@@ -143,26 +137,14 @@ def spotify_requests(url, api_error, method, params, headers=None, rate_info=Non
 
     return response
 
-
-
 def get_user_spotifyMD():
-
     if "spotify_id" in session:
         return
 
     url = "https://api.spotify.com/v1/me"
-    try:
-        headers = get_auth_headers()
-    except RuntimeError as e:
-        return {"error": str(e)}, 401
-    
-    response = spotify_requests(
-        url,
-        "error fetching user meta data: profile",
-        "get",
-        params=None,
-        headers=headers
-    )
+    headers = get_auth_headers()
+    response = spotify_requests(url, "error fetching user meta data: profile",  "get", params=None, headers=headers)
+
 
     profile = response.json()
     if not profile: 
@@ -188,13 +170,10 @@ def get_user_spotifyMD():
     return
 
     
-def get_likedTitle_tracks():
+def get_saved_tracks():
     
     url = "https://api.spotify.com/v1/me/tracks"
-    try:
-        headers = get_auth_headers()
-    except RuntimeError as e:
-        return {"error": str(e)}, 401
+    headers = get_auth_headers()
     
     # Query parameters 
     fields = "total, next, items(track(id,name,duration_ms,artists,album(images(url))))"
@@ -227,10 +206,7 @@ def get_likedTitle_tracks():
 
 def get_playlist_tracks():
     url = "https://api.spotify.com/v1/me/playlists"
-    try:
-        headers = get_auth_headers()
-    except RuntimeError as e:
-        return {"error": str(e)}, 401
+    headers = get_auth_headers()
 
     # Fields for playlist endpoint
     fields = "total, next, items(id, name, tracks(href,total))"
@@ -283,10 +259,7 @@ def get_playlist_tracks():
 
 def get_albums_tracks():
     url = "https://api.spotify.com/v1/me/albums"
-    try:
-        headers = get_auth_headers()
-    except RuntimeError as e:
-        return {"error": f"Authentication failed: {str(e)}. Please check your access token or refresh token."}, 401
+    headers = get_auth_headers()
 
     fields = "total,next,items(album(id,name,tracks(href,next,previous,items(id,name,duration_ms,artists)),images(url)))"
     params = {"fields": fields}
@@ -347,104 +320,72 @@ def get_albums_tracks():
     return all_album_tracks
 
 
-
-# Helper to remove duplicate track on next function 
-def uniqueTA_insertion(unique_dict, tracks, source):
-
+# Helper to next function: Adding unique tracks and they're source
+def unique_track_insertion(unique_dict, tracks, source_type):
     """
-    - unique_dict: {"T": {}, "A": {}}
+    - unique_dict: {"T": {}}
     - tracks:   List[track_dict]
-    - source:   one of "liked_title", "albums", "playlists"
+    - source_type:   one of "liked_title", "albums", "playlists"
     """
-
     for track in tracks:
         track_id = track.get("id")
         if not track_id:
-            continue
+            raise ValueError(f"Track {track!r}: missing id in uniqueTA insertion.")
 
         if track_id not in unique_dict["T"]:
-            # Create categories object if not exists
-            track.setdefault("categories", {
-                "playlists": [],
-                "albums":    [],
-                "is_liked":  False,
+
+            # Create source dict if not exists
+            track.setdefault("source", {
+                "playlists": {},
+                "albums": {},
+                "is_liked": False,
             })
-            unique_dict["T"][track_id] = track # Inserting the track with track_id as key
+            unique_dict["T"][track_id] = track  # Insert track with key being the track id
 
+        # Get the stored track and its source dict
+        stored_track = unique_dict["T"][track_id]
+        stored_track_source = stored_track["source"]
 
-        # Else track already stored, we'll add categories info to it 
-        track = unique_dict["T"][track_id]
-        categories = track["categories"]
+        if source_type == "liked_title":
+            stored_track_source["is_liked"] = True
 
-        if source == "liked_title":
-            categories["is_liked"] = True 
-
-        elif source == "playlists":
-            playlist_id = track["playlist_id"]
-            playlist_name = track["playlist_name"]
+        elif source_type == "playlists":
+            playlist_id = track.get("playlist_id")
+            playlist_name = track.get("playlist_name")
             if not playlist_id or not playlist_name:
                 raise ValueError(f"Track {track_id!r}: missing playlist_id or playlist_name")
-            
-            pl_exists = False
 
-            # Adding playlist id and name for track if not exist
-            for p in categories["playlists"]:
-                if p["id"] == playlist_id:
-                    pl_exists = True
-                    break
-            
-            if not pl_exists:
-                categories["playlists"].append({
-                    "id":   playlist_id,
-                    "name": playlist_name
-                })
-                
+            # Add playlist if not already present
+            if playlist_id not in stored_track_source["playlists"]:
+                stored_track_source["playlists"][playlist_id] = playlist_name
 
-        elif source == "albums":
-            album_id = track["album_id"]
-            album_name = track["album_name"]
+        elif source_type == "albums":
+            album_id = track.get("album_id")
+            album_name = track.get("album_name")
             if not album_id or not album_name:
-                raise ValueError(f"Track {track_id!r} missing album_id or album_name")
+                raise ValueError(f"Track {track_id!r}: missing album_id or album_name")
 
-            ab_exists = False
-            for album in categories["albums"]:
-                if album['id'] == album_id:
-                    ab_exists = True
-                    break
-
-            if not ab_exists:
-                categories['albums'].append({
-                    "id": album_id,
-                    "name": album_name
-                })
+            # Add album if not already present
+            if album_id not in stored_track_source["albums"]:
+                stored_track_source["albums"][album_id] = album_name
 
 
-        # Handle artists for this track
-        track_artists = track.get("artists", [])
-        for artist in track_artists:
-            artist_id = artist.get("id")
-            if artist_id and artist_id not in unique_dict["A"]:
-                # Add artist to the "A" dict if not already present
-                unique_dict["A"][artist_id] = artist
-
-
-# Store unique track and artist, tracks contain categories fields with all source ref e.g: playlist: id_name, liked_title ext...
-def tracks_and_artists(playlists, liked_title, albums):
-    unique_items = {"T": {}, "A": {}}
-
-    # Liked title insertion
-    uniqueTA_insertion(unique_items, liked_title, "liked_title") # Passing info of data-categories pass to function e.g: is_liked
-
-    # Album insertion: 
-    uniqueTA_insertion(unique_items, albums, "albums")
+# Storing unique tracks with o(n) time complexity, n being the total tracks amoung all source
+def unique_tracks():
+    unique_items = {"T": {}}
 
     # Playlists insertion: 
-    uniqueTA_insertion(unique_items, playlists, "playlists")
+    unique_track_insertion(unique_items, get_playlist_tracks(), "playlists")  # Passing info of data-source pass to function e.g: is_liked
 
-    total_tracks = len(unique_items["T"])
-    total_artists = len(unique_items["A"])
+    # Liked title insertion
+    unique_track_insertion(unique_items, get_saved_tracks(), "liked_title")
 
-    return unique_items, total_tracks, total_artists
+    # Album insertion: 
+    unique_track_insertion(unique_items, get_albums_tracks(), "albums")
+
+    session["total_tracks"] = len(unique_items["T"])
+
+    return unique_items
 
 
 def generate_secure_secret(length=16):

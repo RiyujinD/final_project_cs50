@@ -105,7 +105,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 isActiveButton = true;
             }
             else {
-                console.log("CTA button on");
+                window.location.href = '/login';
             }
         });
     });
