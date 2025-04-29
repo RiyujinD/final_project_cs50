@@ -171,12 +171,17 @@ def get_user_spotifyMD():
 
     
 def get_saved_tracks():
-    
+    """
+    Fetches all users liked tracks from Spotify, formatting each artists into
+    a str separate by coma, and storing the first album images url into the the track object
+    Return a list of track dicts 
+    """
+
     url = "https://api.spotify.com/v1/me/tracks"
     headers = get_auth_headers()
     
     # Query parameters 
-    fields = "total, next, items(track(id,name,duration_ms,artists,album(images(url))))"
+    fields = "total,next,items(track(id,name,duration_ms,popularity,artists(name),album(id,name,images(url),total_tracks)))"
     params = {"fields": fields}
  
     all_liked_title = []
@@ -189,39 +194,70 @@ def get_saved_tracks():
         if total_liked_title is None:
             total_liked_title = tracksData.get("total", 0)
 
-        track_items = tracksData.get("items", [])
-        for item in track_items:
-
+        for item in tracksData.get("items", []):
             track = item.get("track")
             if not track:
                 continue
+            
+            artists = track.get("artists", [])
+            artists_name = []
+            for a in artists:
+                artist_name = a.get("name", "")
+                artists_name.append(artist_name)
+            formatted_artists = ", ".join(artists_name)
+ 
+
+            album = track.get("album", {})
+            images = album.get("images", [])
+            if images:
+                cover_url = images[0].get("url")
+            else:
+                cover_url = None
+
+            # Removing prev fields after formatting
+            track.pop("artists", None)
+            album.pop("images", None)
+            
+            
+            # Insert new formatted value to track object
+            track["artists"] = formatted_artists 
+            album["cover"] = cover_url
 
             all_liked_title.append(track)
 
         url = tracksData.get("next")  # next page if any
+
     
     session["total_liked_tracks"] = total_liked_title
     return all_liked_title
 
 
 def get_playlist_tracks():
+    """
+    Fetch all of the users playlists and their tracks from Spotify.
+    Formatting each tracks artists into a comma-delimited string,
+    and storing first cover image into track object
+    Return a list of track dicts 
+    """
+    
     url = "https://api.spotify.com/v1/me/playlists"
     headers = get_auth_headers()
 
     # Fields for playlist endpoint
-    fields = "total, next, items(id, name, tracks(href,total))"
-    params = {"fields": fields}
+    playlist_fields = "total,next,items(id,name,images(url),tracks(href,total))"
+    playlist_params = {"fields": playlist_fields}
+    
+    # prepare track pagination filter for subsequent pages
+    track_fields = "next,total,items(track(id,name,duration_ms,popularity,artists(name),album(id,name,images(url),total_tracks)))"
+    track_params  = {"fields": track_fields } # convert track pagination filter for subsequent pages
 
-    # Fields for playlists items endpoint  
-    fs = "next, total, items(track(id, name, duration_ms, artists))"
-    par = {"fields": fs}
 
     all_playlists_tracks = []
     total_playlists = None
 
     # Page through all playlists
     while url:
-        response = spotify_requests(url, "Error fetching playlists", "get", params=params, headers=headers)
+        response = spotify_requests(url, "Error fetching playlists", "get", params=playlist_params, headers=headers)
         playlists_data = response.json()
 
         if total_playlists is None:
@@ -230,44 +266,86 @@ def get_playlist_tracks():
         for playlist in playlists_data.get("items", []):
             playlist_id = playlist.get("id")
             playlist_name = playlist.get("name")
+
+            # Grabing first images cover if any else none
+            images = playlist.get("images", [])
+            if images:
+                cover_url = images[0].get("url")
+            else:
+                cover_url = None 
+
             track_url = playlist.get("tracks", {}).get("href")
+
 
             # Page through tracks of this playlist
             while track_url:
-                resp = spotify_requests(track_url, "Error fetching playlist tracks", "get", params=par, headers=headers)
+                resp = spotify_requests(track_url, "Error fetching playlist tracks", "get", params=track_params , headers=headers)
                 track_data_json = resp.json()
                 track_items = track_data_json.get("items", [])
 
                 for item in track_items:
-                    track = item.get("track")
+                    track = item.get("track", {})
                     if not track:
                         continue
-                    
-                    track["playlist_id"] = playlist_id
-                    track["playlist_name"] = playlist_name
+
+                    artists = track.get("artists", [])
+                    artists_name = []
+                    for artist in artists:
+                        artist_name = artist.get("name", "")
+                        artists_name.append(artist_name)
+                    artists_name_csv = ",".join(artists_name)
+
+                    # Fetching only first images url
+                    images = track["album"].get("images", [])
+                    if images:
+                        track["album"]["cover_url"] = images[0]["url"]
+                    else:
+                        track["album"]["cover_url"] = None
+
+                    track.pop("artists", None) # Clear previous artists list
+                    track["album"].pop("images", None) # Clear previous images list
+
+                        
+                    track["playlist"] = {
+                        "id":    playlist_id,
+                        "name":  playlist_name,
+                        "cover": cover_url
+                    }
+                    track["artists"] = artists_name_csv
 
                     all_playlists_tracks.append(track)
 
                 track_url = track_data_json.get("next")
+                track_params = None
 
         # Move to next page of playlists
         url = playlists_data.get("next")
+        playlist_params = None
 
     session["total_playlists"] = total_playlists
     return all_playlists_tracks
 
 
 def get_albums_tracks():
+    """
+    Fetch all of the users albums and their tracks from Spotify.
+    Formatting each tracks artists into a comma-delimited string,
+    and storing first cover image into track object
+    Return a list of track dicts 
+    """
+
     url = "https://api.spotify.com/v1/me/albums"
     headers = get_auth_headers()
 
-    fields = "total,next,items(album(id,name,tracks(href,next,previous,items(id,name,duration_ms,artists)),images(url)))"
+    # Unlike the function to get playlists items I'm fetching items data for the First page directly -> need to repass it for next page var: track_fields
+    fields = "total,next,items(album(id,name,total_tracks,images(url),tracks(href,next,previous,items(id,name,duration_ms,popularity,artists(name)))))"
     params = {"fields": fields}
+
 
     all_album_tracks = []
     total_albums = None
 
-    # Paginate through albums
+    # Paginate through albums 
     while url:
         response = spotify_requests(url, "Error fetching albums", "get", params=params, headers=headers)
         album_data = response.json()
@@ -275,46 +353,79 @@ def get_albums_tracks():
         if total_albums is None:
             total_albums = album_data.get("total", 0)
 
+        # Looping all albums track
         for album_item in album_data.get("items", []):
             album = album_item.get("album", {})
+
+            # Grouped album metadata extraction to store them in track
             album_id = album.get("id")
             album_name = album.get("name")
+            total_album_tracks = album.get("total_tracks")
+            album_images = album.get("images", [])
+            cover_url = album_images[0].get("url") if album_images else None
+
             tracks = album.get("tracks", {})
             track_items = tracks.get("items", [])
 
             # Loop all tracks of albums (first page)
             for track in track_items:
-                track["album_id"] = album_id
-                track["album_name"] = album_name
+                # Reformating artist names List to coma-separated str
+                track_artists = track.get("artists", [])
+                artists = []
+                for artist in track_artists:
+                    artist_name = artist.get("name")
+                    artists.append(artist_name)
+                artists_csv = ", ".join(artists)
 
-            all_album_tracks.extend(track_items)
+                # Removing prev list to make new str field
+                track.pop("artists", None) 
+
+                # Storing album meta-data
+                track["album"] = {
+                    "id": album_id,
+                    "name": album_name,
+                    "cover": cover_url,
+                    "total_tracks": total_album_tracks
+                }
+                track["artists"] = artists_csv
+
+                all_album_tracks.append(track)
 
             # Paginate through additional track pages
             next_tracks_url = tracks.get("next")
             while next_tracks_url:
-                track_response = spotify_requests(next_tracks_url, "Error fetching album tracks", "get", headers=headers)
+                            
+                # Converting track pagination filter for subsequent pages
+                track_response = spotify_requests(next_tracks_url, "Error fetching album tracks", "get", params=None, headers=headers)
                 json_tracks = track_response.json()
                 page_items = json_tracks.get("items", [])
 
-                for track in page_items:
-                    track["album_id"] = album_id
-                    track["album_name"] = album_name
+                for t in page_items:
+                    track_artists = t.get("artists", [])
+                    artists = []
+                    for a in track_artists:
+                        artist_name = a.get("name")
+                        artists.append(artist_name)
+                    artists_csv = ", ".join(artists)
 
-                    track.setdefault(
-                        "categories",
-                        {"playlists": [], "albums": [], "is_liked": False}
-                    )
-                    track["categories"]["albums"].append({
-                        "id": track["album_id"],
-                        "name": track["album_name"]
-                    })
+                    t.pop("artists", None)
+                    
+                    t["album"] = {
+                        "id": album_id,
+                        "name": album_name,
+                        "cover": cover_url,
+                        "total_tracks": total_album_tracks
+                    }
 
-                    all_album_tracks.append(track)
+                    t["artists"] = artists_csv
+                    all_album_tracks.append(t)
 
                 next_tracks_url = json_tracks.get("next")
 
+
         # Next page of albums
         url = album_data.get("next")
+        params = None
 
     session["total_albums"] = total_albums
     return all_album_tracks
@@ -325,50 +436,65 @@ def unique_track_insertion(unique_dict, tracks, source_type):
     """
     - unique_dict: {"T": {}}
     - tracks:   List[track_dict]
-    - source_type:   one of "liked_title", "albums", "playlists"
+    - source_type: "liked_title", "albums", "playlists"
     """
     for track in tracks:
         track_id = track.get("id")
         if not track_id:
             raise ValueError(f"Track {track!r}: missing id in uniqueTA insertion.")
 
+        # If track is not store yet
         if track_id not in unique_dict["T"]:
-
-            # Create source dict if not exists
-            track.setdefault("source", {
+            
+            # Initializing source dict
+            track["source"] = {
                 "playlists": {},
                 "albums": {},
                 "is_liked": False,
-            })
-            unique_dict["T"][track_id] = track  # Insert track with key being the track id
+            }
 
-        # Get the stored track and its source dict
-        stored_track = unique_dict["T"][track_id]
-        stored_track_source = stored_track["source"]
+            if source_type == "liked_title":
+                track["source"]["is_liked"] = True
 
-        if source_type == "liked_title":
-            stored_track_source["is_liked"] = True
+            elif source_type == "playlists":
+                playlist_info = track.pop("playlist", None)
+                if not playlist_info or "id" not in playlist_info:
+                    raise ValueError(f"Track {track_id!r}: missing or invalid 'playlist'")
+                playlist_id = playlist_info.pop("id")
+                track["source"]["playlists"][playlist_id] = playlist_info
 
-        elif source_type == "playlists":
-            playlist_id = track.get("playlist_id")
-            playlist_name = track.get("playlist_name")
-            if not playlist_id or not playlist_name:
-                raise ValueError(f"Track {track_id!r}: missing playlist_id or playlist_name")
+            elif source_type == "albums":
+                album_info = track.pop("album", None)
+                if not album_info or "id" not in album_info:
+                    raise ValueError(f"Track {track_id!r}: missing or invalid 'album'")
+                album_id = album_info.pop("id")
+                track["source"]["albums"][album_id] = album_info
 
-            # Add playlist if not already present
-            if playlist_id not in stored_track_source["playlists"]:
-                stored_track_source["playlists"][playlist_id] = playlist_name
+            # Insert the reformatted track
+            unique_dict["T"][track_id] = track
 
-        elif source_type == "albums":
-            album_id = track.get("album_id")
-            album_name = track.get("album_name")
-            if not album_id or not album_name:
-                raise ValueError(f"Track {track_id!r}: missing album_id or album_name")
+        # Track already stored, update source
+        else:
+            stored_track = unique_dict["T"][track_id]
+            source = stored_track["source"]
 
-            # Add album if not already present
-            if album_id not in stored_track_source["albums"]:
-                stored_track_source["albums"][album_id] = album_name
+            if source_type == "liked_title":
+                source["is_liked"] = True
 
+            elif source_type == "playlists":
+                playlist_info = track.pop("playlist", None)
+                if not playlist_info or "id" not in playlist_info:
+                    raise ValueError(f"Track {track_id!r}: missing or invalid 'playlist'")
+                playlist_id = playlist_info.pop("id")
+                source["playlists"].setdefault(playlist_id, playlist_info) # Auto check if id already exist if not insert it
+
+            elif source_type == "albums":
+                album_info = track.pop("album", None)
+                if not album_info or "id" not in album_info:
+                    raise ValueError(f"Track {track_id!r}: missing or invalid 'album'")
+                album_id = album_info.pop("id")
+                source["albums"].setdefault(album_id, album_info)
+                
 
 # Storing unique tracks with o(n) time complexity, n being the total tracks amoung all source
 def unique_tracks():
