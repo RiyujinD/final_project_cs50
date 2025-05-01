@@ -213,7 +213,7 @@ def get_saved_tracks():
             # Extracting cover image URL
             images = album.pop("images", None)
             cover_url = images[0].get("url") if images else None
-            album["cover"] = cover_url
+            album["cover_url"] = cover_url
             
             track["album"] = album
 
@@ -296,7 +296,7 @@ def get_playlist_tracks():
 
                     # Keep first album image as cover
                     album_images = album_data.get("images", [])
-                    album_data["cover"] = album_images[0]["url"] if album_images else None
+                    album_data["cover_url"] = album_images[0]["url"] if album_images else None
                     album_data.pop("images", None)
 
                     track["album"] = album_data # Formatted album data
@@ -306,7 +306,7 @@ def get_playlist_tracks():
                         "id":           playlist_id,
                         "name":         playlist_name,
                         "total_tracks": playlist_total_tracks,
-                        "cover":        cover_url
+                        "cover_url":        cover_url
                     }
 
                     all_playlists_tracks.append(track)
@@ -356,7 +356,7 @@ def get_albums_tracks():
 
             # Album cover
             images = album.pop("images", [])
-            album["cover"] = images[0]["url"] if images else None
+            album["cover_url"] = images[0]["url"] if images else None
 
             # Fetch full tracklist via /albums/{id}/tracks
             track_url = f"https://api.spotify.com/v1/albums/{album_id}/tracks"
