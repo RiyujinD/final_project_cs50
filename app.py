@@ -3,10 +3,11 @@ import time
 from flask import Flask, flash, url_for, redirect, request, jsonify, session, render_template # g 
 from flask_session import Session
 from urllib.parse import urlencode
+import sqlite3
 
 from config import CLIENT_ID, REDIRECT_URI, SPOTIFY_TOKEN_HEADERS, TOKEN_URL, AUTHORIZATION_URL, youtube
 from helpers import login_required, spotify_requests, generate_secure_secret, get_user_spotifyMD, unique_tracks
-from helpersDB import insert_userID
+from helpersDB import insert_user, insert_tracks
 
 app = Flask(__name__)
 
@@ -72,7 +73,7 @@ def callback():
     code = request.args.get("code")
     if not code:
         session["is_authenticated"] = None
-        return redirect(url_for("index", error="cancelled_login")) # If user has cancel code it's null
+        return redirect(url_for("index", error="cancelled_login")) 
           
     state = request.args.get("state")
     stored_state = session.get("oauth_state")
@@ -80,7 +81,7 @@ def callback():
         session["is_authenticated"] = None
         return redirect(url_for("index", error="state_mismatch"))
 
-    session.pop("oauth_state", None) # Clear the stored state from the session
+    session.pop("oauth_state", None) 
 
     data = {
         "grant_type": "authorization_code",
@@ -101,15 +102,30 @@ def callback():
     session["refresh_token"] = token_data.get("refresh_token")
     session["expires_in"] = token_data.get("expires_in")
     session["token_expiry"] = time.time() + token_data.get("expires_in") # Current time + expiry token time
-    
-    # Fetch user metadata and store it
-    get_user_spotifyMD() # Store id and others fields in session
-    spotify_id = session["spotify_id"]
-    insert_userID(spotify_id)
-    
-    # Dict of track key by track_id
-    unique_tracks()
 
+    # Store user data in session
+    get_user_spotifyMD()
+
+    all_tracks = unique_tracks()
+    print(all_tracks)
+    
+    # insert user data in database
+    try:
+        insert_user()
+    except sqlite3.Error as e:
+        flash("A database error occurred. Please try again.")
+        print("ERROR INSERTING USER")
+        session["is_authenticated"] = True
+        return redirect(url_for("selection"))
+    
+    try:
+        insert_tracks(all_tracks)
+    except sqlite3.Error as e:
+        flash("A database error occurred. Please try again.")
+        print("ERROR INSERTING TRACKS")
+        session["is_authenticated"] = True
+        return redirect(url_for("selection"))
+    
     session["is_authenticated"] = True
 
     return redirect(url_for("selection"))
@@ -160,7 +176,7 @@ def play():
     mode = request.args.get('m')
     valid_mods = request.args.get('vM', '').split(',')
     categories = request.args.getlist('c')
-    total_of_tracks = request.args.get('t', type=int)
+    total_of_tracks = request.args.get('t')
 
     if not mode or not categories or total_of_tracks is None:
         return redirect(url_for('selection_mode', mode=mode or valid_mods[0]))
